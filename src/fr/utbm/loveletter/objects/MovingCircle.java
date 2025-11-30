@@ -27,8 +27,8 @@ public class MovingCircle extends GameObject {
     }
 
     @Override
-    public void render(Graphics2D g) {
-        g.setColor(Color.WHITE);
-        g.fillOval(x, y, 50, 50);
+    public void render(Graphics2D g2d) {
+        g2d.setColor(Color.WHITE);
+        g2d.fillOval(x, y, 50, 50);
     }
 }

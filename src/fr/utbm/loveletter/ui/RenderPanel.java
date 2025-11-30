@@ -1,4 +1,4 @@
-package fr.utbm.loveletter.rendering;
+package fr.utbm.loveletter.ui;
 
 import fr.utbm.loveletter.system.SceneManager;
 

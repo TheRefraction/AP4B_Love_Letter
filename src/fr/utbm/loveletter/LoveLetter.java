@@ -1,14 +1,18 @@
 package fr.utbm.loveletter;
 
-import fr.utbm.loveletter.rendering.RenderPanel;
+import fr.utbm.loveletter.ui.RenderPanel;
 import fr.utbm.loveletter.system.SceneManager;
 import fr.utbm.loveletter.scenes.SceneTest;
 import fr.utbm.loveletter.system.AssetManager;
 import fr.utbm.loveletter.system.InputManager;
+import fr.utbm.loveletter.ui.UIPanel;
+import fr.utbm.loveletter.ui.forms.FormTest;
 import fr.utbm.loveletter.utils.Const;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.text.Normalizer;
 
 public class LoveLetter implements Runnable {
     private Thread game;
@@ -18,7 +22,8 @@ public class LoveLetter implements Runnable {
     private AssetManager assets;
 
     private JFrame window;
-    private RenderPanel panel;
+    private RenderPanel gamePanel;
+    private UIPanel uiPanel;
 
     public void start() {
         game = new Thread(this, "game");
@@ -33,14 +38,32 @@ public class LoveLetter implements Runnable {
         window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         window.setResizable(false);
         window.setLocationRelativeTo(null);
+        window.setLayout(null);
 
-        panel = new RenderPanel(scenes);
-        window.add(panel);
+        JLayeredPane layers = new JLayeredPane();
+        layers.setBounds(0, 0, Const.WINDOW_WIDTH, Const.WINDOW_HEIGHT);
+        window.setContentPane(layers);
+
+        // Game surface
+        gamePanel = new RenderPanel(scenes);
+        gamePanel.setBounds(0, 0, Const.WINDOW_WIDTH, Const.WINDOW_HEIGHT);
+        layers.add(gamePanel, Integer.valueOf(0));
+
+        FormTest formTest = new FormTest();
+
+        // UI Surface
+        uiPanel = new UIPanel();
+        uiPanel.setBounds(0, 0, Const.WINDOW_WIDTH, Const.WINDOW_HEIGHT);
+        uiPanel.addForm("test", formTest.contentPane);
+        layers.add(uiPanel, Integer.valueOf(1));
 
         // Register listeners
         window.addKeyListener(input);
-        panel.addMouseListener(input);
-        panel.addMouseMotionListener(input);
+        gamePanel.addMouseListener(input);
+        gamePanel.addMouseMotionListener(input);
+
+        uiPanel.addMouseListener(input);
+        uiPanel.addMouseMotionListener(input);
 
         window.setVisible(true);
     }
@@ -59,9 +82,13 @@ public class LoveLetter implements Runnable {
         init();
 
         while(window.isDisplayable()) {
+
+            if (input.isKeyDown(KeyEvent.VK_ESCAPE)) {
+                uiPanel.showForm("test");
+            } else uiPanel.hideForm();
+
             update();
             render();
-
             try {
                 Thread.sleep(16); // ~60 FPS
             } catch (InterruptedException e) {
@@ -73,7 +100,7 @@ public class LoveLetter implements Runnable {
     }
 
     private void render() {
-        panel.repaint();
+        gamePanel.repaint();
     }
 
     private void update() {

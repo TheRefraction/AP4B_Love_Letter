@@ -14,7 +14,7 @@ public class AssetManager {
     private final Map<String, Font> fonts = new HashMap<>();
     private final Map<String, String> texts = new HashMap<>();
 
-    private Class<?> loaderClass;
+    private final Class<?> loaderClass;
 
     public AssetManager(Class<?> loaderClass) {
         this.loaderClass = loaderClass;
