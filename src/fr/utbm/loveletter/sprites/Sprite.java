@@ -5,27 +5,25 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+@SuppressWarnings("unused")
 public class Sprite {
-    private ArrayList<BufferedImage> images = new ArrayList<>();
+    private final ArrayList<BufferedImage> images = new ArrayList<>();
 
     private int imageNumber;
 
     private int originX;
     private int originY;
 
-    private int width;
-    private int height;
-
     public Sprite(BufferedImage sprite, int originX, int originY, int imageNumber) {
-        width = sprite.getWidth();
-        height = sprite.getHeight();
+        int width = sprite.getWidth();
+        int height = sprite.getHeight();
 
         this.imageNumber = imageNumber;
         if (imageNumber <= 0 || imageNumber >= width) {
             this.imageNumber = 1;
         }
 
-        width = (int) (width / imageNumber);
+        width = width / imageNumber;
 
         for (int i = 0; i < imageNumber; i++) {
             BufferedImage subImage = sprite.getSubimage(width * i, 0, width, height);

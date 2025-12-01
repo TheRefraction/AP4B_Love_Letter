@@ -7,8 +7,9 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class MovingCircle extends GameSpritedObject {
-    private InputManager input;
+    private final InputManager input;
     private int dx = 2;
+    private double timer = 0;
 
     public MovingCircle(int x, int y, InputManager input, Sprite sprite) {
         super(x, y, sprite);
@@ -25,6 +26,10 @@ public class MovingCircle extends GameSpritedObject {
         if (x > 800 || x < 0) {
             dx *= -1;
         }
+
+        imageScaleX += 0.01 * Math.sin(timer);
+
+        timer += 0.1;
 
         if (input.isKeyPressed(KeyEvent.VK_SPACE)) {
             System.out.println("Space pressed this frame!");

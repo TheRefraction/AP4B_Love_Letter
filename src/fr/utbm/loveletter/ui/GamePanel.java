@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
-    private SceneManager scenes;
+    private final SceneManager scenes;
 
     public GamePanel(SceneManager scenes) {
         this.scenes = scenes;

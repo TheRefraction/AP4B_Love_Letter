@@ -1,8 +1,6 @@
 package fr.utbm.loveletter.card;
 
-import java.util.ArrayList;
-
-public class Chancelier extends Card{
+public class Chancelier extends Card {
     /*public void playEffect(GameManager game, Player owner)
     {
         //draw 2 cards from main draw area

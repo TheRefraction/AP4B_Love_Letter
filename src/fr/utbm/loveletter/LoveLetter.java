@@ -1,10 +1,10 @@
 package fr.utbm.loveletter;
 
-import fr.utbm.loveletter.ui.GamePanel;
-import fr.utbm.loveletter.system.SceneManager;
 import fr.utbm.loveletter.scenes.SceneTest;
 import fr.utbm.loveletter.system.AssetManager;
 import fr.utbm.loveletter.system.InputManager;
+import fr.utbm.loveletter.system.SceneManager;
+import fr.utbm.loveletter.ui.GamePanel;
 import fr.utbm.loveletter.ui.UIPanel;
 import fr.utbm.loveletter.ui.forms.FormMain;
 import fr.utbm.loveletter.utils.Const;
@@ -14,10 +14,12 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LoveLetter implements Runnable {
+    private static final Logger logger = Logger.getLogger(LoveLetter.class.getName());
     private Thread game;
-
     private InputManager input;
     private SceneManager scenes;
     private AssetManager assets;
@@ -81,6 +83,8 @@ public class LoveLetter implements Runnable {
     }
 
     public void init() {
+        logger.log(Level.INFO, "Initializing game");
+
         input = new InputManager();
         scenes = new SceneManager();
         assets = new AssetManager(LoveLetter.class);
@@ -90,23 +94,28 @@ public class LoveLetter implements Runnable {
         scenes.setScene(new SceneTest(this));
 
         running = true;
+
+        logger.log(Level.INFO, "Success!");
     }
 
     public void run() {
         init();
 
-        while(running) {
-            if (input.isKeyDown(KeyEvent.VK_ESCAPE)) {
-                uiPanel.showForm("main");
-            } else uiPanel.hideForm();
+        while (running) {
+            long startTime = System.currentTimeMillis();
 
             update();
             render();
 
-            try {
-                Thread.sleep(16); // ~60 FPS
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            long elapsed = System.currentTimeMillis() - startTime;
+            long sleepTime = Const.OPTIMAL_TIME - elapsed;
+            if (sleepTime > 0) {
+                try {
+                    //noinspection BusyWait
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException e) {
+                    logger.log(Level.WARNING, "Thread was interrupted", e);
+                }
             }
         }
 
@@ -125,6 +134,11 @@ public class LoveLetter implements Runnable {
         if (frames % 2 == 0) {
             dirty = true;
         }
+
+        // Ditto
+        if (input.isKeyDown(KeyEvent.VK_ESCAPE)) {
+            uiPanel.showForm("main");
+        } else uiPanel.hideForm();
 
         scenes.update();
         input.endFrame();

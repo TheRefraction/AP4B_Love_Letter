@@ -50,7 +50,9 @@ public class UIPanel extends JPanel {
         }
 
         removeAll();
-        addForm("empty", new FormNull() {{ setOpaque(false); }});
+        addForm("empty", new FormNull() {{
+            setOpaque(false);
+        }});
         revalidate();
         repaint();
     }

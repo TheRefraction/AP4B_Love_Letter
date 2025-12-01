@@ -2,6 +2,7 @@ package fr.utbm.loveletter.objects;
 
 import java.awt.*;
 
+@SuppressWarnings("unused")
 public abstract class GameObject {
     protected int x, y, z;
 
@@ -19,20 +20,20 @@ public abstract class GameObject {
         return x;
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public int getZ() {
-        return z;
-    }
-
     public void setX(int x) {
         this.x = x;
     }
 
+    public int getY() {
+        return y;
+    }
+
     public void setY(int y) {
         this.y = y;
+    }
+
+    public int getZ() {
+        return z;
     }
 
     public void setZ(int z) {
@@ -40,5 +41,6 @@ public abstract class GameObject {
     }
 
     public abstract void update();
+
     public abstract void render(Graphics2D g2d);
 }

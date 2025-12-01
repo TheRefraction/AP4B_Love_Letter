@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class Form extends JPanel {
-    protected GroupLayout layout;
+    protected final GroupLayout layout;
 
     public Form() {
         super();
@@ -38,5 +38,6 @@ public abstract class Form extends JPanel {
 
 
     abstract void init();
+
     public abstract void reset();
 }

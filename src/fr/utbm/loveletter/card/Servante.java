@@ -1,6 +1,6 @@
 package fr.utbm.loveletter.card;
 
-public class Servante extends Card{
+public class Servante extends Card {
     /*public void playEffect(GameManager game, Player owner)
     {
         //give the owner a protection against other card until his next turn.

@@ -1,6 +1,6 @@
 package fr.utbm.loveletter.card;
 
-public class Garde extends Card{
+public class Garde extends Card {
 
     /*public void playEffect(GameManager game, Player owner)
     {

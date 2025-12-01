@@ -3,14 +3,23 @@ package fr.utbm.loveletter.system;
 import fr.utbm.loveletter.sprites.Sprite;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
+@SuppressWarnings("unused")
 public class AssetManager {
+    private static final Logger logger = Logger.getLogger(AssetManager.class.getName());
+
     private final Map<String, Sprite> sprites = new HashMap<>();
     private final Map<String, Clip> sounds = new HashMap<>();
     private final Map<String, Font> fonts = new HashMap<>();

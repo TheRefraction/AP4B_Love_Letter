@@ -11,19 +11,19 @@ public class FormMain extends Form {
         label1 = new JLabel("test");
 
         button1 = new JButton("hello");
-        button1.addActionListener(e -> { label1.setText("Clicked!");  });
+        button1.addActionListener(e -> label1.setText("Clicked!"));
 
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
-            .addComponent(label1)
-            .addComponent(button1)
+                .addComponent(label1)
+                .addComponent(button1)
         );
 
         layout.setVerticalGroup(layout.createSequentialGroup()
-            .addComponent(label1)
-            .addComponent(button1)
+                .addComponent(label1)
+                .addComponent(button1)
         );
     }
 

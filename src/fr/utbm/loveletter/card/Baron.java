@@ -1,6 +1,6 @@
 package fr.utbm.loveletter.card;
 
-public class Baron extends Card{
+public class Baron extends Card {
 
     /*public void playEffect(GameManager game, Player owner)
     {

@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class InputManager implements KeyListener, MouseListener, MouseMotionListener {
     private final Set<Integer> keysDown = new HashSet<>();
     private final Set<Integer> keysPressed = new HashSet<>();
@@ -56,13 +57,16 @@ public class InputManager implements KeyListener, MouseListener, MouseMotionList
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+    }
 
     @Override
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
     @Override
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
     public boolean isKeyDown(int keyCode) {
         return keysDown.contains(keyCode);

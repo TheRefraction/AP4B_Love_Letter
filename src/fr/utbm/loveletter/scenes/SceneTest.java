@@ -1,19 +1,16 @@
 package fr.utbm.loveletter.scenes;
 
 import fr.utbm.loveletter.LoveLetter;
-import fr.utbm.loveletter.sprites.Sprite;
-import fr.utbm.loveletter.system.GameObjectManager;
 import fr.utbm.loveletter.objects.MovingCircle;
+import fr.utbm.loveletter.sprites.Sprite;
 import fr.utbm.loveletter.system.AssetManager;
+import fr.utbm.loveletter.system.GameObjectManager;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 
 public class SceneTest implements IScene {
-    private LoveLetter game;
+    private final LoveLetter game;
     private GameObjectManager objects;
-    private AssetManager assets;
 
     // Assets definition
     private Font defaultFont;
@@ -33,10 +30,10 @@ public class SceneTest implements IScene {
     }
 
     private void initAssets() {
-        assets = game.getAssets();
+        AssetManager assets = game.getAssets();
 
-        defaultFont = assets.loadFont("/arial.ttf", 20);
-        sprite = assets.loadSprite("/test.png", 100, 100, 1);
+        defaultFont = assets.loadFont("/fonts/fnt_arial.ttf", 20);
+        sprite = assets.loadSprite("/sprites/spr_test.png", 100, 100, 1);
     }
 
     @Override

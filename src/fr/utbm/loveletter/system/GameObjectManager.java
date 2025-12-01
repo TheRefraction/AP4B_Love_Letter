@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class GameObjectManager {
     private final List<GameObject> objects = new ArrayList<>();
 

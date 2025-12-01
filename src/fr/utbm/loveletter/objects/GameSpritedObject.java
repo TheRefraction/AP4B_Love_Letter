@@ -4,14 +4,14 @@ import fr.utbm.loveletter.sprites.Sprite;
 
 import java.awt.*;
 
+@SuppressWarnings("unused")
 public abstract class GameSpritedObject extends GameObject {
-    private Sprite sprite;
-
     protected double imageIndex;
     protected double imageSpeed;
     protected double imageAngle;
     protected double imageScaleX;
     protected double imageScaleY;
+    private Sprite sprite;
 
     public GameSpritedObject(int x, int y, int z, Sprite sprite) {
         super(x, y, z);
