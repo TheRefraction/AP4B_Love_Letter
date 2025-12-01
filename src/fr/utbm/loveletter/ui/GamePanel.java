@@ -5,10 +5,10 @@ import fr.utbm.loveletter.system.SceneManager;
 import javax.swing.*;
 import java.awt.*;
 
-public class RenderPanel extends JPanel {
+public class GamePanel extends JPanel {
     private SceneManager scenes;
 
-    public RenderPanel(SceneManager scenes) {
+    public GamePanel(SceneManager scenes) {
         this.scenes = scenes;
         setBackground(new Color(0, 0, 255));
     }

@@ -1,18 +1,17 @@
 package fr.utbm.loveletter;
 
-import fr.utbm.loveletter.ui.RenderPanel;
+import fr.utbm.loveletter.ui.GamePanel;
 import fr.utbm.loveletter.system.SceneManager;
 import fr.utbm.loveletter.scenes.SceneTest;
 import fr.utbm.loveletter.system.AssetManager;
 import fr.utbm.loveletter.system.InputManager;
 import fr.utbm.loveletter.ui.UIPanel;
-import fr.utbm.loveletter.ui.forms.FormTest;
+import fr.utbm.loveletter.ui.forms.FormMain;
 import fr.utbm.loveletter.utils.Const;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.text.Normalizer;
 
 public class LoveLetter implements Runnable {
     private Thread game;
@@ -22,7 +21,7 @@ public class LoveLetter implements Runnable {
     private AssetManager assets;
 
     private JFrame window;
-    private RenderPanel gamePanel;
+    private GamePanel gamePanel;
     private UIPanel uiPanel;
 
     public void start() {
@@ -45,16 +44,14 @@ public class LoveLetter implements Runnable {
         window.setContentPane(layers);
 
         // Game surface
-        gamePanel = new RenderPanel(scenes);
+        gamePanel = new GamePanel(scenes);
         gamePanel.setBounds(0, 0, Const.WINDOW_WIDTH, Const.WINDOW_HEIGHT);
         layers.add(gamePanel, Integer.valueOf(0));
-
-        FormTest formTest = new FormTest();
 
         // UI Surface
         uiPanel = new UIPanel();
         uiPanel.setBounds(0, 0, Const.WINDOW_WIDTH, Const.WINDOW_HEIGHT);
-        uiPanel.addForm("test", formTest.contentPane);
+        uiPanel.addForm("main", new FormMain());
         layers.add(uiPanel, Integer.valueOf(1));
 
         // Register listeners
@@ -65,6 +62,7 @@ public class LoveLetter implements Runnable {
         uiPanel.addMouseListener(input);
         uiPanel.addMouseMotionListener(input);
 
+        window.setFocusable(true);
         window.setVisible(true);
     }
 
@@ -82,13 +80,13 @@ public class LoveLetter implements Runnable {
         init();
 
         while(window.isDisplayable()) {
-
             if (input.isKeyDown(KeyEvent.VK_ESCAPE)) {
-                uiPanel.showForm("test");
+                uiPanel.showForm("main");
             } else uiPanel.hideForm();
 
             update();
             render();
+
             try {
                 Thread.sleep(16); // ~60 FPS
             } catch (InterruptedException e) {

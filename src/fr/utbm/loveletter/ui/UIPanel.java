@@ -1,5 +1,8 @@
 package fr.utbm.loveletter.ui;
 
+import fr.utbm.loveletter.ui.forms.Form;
+import fr.utbm.loveletter.ui.forms.FormNull;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,7 +14,7 @@ public class UIPanel extends JPanel {
         layout = new CardLayout();
         setLayout(layout);
 
-        addForm("empty", new JPanel() {{
+        addForm("empty", new FormNull() {{
             setOpaque(false);
         }});
     }
@@ -25,6 +28,17 @@ public class UIPanel extends JPanel {
     }
 
     public void hideForm() {
+        Form card = null;
+        for (Component comp : getComponents()) {
+            if (comp.isVisible()) {
+                card = (Form) comp;
+            }
+        }
+
+        if (card != null) {
+            card.reset();
+        }
+
         layout.show(this, "empty");
     }
 }
