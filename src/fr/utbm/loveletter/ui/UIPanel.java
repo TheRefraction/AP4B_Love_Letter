@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class UIPanel extends JPanel {
-    private CardLayout layout;
+    private final CardLayout layout;
 
     public UIPanel() {
         setOpaque(false);
@@ -40,5 +40,18 @@ public class UIPanel extends JPanel {
         }
 
         layout.show(this, "empty");
+    }
+
+    public void disposeForms() {
+        for (Component comp : getComponents()) {
+            if (comp instanceof Form f) {
+                f.dispose();
+            }
+        }
+
+        removeAll();
+        addForm("empty", new FormNull() {{ setOpaque(false); }});
+        revalidate();
+        repaint();
     }
 }

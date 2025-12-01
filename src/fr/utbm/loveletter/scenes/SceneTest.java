@@ -1,6 +1,7 @@
 package fr.utbm.loveletter.scenes;
 
 import fr.utbm.loveletter.LoveLetter;
+import fr.utbm.loveletter.sprites.Sprite;
 import fr.utbm.loveletter.system.GameObjectManager;
 import fr.utbm.loveletter.objects.MovingCircle;
 import fr.utbm.loveletter.system.AssetManager;
@@ -16,7 +17,7 @@ public class SceneTest implements IScene {
 
     // Assets definition
     private Font defaultFont;
-    private BufferedImage sprite;
+    private Sprite sprite;
 
     // Misc
     private double angle;
@@ -35,7 +36,7 @@ public class SceneTest implements IScene {
         assets = game.getAssets();
 
         defaultFont = assets.loadFont("/arial.ttf", 20);
-        sprite = assets.loadSprite("/test.png");
+        sprite = assets.loadSprite("/test.png", 100, 100, 1);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class SceneTest implements IScene {
         System.out.println("Scene has been entered!");
 
         objects = new GameObjectManager();
-        objects.add(new MovingCircle(0, 100, game.getInput()));
+        objects.add(new MovingCircle(0, 100, game.getInput(), sprite));
     }
 
     @Override
@@ -53,27 +54,17 @@ public class SceneTest implements IScene {
     }
 
     @Override
-    public void render(Graphics2D g) {
-        g.drawImage(sprite, 500, 300, 96, 64, null);
+    public void render(Graphics2D g2d) {
+        objects.render(g2d);
 
-        AffineTransform old = g.getTransform();
-
-        double rotationRequired = Math.toRadians(angle);
-        g.rotate(rotationRequired, 0, 0);
-
-        g.drawImage(sprite, 200, 100, 128, 64, null);
-
-        g.setTransform(old);
-
-        objects.render(g);
-
-        g.setColor(Color.WHITE);
-        g.setFont(defaultFont);
-        g.drawString("Test font", 240, 200);
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(defaultFont);
+        g2d.drawString("Test font", 240, 200);
     }
 
     @Override
     public void exit() {
         System.out.println("Scene has been exited!");
+        objects.clear();
     }
 }

@@ -1,5 +1,7 @@
 package fr.utbm.loveletter.system;
 
+import fr.utbm.loveletter.sprites.Sprite;
+
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import java.awt.*;
@@ -9,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AssetManager {
-    private final Map<String, BufferedImage> sprites = new HashMap<>();
+    private final Map<String, Sprite> sprites = new HashMap<>();
     private final Map<String, Clip> sounds = new HashMap<>();
     private final Map<String, Font> fonts = new HashMap<>();
     private final Map<String, String> texts = new HashMap<>();
@@ -24,13 +26,15 @@ public class AssetManager {
         return loaderClass.getResourceAsStream(path);
     }
 
-    public BufferedImage loadSprite(String path) {
+    public Sprite loadSprite(String path, int originX, int originY, int imageNumber) {
         if (sprites.containsKey(path)) {
             return sprites.get(path);
         }
 
         try (InputStream in = getStream(path)) {
-            BufferedImage sprite = ImageIO.read(in);
+            BufferedImage image = ImageIO.read(in);
+
+            Sprite sprite = new Sprite(image, originX, originY, imageNumber);
             sprites.put(path, sprite);
 
             return sprite;
@@ -92,5 +96,16 @@ public class AssetManager {
         } catch (Exception e) {
             throw new RuntimeException("Could not load text file: " + path, e);
         }
+    }
+
+    public void dispose() {
+        for (Clip clip : sounds.values()) {
+            if (clip.isOpen()) clip.close();
+        }
+
+        sounds.clear();
+        sprites.clear();
+        fonts.clear();
+        texts.clear();
     }
 }

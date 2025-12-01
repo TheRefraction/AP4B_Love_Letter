@@ -17,6 +17,7 @@ public class SceneManager {
     public void clearScene() {
         if (currentScene != null) {
             currentScene.exit();
+            currentScene = null;
         }
     }
 

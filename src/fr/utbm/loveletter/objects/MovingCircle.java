@@ -1,17 +1,22 @@
 package fr.utbm.loveletter.objects;
 
+import fr.utbm.loveletter.sprites.Sprite;
 import fr.utbm.loveletter.system.InputManager;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-public class MovingCircle extends GameObject {
+public class MovingCircle extends GameSpritedObject {
     private InputManager input;
     private int dx = 2;
 
-    public MovingCircle(int x, int y, InputManager input) {
-        super(x, y);
+    public MovingCircle(int x, int y, InputManager input, Sprite sprite) {
+        super(x, y, sprite);
         this.input = input;
+
+        imageScaleX = 0.25;
+        imageScaleY = 0.1;
+
     }
 
     @Override
@@ -24,10 +29,14 @@ public class MovingCircle extends GameObject {
         if (input.isKeyPressed(KeyEvent.VK_SPACE)) {
             System.out.println("Space pressed this frame!");
         }
+
+        imageAngle++;
     }
 
     @Override
     public void render(Graphics2D g2d) {
+        super.render(g2d);
+
         g2d.setColor(Color.WHITE);
         g2d.fillOval(x, y, 50, 50);
     }

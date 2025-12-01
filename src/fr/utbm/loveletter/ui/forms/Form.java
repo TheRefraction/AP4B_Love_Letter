@@ -24,6 +24,19 @@ public abstract class Form extends JPanel {
         setVisible(true);
     }
 
+    public void dispose() {
+        for (Component c : getComponents()) {
+            if (c instanceof AbstractButton b) {
+                for (var l : b.getActionListeners()) b.removeActionListener(l);
+            }
+            for (var l : c.getMouseListeners()) c.removeMouseListener(l);
+            for (var l : c.getKeyListeners()) c.removeKeyListener(l);
+            for (var l : c.getFocusListeners()) c.removeFocusListener(l);
+            for (var l : c.getComponentListeners()) c.removeComponentListener(l);
+        }
+    }
+
+
     abstract void init();
     public abstract void reset();
 }

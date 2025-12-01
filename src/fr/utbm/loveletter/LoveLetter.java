@@ -12,6 +12,8 @@ import fr.utbm.loveletter.utils.Const;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class LoveLetter implements Runnable {
     private Thread game;
@@ -23,6 +25,10 @@ public class LoveLetter implements Runnable {
     private JFrame window;
     private GamePanel gamePanel;
     private UIPanel uiPanel;
+
+    private boolean running = false;
+    private boolean dirty = true;
+    private int frames = 0;
 
     public void start() {
         game = new Thread(this, "game");
@@ -38,6 +44,13 @@ public class LoveLetter implements Runnable {
         window.setResizable(false);
         window.setLocationRelativeTo(null);
         window.setLayout(null);
+
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                running = false;
+            }
+        });
 
         JLayeredPane layers = new JLayeredPane();
         layers.setBounds(0, 0, Const.WINDOW_WIDTH, Const.WINDOW_HEIGHT);
@@ -62,6 +75,7 @@ public class LoveLetter implements Runnable {
         uiPanel.addMouseListener(input);
         uiPanel.addMouseMotionListener(input);
 
+        // Show window
         window.setFocusable(true);
         window.setVisible(true);
     }
@@ -74,12 +88,14 @@ public class LoveLetter implements Runnable {
         initWindow();
 
         scenes.setScene(new SceneTest(this));
+
+        running = true;
     }
 
     public void run() {
         init();
 
-        while(window.isDisplayable()) {
+        while(running) {
             if (input.isKeyDown(KeyEvent.VK_ESCAPE)) {
                 uiPanel.showForm("main");
             } else uiPanel.hideForm();
@@ -98,16 +114,46 @@ public class LoveLetter implements Runnable {
     }
 
     private void render() {
-        gamePanel.repaint();
+        if (dirty) {
+            gamePanel.repaint();
+            dirty = false;
+        }
     }
 
     private void update() {
+        frames++;
+        if (frames % 2 == 0) {
+            dirty = true;
+        }
+
         scenes.update();
         input.endFrame();
     }
 
     private void close() {
         System.out.println("Closing");
+
+        cleanupListeners();
+
+        scenes.clearScene();
+        uiPanel.disposeForms();
+        assets.dispose();
+        window.dispose();
+
+        input = null;
+        scenes = null;
+        gamePanel = null;
+        uiPanel = null;
+        assets = null;
+        window = null;
+    }
+
+    private void cleanupListeners() {
+        window.removeKeyListener(input);
+        gamePanel.removeMouseListener(input);
+        gamePanel.removeMouseMotionListener(input);
+        uiPanel.removeMouseListener(input);
+        uiPanel.removeMouseMotionListener(input);
     }
 
     public InputManager getInput() {
