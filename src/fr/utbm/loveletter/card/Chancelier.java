@@ -1,9 +1,7 @@
 package fr.utbm.loveletter.card;
 
-import java.util.ArrayList;
-
-public class Chancelier extends Card{
-    public void playEffect(GameManager game, Player owner)
+public class Chancelier extends Card {
+    /*public void playEffect(GameManager game, Player owner)
     {
         //draw 2 cards from main draw area
         //let the owner choose 1 card to keep
@@ -11,5 +9,5 @@ public class Chancelier extends Card{
         //CASE 1 CARD : DO SAME BUT WITH 1 CARD
         //CASE 0 CARD : DO NOTHING
 
-    }
+    }*/
 }
