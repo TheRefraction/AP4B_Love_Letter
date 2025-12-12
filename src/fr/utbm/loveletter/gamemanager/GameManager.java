@@ -3,14 +3,16 @@ package fr.utbm.loveletter.gamemanager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
+
 import
 import fr.utbm.loveletter.player.Player;
 import fr.utbm.loveletter.card.Card;
 
 public class GameManager {
-    private ArrayList <Player> players;
-    private ArrayList <Card> deck;
-    private ArrayList <Card> hiddenCard; // at the start of the game, it's needed to keep 1 card hidden
+    private static ArrayList <Player> players;
+    public ArrayList <Card> deck;
+    public ArrayList <Card> hiddenCard; // at the start of the game, it's needed to keep 1 card hidden
     private ArrayList <Card> showCard; //card that are visible for everyone
 
 
@@ -45,6 +47,19 @@ public class GameManager {
         }
 
 
+    }
+
+    public void eleminate(Player player){
+        for (int i = 0 ; i <= players.size() - 1 ; ++i) {
+            if (Objects.equals(players.get(i).name,  player.name)) {
+                players.remove(i);
+                return;
+            }
+        }
+    }
+
+    public static ArrayList <Player> getPlayers(){
+        return players;
     }
 
     void gameRoundLoop(){
