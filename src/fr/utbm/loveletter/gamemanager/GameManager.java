@@ -1,10 +1,11 @@
 package fr.utbm.loveletter.gamemanager;
 
-import javax.smartcardio.Card;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
+import
+import fr.utbm.loveletter.player.Player;
+import fr.utbm.loveletter.card.Card;
 
 public class GameManager {
     private ArrayList <Player> players;
@@ -26,9 +27,9 @@ public class GameManager {
         //shuffle the cards
         Collections.shuffle(deck);
 
-        //give 1 card to every playe
-        for player in players {
-            player.hand.add (deck.getFirst());
+        //give 1 card to every player
+        for(Player player : players) {
+            player.getHand().add(deck.get(0));
             deck.removeFirst();
         }
         //keep 1 hidden card

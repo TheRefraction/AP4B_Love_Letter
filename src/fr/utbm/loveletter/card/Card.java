@@ -1,6 +1,6 @@
 package fr.utbm.loveletter.card;
 
-abstract class Card {
+public abstract class Card {
     private int value;
     private String name;
 

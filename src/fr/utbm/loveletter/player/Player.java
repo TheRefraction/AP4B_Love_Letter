@@ -33,6 +33,11 @@ public class Player implements IPlayer {
         }
         return card;
     }
+
+    public ArrayList<Card> getHand() {
+        return hand;
+    }
+
     public void drawCard(Card card){
         hand.add(card);
     }
