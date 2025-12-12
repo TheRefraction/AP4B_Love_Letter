@@ -18,4 +18,12 @@ abstract class Card {
     public String toString() {
         return this.name;
     }
+
+    public int getValue() {
+        return value;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
