@@ -1,106 +1,282 @@
-\documentclass[a4paper,11pt,titlepage]{article}
-
+\documentclass[paper=a4,fontsize=12pt,titlepage]{scrartcl}
+%-----------------------------------------------
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[english]{babel}
-\usepackage{color}
-\usepackage{xcolor}
-\usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage{stmaryrd}
-\usepackage[hmargin={2.5cm,2.5cm},top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[french]{babel}
 \usepackage{lmodern}
+%-----------------------------------------------
+\usepackage{amsmath,amssymb,mathtools,stmaryrd}
+%-----------------------------------------------
+\usepackage{graphicx}
+\usepackage{tikz,pgf}
+\usepackage{tikz-uml}
+\usetikzlibrary{arrows,shapes,positioning}
+\usepackage{adjustbox}
+%-----------------------------------------------
 \usepackage[ruled,lined]{algorithm2e}
 \usepackage{listings}
-\usepackage{tikz, pgf}
-
-\usepackage{tikz-uml}
-
-\usepackage[colorlinks=true,breaklinks=true,linkcolor=blue,filecolor=magenta,urlcolor=cyan,pdftitle={Project},pdfsubject={Project}]{hyperref}
-
-\usetikzlibrary{arrows,shapes,positioning}
-
+%-----------------------------------------------
+\usepackage[
+    colorlinks=true,
+    breaklinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Project},
+    pdfsubject={Project}
+]{hyperref}
+%-----------------------------------------------
+\usepackage{typearea}
+\KOMAoptions{
+    DIV=12,
+    BCOR=0mm,
+    abstract=true,
+    pagesize=auto
+}
+\recalctypearea
+%-----------------------------------------------
+\newenvironment{AThreeLandscape}{%
+    \clearpage
+    \KOMAoptions{paper=a3, paper=landscape}%
+    \recalctypearea%
+    \thispagestyle{plain}%
+}{%
+    \clearpage
+    \KOMAoptions{paper=a4, paper=portrait}%
+    \recalctypearea%
+}
+%-----------------------------------------------
 \sloppy
-\hyphenpenalty 10000000
+\hyphenpenalty=10000
+%-----------------------------------------------
+\title{
+    \Huge Love Letter\\
+    \Large Projet AP4B\\
+    \large Version de pré-rendu
+}
 
-\title{AP4B Project Template}
-\author{blah}
+\author{
+    Julie \textsc{BENED}\\
+    Corentin \textsc{HAUTEFAYE}\\
+    Loïc \textsc{MORIN}\\
+    Théo \textsc{RIGAL}
+}
 
+\date{19 décembre 2025}
+%-----------------------------------------------
 \begin{document}
 
     \maketitle
-    \newpage
+
+    \renewcommand*{\abstractname}{Introduction}
+    \begin{abstract}
+        \thispagestyle{plain}
+        blah blah blah
+    \end{abstract}
 
     \tableofcontents
-    \newpage
+    \clearpage
+%-----------------------------------------------
+    \section{Présentation}
+%-----------------------
+    \subsection{Définition du sujet}
+%-----------------------
+    \subsection{Conventions}
+%-----------------------
+    \subsection{Outils utilisés}
+%-----------------------------------------------
+    \section{Conception}
+%-----------------------
+    \subsection{Architecture générale}
+%-----------------------------------------------
+    \section{Diagrammes UML}
+%-----------------------
+    \begin{AThreeLandscape}
+        \subsection{Diagramme de classes}
 
-    \section{Introduction}\label{sec:introduction}
-
-    \begin{align*}
-        x = 2 &\implies x²=4 \text{ dtdtdtdt}
-    \end{align*}
-
-    \verb|azerxdrsdr5|
-
-
-    \begin{center}
-        \begin{tikzpicture}
-            \node[draw, circle] (S0) at (-1,0) {$S_0$} ;
-            \node[draw, circle] (S1) at (2,2) {$S_1$} ;
-            \node[draw, circle] (S2) at (2,-2) {$S_2$} ;
-            \node[draw, circle] (S3) at (-2,-2) {$S_3$} ;
-            \node[draw, circle] (Err) at (2,0) {$Err$} ;
-
-            \draw (S0) to[bend right=75](-2,1);
-            \draw[->,>=latex](-2,1) to[bend right=75](S0);
-
-            \draw[->,>=latex] (S0) edge[bend left] (S1) ;
-            \draw[->,>=latex] (S0) edge[bend right] (S2) ;
-            \draw[->,>=latex] (S0) edge (S3) ;
-
-            \draw[->,>=latex] (S1) edge[bend left] (S0) ;
-            \draw (S1) to[bend right=75](3,3);
-            \draw[->,>=latex](3,3) to[bend right=75](S1);
-
-            \draw[->,>=latex] (S2) edge[bend right] (S0) ;
-            \draw[->,>=latex] (S2) edge[bend right] (Err) ;
-
-            \draw[->,>=latex] (Err) edge (S0) ;
-        \end{tikzpicture}
-    \end{center}
-
-    \begin{center}
-        \begin{tikzpicture}
-            \begin{umlpackage}{p}
-                \begin{umlpackage}{sp1}
-                    \umlclass[template=T]{A}{
-                        n : uint \\ t : float
-                    }{n}
-                    \umlclass[y=-3]{B}{
-                        d : double
+        \begin{center}
+            \begin{adjustbox}{max width=20cm, max height=20cm, keepaspectratio}
+                \begin{tikzpicture}
+                    \umlclass{Player}{
+                        + hand : ArrayList<Card>\\
+                        + name : string\\
+                        + score : int
                     }{
-                        \umlvirt{setB(b : B) : void} \\ getB() : B}
-                \end{umlpackage}
-                \begin{umlpackage}[x=10,y=-6]{sp2}
-                    \umlinterface{C}{
-                        n : uint \\ s : string
-                    }{}
-                \end{umlpackage}
-                \umlclass[x=2,y=-10]{D}{
-                    n : uint
-                }{}
-            \end{umlpackage}
+                        + chooseCard() : Card\\
+                        + getHand() : ArrayList<Card>\\
+                        + drawCard(card : Card) : void
+                    }
 
-            \umlassoc[geometry=-|-, arg1=tata, mult1=*, pos1=0.3, arg2=toto, mult2=1, pos2=2.9, align2=left]{C}{B}
-            \umlunicompo[geometry=-|, arg=titi, mult=*, pos=1.7, stereo=vector]{D}{C}
-            \umlimport[geometry=|-, anchors=90 and 50, name=import]{sp2}{sp1}
-            \umlaggreg[arg=tutu, mult=1, pos=0.8, angle1=30, angle2=60, loopsize=2cm]{D}{D}
-            \umlinherit[geometry=-|]{D}{B}
-            \umlnote[x=2.5,y=-6, width=3cm]{B}{Je suis une note qui concerne la classe B}
-            \umlnote[x=7.5,y=-2]{import-2}{Je suis une note qui concerne la relation d'import}
-        \end{tikzpicture}
-    \end{center}
+                    \umlclass[right=6cm of Player]{Card}{}{}
 
+                    \umlclass[below=2cm of Player]{gameObject}{
+                        \# x : int\\
+                        \# y : int\\
+                        \# z : int
+                    }{
+                        + update() : void\\
+                        + render(g : Graphics2D) : void
+                    }
+
+                    \umlclass[left=4cm of gameObject]{Sprite}{
+                        - images : ArrayList<BufferedImage>\\
+                        - originX : int\\
+                        - originY : int\\
+                        - imageNumber : int
+                    }{
+                        + render(g : Graphics2D, x:int, y:int, w:double, h:double) : void
+                    }
+
+                    \umlclass[below=2cm of gameObject]{gameSpriteObject}{
+                        \# imageAngle : double\\
+                        \# imageScaleY : double\\
+                        \# imageSpeed : double\\
+                        - sprite : Sprite\\
+                        \# imageIndex : double\\
+                        \# imageScaleX : double
+                    }{
+                        - initSprite(sprite : Sprite) : void\\
+                        + render(g : Graphics2D) : void
+                    }
+
+                    \umlclass[right=6cm of gameObject]{IScene}{
+                        + enter() : void\\
+                        + render(g : Graphics2D) : void\\
+                        + update() : void\\
+                        + exit() : void
+                    }
+
+                    \umlclass[below=2cm of IScene]{SceneManager}{
+                        - currentScene : IScene
+                    }{
+                        + update() : void\\
+                        + render(g : Graphics2D) : void\\
+                        + setScene(scene : IScene) : void\\
+                        + clearScene() : void
+                    }
+
+                    \umlclass[below=2cm of SceneManager]{InputManager}{
+                        - keysDown : Set<Integer>\\
+                        - keysReleased : Set<Integer>\\
+                        - keysPressed : Set<Integer>\\
+                        - mouseX : int\\
+                        - mouseY : int\\
+                        - mouseDown : boolean
+                    }{
+                        + endFrame() : void
+                    }
+
+                    \umlclass[right=4cm of InputManager]{GamePanel}{
+                        - scenes : SceneManager
+                    }{
+                        \# paintComponent(g : Graphics) : void
+                    }
+
+                    \umlclass[below=2cm of gameSpriteObject]{Form}{
+                        \# layout : GroupLayout
+                    }{
+                        + dispose() : void\\
+                        + init() : void\\
+                        + reset() : void
+                    }
+
+                    \umlclass[below=2cm of Form]{UIPanel}{
+                        - layout : CardLayout
+                    }{
+                        + addForm(name:String, panel:JPanel) : void\\
+                        + showForm(name:String) : void\\
+                        + disposeForms() : void\\
+                        + hideForm() : void
+                    }
+
+                    \umlclass[left=4cm of UIPanel]{AssetManager}{
+                        - loaderClass : ?\\
+                        - texts : Map<String,String>\\
+                        - sprites : Map<String,String>\\
+                        - sounds : Map<String,Clip>\\
+                        - fonts : Map<String,Font>
+                    }{
+                        + loadSound(name:String) : Clip\\
+                        + loadFont(name:String, float) : Font\\
+                        + dispose() : void\\
+                        + loadText(name:String) : String\\
+                        + loadSprite(name:String, w:int, h:int) : Sprite
+                    }
+
+                    \umlclass[right=4cm of UIPanel]{Const}{
+                        + WINDOW\_HEIGHT : int\\
+                        + WINDOW\_WIDTH : int\\
+                        + TARGET\_FPS : int\\
+                        + WINDOW\_TITLE : string\\
+                        + OPTIMAL\_TIME : long
+                    }
+
+                    \umlclass[below=2cm of Const]{LoveLetter}{
+                        - input : InputManager\\
+                        - running : boolean\\
+                        - gamePanel : AssetManager\\
+                        - game : Thread\\
+                        - dirty : boolean\\
+                        - assets : AssetManager\\
+                        - window : JFrame\\
+                        - uiPanel : UIPanel\\
+                        - scenes : SceneManager\\
+                        - frames : int
+                    }{
+                        - close() : void\\
+                        + cleanupListeners() : void\\
+                        + initWindow() : void\\
+                        - render() : void\\
+                        - update() : void\\
+                        + init() : void\\
+                        + run() : void\\
+                        + start() : void
+                    }
+
+                    \umlclass[below=2cm of LoveLetter]{Main}{}{
+                        + main(String[]) : void
+                    }
+
+                    % Links
+                    \umlaggreg{Player}{Card}
+
+                    \umlcompo{gameSpriteObject}{Sprite}
+                    \umlinherit{gameSpriteObject}{gameObject}
+                    \umlinherit{Sprite}{gameObject}
+
+                    \umlinherit{SceneManager}{IScene}
+
+                    \umlassoc{SceneManager}{InputManager}
+                    \umlassoc{SceneManager}{GamePanel}
+
+                    \umlcompo{UIPanel}{Form}
+                    \umlcompo{LoveLetter}{UIPanel}
+                    \umlcompo{LoveLetter}{SceneManager}
+                    \umlcompo{LoveLetter}{InputManager}
+                    \umlcompo{LoveLetter}{AssetManager}
+
+                    \umlassoc{LoveLetter}{GamePanel}
+
+                    \umlinherit{Main}{LoveLetter}
+                \end{tikzpicture}
+            \end{adjustbox}
+        \end{center}
+
+    \end{AThreeLandscape}
+
+    \subsection{Diagramme de cas d'utilisation}
+%-----------------------
+    \subsection{Diagramme de séquence}
+%-----------------------------------------------
+    \section{Retour d'expérience}
+%-----------------------
+    \subsection{Organisation}
+%-----------------------
+    \subsection{Difficultés rencontrées}
+%-----------------------
+    \subsection{Suggestions d'amélioration}
+%-----------------------------------------------
+    \newpage
+    \section{Conclusion}
+%-----------------------
 \end{document}
