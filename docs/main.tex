@@ -71,212 +71,94 @@
     \renewcommand*{\abstractname}{Introduction}
     \begin{abstract}
         \thispagestyle{plain}
-        blah blah blah
+        Dans le cadre de l'UE AP4B (\textit{Semestre A25}), nous avons réalisé une adaptation du jeu \textit{Love Letter}
+        en Java. L'objectif principal de ce projet est de concevoir une application fonctionnelle, robuste,
+        clairement structurée, tout en respectant les principes fondamentaux de la programmation orientée objet.
+
+        L'accent est ainsi mis sur la conception UML, l'organisation du code ainsi que la capacité à modéliser
+        efficacement les entités essentielles d'un moteur de jeu simple.
+
+        Par ailleurs, cette adaptation vise à préserver l'esprit et les règles du jeu original, tout en y intégrant
+        une dimension créative et ludique en lien avec le contexte universitaire.
     \end{abstract}
 
     \tableofcontents
     \clearpage
 %-----------------------------------------------
-    \section{Présentation}
+    \section{Présentation}\label{sec:presentation}
 %-----------------------
-    \subsection{Définition du sujet}
+    \subsection{Définition du sujet}\label{subsec:definition-du-sujet}
+    \subsubsection{Règles du jeu}
+    \subsubsection{Contexte UTBM}
 %-----------------------
-    \subsection{Conventions}
+    \subsection{Conventions}\label{subsec:conventions}
+
+    Afin d'assurer une meilleure lisibilité ainsi qu'une cohérence globale du projet, plusieurs convetions ont été
+    adoptées tout au long du développement.
+
+    \paragraph{} Tout d'abord, le code source et les commentaires sont rédigés en Anglais ; cela est en effet conforme
+    aux standards couramment utilisés en programmation, notamment en entreprise. La typographie utilisée est la norme
+    Java : les noms de classes utilisent la notation \textit{PascalCase}, tandis que les noms de méthodes et atributs
+    suivent le format \textit{camelCase}. Les constantes sont placées dans un fichier dédié (\verb|Const.java|) et
+    sont notées en majuscules avec des \textit{underscores} en tant que séparateurs. En sus de cela, les classes spéciales
+    comme les énumérateurs et interfaces, sont respectivement préfixées par un \verb|E| et un \verb|I|.
 %-----------------------
-    \subsection{Outils utilisés}
+    \subsection{Outils utilisés}\label{subsec:outils-utilises}
+
+    Pour réaliser ce projet, les outils suivants ont été utilisés :
+    \begin{itemize}
+        \item \textbf{IntelliJIDEA} pour l'environnement de développement
+        \item \textbf{Git} et \textbf{GitHub} pour le contrôle des versions
+        \item \textbf{\LaTeX} pour la rédaction du rapport
+        \item \textbf{tikz-uml} pour dessiner les diagrammes UML en \LaTeX
+    \end{itemize}
 %-----------------------------------------------
-    \section{Conception}
+    \newpage
+    \section{Réalisation du jeu}\label{sec:conception}
+    \subsection{Choix}
 %-----------------------
-    \subsection{Architecture générale}
+    \subsection{Architecture générale}\label{subsec:architecture-generale}
+    \subsection{Organisation des paquets}
 %-----------------------------------------------
-    \section{Diagrammes UML}
+    \newpage
+    \section{Conception UML}\label{sec:diagrammes-uml}
 %-----------------------
     \begin{AThreeLandscape}
-        \subsection{Diagramme de classes}
+        \subsection{Diagramme de classes}\label{subsec:diagramme-de-classes}
 
         \begin{center}
             \begin{adjustbox}{max width=20cm, max height=20cm, keepaspectratio}
-                \begin{tikzpicture}
-                    \umlclass{Player}{
-                        + hand : ArrayList<Card>\\
-                        + name : string\\
-                        + score : int
-                    }{
-                        + chooseCard() : Card\\
-                        + getHand() : ArrayList<Card>\\
-                        + drawCard(card : Card) : void
-                    }
-
-                    \umlclass[right=6cm of Player]{Card}{}{}
-
-                    \umlclass[below=2cm of Player]{gameObject}{
-                        \# x : int\\
-                        \# y : int\\
-                        \# z : int
-                    }{
-                        + update() : void\\
-                        + render(g : Graphics2D) : void
-                    }
-
-                    \umlclass[left=4cm of gameObject]{Sprite}{
-                        - images : ArrayList<BufferedImage>\\
-                        - originX : int\\
-                        - originY : int\\
-                        - imageNumber : int
-                    }{
-                        + render(g : Graphics2D, x:int, y:int, w:double, h:double) : void
-                    }
-
-                    \umlclass[below=2cm of gameObject]{gameSpriteObject}{
-                        \# imageAngle : double\\
-                        \# imageScaleY : double\\
-                        \# imageSpeed : double\\
-                        - sprite : Sprite\\
-                        \# imageIndex : double\\
-                        \# imageScaleX : double
-                    }{
-                        - initSprite(sprite : Sprite) : void\\
-                        + render(g : Graphics2D) : void
-                    }
-
-                    \umlclass[right=6cm of gameObject]{IScene}{
-                        + enter() : void\\
-                        + render(g : Graphics2D) : void\\
-                        + update() : void\\
-                        + exit() : void
-                    }
-
-                    \umlclass[below=2cm of IScene]{SceneManager}{
-                        - currentScene : IScene
-                    }{
-                        + update() : void\\
-                        + render(g : Graphics2D) : void\\
-                        + setScene(scene : IScene) : void\\
-                        + clearScene() : void
-                    }
-
-                    \umlclass[below=2cm of SceneManager]{InputManager}{
-                        - keysDown : Set<Integer>\\
-                        - keysReleased : Set<Integer>\\
-                        - keysPressed : Set<Integer>\\
-                        - mouseX : int\\
-                        - mouseY : int\\
-                        - mouseDown : boolean
-                    }{
-                        + endFrame() : void
-                    }
-
-                    \umlclass[right=4cm of InputManager]{GamePanel}{
-                        - scenes : SceneManager
-                    }{
-                        \# paintComponent(g : Graphics) : void
-                    }
-
-                    \umlclass[below=2cm of gameSpriteObject]{Form}{
-                        \# layout : GroupLayout
-                    }{
-                        + dispose() : void\\
-                        + init() : void\\
-                        + reset() : void
-                    }
-
-                    \umlclass[below=2cm of Form]{UIPanel}{
-                        - layout : CardLayout
-                    }{
-                        + addForm(name:String, panel:JPanel) : void\\
-                        + showForm(name:String) : void\\
-                        + disposeForms() : void\\
-                        + hideForm() : void
-                    }
-
-                    \umlclass[left=4cm of UIPanel]{AssetManager}{
-                        - loaderClass : ?\\
-                        - texts : Map<String,String>\\
-                        - sprites : Map<String,String>\\
-                        - sounds : Map<String,Clip>\\
-                        - fonts : Map<String,Font>
-                    }{
-                        + loadSound(name:String) : Clip\\
-                        + loadFont(name:String, float) : Font\\
-                        + dispose() : void\\
-                        + loadText(name:String) : String\\
-                        + loadSprite(name:String, w:int, h:int) : Sprite
-                    }
-
-                    \umlclass[right=4cm of UIPanel]{Const}{
-                        + WINDOW\_HEIGHT : int\\
-                        + WINDOW\_WIDTH : int\\
-                        + TARGET\_FPS : int\\
-                        + WINDOW\_TITLE : string\\
-                        + OPTIMAL\_TIME : long
-                    }
-
-                    \umlclass[below=2cm of Const]{LoveLetter}{
-                        - input : InputManager\\
-                        - running : boolean\\
-                        - gamePanel : AssetManager\\
-                        - game : Thread\\
-                        - dirty : boolean\\
-                        - assets : AssetManager\\
-                        - window : JFrame\\
-                        - uiPanel : UIPanel\\
-                        - scenes : SceneManager\\
-                        - frames : int
-                    }{
-                        - close() : void\\
-                        + cleanupListeners() : void\\
-                        + initWindow() : void\\
-                        - render() : void\\
-                        - update() : void\\
-                        + init() : void\\
-                        + run() : void\\
-                        + start() : void
-                    }
-
-                    \umlclass[below=2cm of LoveLetter]{Main}{}{
-                        + main(String[]) : void
-                    }
-
-                    % Links
-                    \umlaggreg{Player}{Card}
-
-                    \umlcompo{gameSpriteObject}{Sprite}
-                    \umlinherit{gameSpriteObject}{gameObject}
-                    \umlinherit{Sprite}{gameObject}
-
-                    \umlinherit{SceneManager}{IScene}
-
-                    \umlassoc{SceneManager}{InputManager}
-                    \umlassoc{SceneManager}{GamePanel}
-
-                    \umlcompo{UIPanel}{Form}
-                    \umlcompo{LoveLetter}{UIPanel}
-                    \umlcompo{LoveLetter}{SceneManager}
-                    \umlcompo{LoveLetter}{InputManager}
-                    \umlcompo{LoveLetter}{AssetManager}
-
-                    \umlassoc{LoveLetter}{GamePanel}
-
-                    \umlinherit{Main}{LoveLetter}
-                \end{tikzpicture}
+                \input{uml-class}
             \end{adjustbox}
         \end{center}
+    %-----------------------
+        \subsection{Diagramme de cas d'utilisation}\label{subsec:diagramme-de-cas-d'utilisation}
 
+        \begin{center}
+            \begin{adjustbox}{max width=20cm, max height=20cm, keepaspectratio}
+                \input{uml-use}
+            \end{adjustbox}
+        \end{center}
+    %-----------------------
+        \subsection{Diagramme de séquence}\label{subsec:diagramme-de-sequence}
+
+        \begin{center}
+            \begin{adjustbox}{max width=20cm, max height=20cm, keepaspectratio}
+                \input{uml-sequence}
+            \end{adjustbox}
+        \end{center}
     \end{AThreeLandscape}
-
-    \subsection{Diagramme de cas d'utilisation}
-%-----------------------
-    \subsection{Diagramme de séquence}
-%-----------------------------------------------
-    \section{Retour d'expérience}
-%-----------------------
-    \subsection{Organisation}
-%-----------------------
-    \subsection{Difficultés rencontrées}
-%-----------------------
-    \subsection{Suggestions d'amélioration}
 %-----------------------------------------------
     \newpage
-    \section{Conclusion}
+    \section{Retour d'expérience}\label{sec:retour-d'experience}
+%-----------------------
+    \subsection{Organisation}\label{subsec:organisation}
+%-----------------------
+    \subsection{Difficultés rencontrées}\label{subsec:difficultes-rencontrees}
+%-----------------------
+    \subsection{Suggestions d'amélioration}\label{subsec:suggestions-d'amelioration}
+%-----------------------------------------------
+    \newpage
+    \section{Conclusion}\label{sec:conclusion}
 %-----------------------
 \end{document}

@@ -1,0 +1,163 @@
+\begin{tikzpicture}
+    \umlclass{Player}{
+        + hand : ArrayList<Card>\\
+        + name : string\\
+        + score : int
+    }{
+        + chooseCard() : Card\\
+        + getHand() : ArrayList<Card>\\
+        + drawCard(card : Card) : void
+    }
+
+    \umlclass[right=6cm of Player]{Card}{}{}
+
+    \umlclass[below=2cm of Player]{gameObject}{
+        \# x : int\\
+        \# y : int\\
+        \# z : int
+    }{
+        + update() : void\\
+        + render(g : Graphics2D) : void
+    }
+
+    \umlclass[left=4cm of gameObject]{Sprite}{
+        - images : ArrayList<BufferedImage>\\
+        - originX : int\\
+        - originY : int\\
+        - imageNumber : int
+    }{
+        + render(g : Graphics2D, x:int, y:int, w:double, h:double) : void
+    }
+
+    \umlclass[below=2cm of gameObject]{gameSpriteObject}{
+        \# imageAngle : double\\
+        \# imageScaleY : double\\
+        \# imageSpeed : double\\
+        - sprite : Sprite\\
+        \# imageIndex : double\\
+        \# imageScaleX : double
+    }{
+        - initSprite(sprite : Sprite) : void\\
+        + render(g : Graphics2D) : void
+    }
+
+    \umlclass[right=6cm of gameObject]{IScene}{
+        + enter() : void\\
+        + render(g : Graphics2D) : void\\
+        + update() : void\\
+        + exit() : void
+    }
+
+    \umlclass[below=2cm of IScene]{SceneManager}{
+        - currentScene : IScene
+    }{
+        + update() : void\\
+        + render(g : Graphics2D) : void\\
+        + setScene(scene : IScene) : void\\
+        + clearScene() : void
+    }
+
+    \umlclass[below=2cm of SceneManager]{InputManager}{
+        - keysDown : Set<Integer>\\
+        - keysReleased : Set<Integer>\\
+        - keysPressed : Set<Integer>\\
+        - mouseX : int\\
+        - mouseY : int\\
+        - mouseDown : boolean
+    }{
+        + endFrame() : void
+    }
+
+    \umlclass[right=4cm of InputManager]{GamePanel}{
+        - scenes : SceneManager
+    }{
+        \# paintComponent(g : Graphics) : void
+    }
+
+    \umlclass[below=2cm of gameSpriteObject]{Form}{
+        \# layout : GroupLayout
+    }{
+        + dispose() : void\\
+        + init() : void\\
+        + reset() : void
+    }
+
+    \umlclass[below=2cm of Form]{UIPanel}{
+        - layout : CardLayout
+    }{
+        + addForm(name:String, panel:JPanel) : void\\
+        + showForm(name:String) : void\\
+        + disposeForms() : void\\
+        + hideForm() : void
+    }
+
+    \umlclass[left=4cm of UIPanel]{AssetManager}{
+        - loaderClass : ?\\
+        - texts : Map<String,String>\\
+        - sprites : Map<String,String>\\
+        - sounds : Map<String,Clip>\\
+        - fonts : Map<String,Font>
+    }{
+        + loadSound(name:String) : Clip\\
+        + loadFont(name:String, float) : Font\\
+        + dispose() : void\\
+        + loadText(name:String) : String\\
+        + loadSprite(name:String, w:int, h:int) : Sprite
+    }
+
+    \umlclass[right=4cm of UIPanel]{Const}{
+        + WINDOW\_HEIGHT : int\\
+        + WINDOW\_WIDTH : int\\
+        + TARGET\_FPS : int\\
+        + WINDOW\_TITLE : string\\
+        + OPTIMAL\_TIME : long
+    }
+
+    \umlclass[below=2cm of Const]{LoveLetter}{
+        - input : InputManager\\
+        - running : boolean\\
+        - gamePanel : AssetManager\\
+        - game : Thread\\
+        - dirty : boolean\\
+        - assets : AssetManager\\
+        - window : JFrame\\
+        - uiPanel : UIPanel\\
+        - scenes : SceneManager\\
+        - frames : int
+    }{
+        - close() : void\\
+        + cleanupListeners() : void\\
+        + initWindow() : void\\
+        - render() : void\\
+        - update() : void\\
+        + init() : void\\
+        + run() : void\\
+        + start() : void
+    }
+
+    \umlclass[below=2cm of LoveLetter]{Main}{}{
+        + main(String[]) : void
+    }
+
+    % Links
+    \umlaggreg{Player}{Card}
+
+    \umlcompo{gameSpriteObject}{Sprite}
+    \umlinherit{gameSpriteObject}{gameObject}
+    \umlinherit{Sprite}{gameObject}
+
+    \umlinherit{SceneManager}{IScene}
+
+    \umlassoc{SceneManager}{InputManager}
+    \umlassoc{SceneManager}{GamePanel}
+
+    \umlcompo{UIPanel}{Form}
+    \umlcompo{LoveLetter}{UIPanel}
+    \umlcompo{LoveLetter}{SceneManager}
+    \umlcompo{LoveLetter}{InputManager}
+    \umlcompo{LoveLetter}{AssetManager}
+
+    \umlassoc{LoveLetter}{GamePanel}
+
+    \umlinherit{Main}{LoveLetter}
+\end{tikzpicture}
