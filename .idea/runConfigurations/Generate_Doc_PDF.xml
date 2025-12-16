@@ -13,7 +13,7 @@
       <main-file>$PROJECT_DIR$/docs/main.tex</main-file>
       <output-path>$PROJECT_DIR$/docs</output-path>
       <auxil-path>$PROJECT_DIR$/docs</auxil-path>
-      <compile-twice>false</compile-twice>
+      <compile-twice>true</compile-twice>
       <output-format>PDF</output-format>
       <latex-distribution>MIKTEX</latex-distribution>
       <has-been-run>true</has-been-run>

@@ -87,9 +87,8 @@
 %-----------------------------------------------
     \section{Présentation}\label{sec:presentation}
 %-----------------------
-    \subsection{Définition du sujet}\label{subsec:definition-du-sujet}
-    \subsubsection{Règles du jeu}
-    \subsubsection{Contexte UTBM}
+    \subsection{Règles du jeu}\label{subsec:definition-du-sujet}
+
 %-----------------------
     \subsection{Conventions}\label{subsec:conventions}
 
@@ -101,23 +100,35 @@
     Java : les noms de classes utilisent la notation \textit{PascalCase}, tandis que les noms de méthodes et atributs
     suivent le format \textit{camelCase}. Les constantes sont placées dans un fichier dédié (\verb|Const.java|) et
     sont notées en majuscules avec des \textit{underscores} en tant que séparateurs. En sus de cela, les classes spéciales
-    comme les énumérateurs et interfaces, sont respectivement préfixées par un \verb|E| et un \verb|I|.
+    comme les énumérateurs et interfaces, sont respectivement préfixées par un \verb|E| et un \verb|I|. Enfin, les
+    commentaires suivent le format \textit{Doxygen} ; ainsi la signature de chaque fonction/méthode est donnée en entête
+    du corps.
+
+    \paragraph{} Les diagrammes UML respectent les conventions classiques de modélisation. Les attributs, méthodes et relations
+    sont clairement identifiées. Notons toutefois que les méthodes triviales, commes les \textit{accesseurs} et \textit{mutateurs},
+    ne sont pas représentés.
 %-----------------------
     \subsection{Outils utilisés}\label{subsec:outils-utilises}
 
     Pour réaliser ce projet, les outils suivants ont été utilisés :
     \begin{itemize}
-        \item \textbf{IntelliJIDEA} pour l'environnement de développement
+        \item \textbf{IntelliJ IDEA} pour l'environnement de développement
         \item \textbf{Git} et \textbf{GitHub} pour le contrôle des versions
         \item \textbf{\LaTeX} pour la rédaction du rapport
         \item \textbf{tikz-uml} pour dessiner les diagrammes UML en \LaTeX
     \end{itemize}
+
+    \paragraph{} Aucune version de Java n'a été spécifiée pour ce sujet. Ainsi, nous avons choisi d'utiliser Java 21.
+    En effet, il s'agit d'une version \textbf{LTS} (\textit{Long Term Support}), i.e une version stable pour le
+    développement, et qui reste relativement moderne et sécurisée.
 %-----------------------------------------------
     \newpage
     \section{Réalisation du jeu}\label{sec:conception}
+%-----------------------
     \subsection{Choix}
 %-----------------------
     \subsection{Architecture générale}\label{subsec:architecture-generale}
+%-----------------------
     \subsection{Organisation des paquets}
 %-----------------------------------------------
     \newpage
