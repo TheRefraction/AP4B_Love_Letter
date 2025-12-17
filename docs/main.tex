@@ -7,6 +7,7 @@
 %-----------------------------------------------
 \usepackage{amsmath,amssymb,mathtools,stmaryrd}
 %-----------------------------------------------
+\usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{tikz,pgf}
 \usepackage{tikz-uml}
@@ -89,6 +90,52 @@
 %-----------------------
     \subsection{Règles du jeu}\label{subsec:definition-du-sujet}
 
+    \textit{Love Letter} est un jeu de cartes qui se joue de 2 à 6 joueurs et dont le principe est assez simple.
+    Vous incarnez un courtisan qui cherche à transmettre une missive d'amour à la princesse, tout en éliminant ses
+    opposants.
+
+    \paragraph{Mise en place} Vous disposez d'un ensemble de 21 cartes personnages mélangées, face cachée ; il s'agit de la pioche.
+    La première carte en est defaussée et est placée \textbf{face cachée} dans la pile de jeu. Si la partie comporte
+    exactement deux joueurs, alors il convient d'enlever trois cartes supplémentaires de la pioche ; ces dernières sont
+    placées dans la pile, \textbf{face visible}. Ensuite, une carte est distribuée à chaque joueur ; cela constitue leur main.
+    Le premier joueur à commencer est celui qui a remporté la dernière manche. S'il s'agit de la première manche,
+    ou qu'il y a eu égalité, il est choisi aléatoirement.
+
+    \paragraph{Victoire d'une manche} Une manche arrive à échéance lorsqu'une des deux conditions suivantes est remplie:
+    \begin{itemize}
+        \item Être le dernier joueur en partie
+        \item La pioche est vide
+    \end{itemize}
+    Dans le second cas, une fois que le tour du joueur en cour est terminé, chacun dévoile sa main. Celui qui dispose de
+    la plus grande carte remporte la manche. Notons que les égalités sont tolérées.
+    Enfin à l'issue de la manche, chaque vainqueur gagne un point faveur.
+
+    \paragraph{Victoire d'une partie} On considère qu'il y a un total de treize points faveur par partie. Ainsi, elle est
+    gagnée s'il existe au moins un joueur dont le score est d'au moins la valeur indiquée dans le tableau ci-dessous:
+    \begin{center}
+        \begin{tabular}{|l||c|c|c|c|c|}
+            \hline
+            Nombre de joueurs & 2 & 3 & 4 & 5 & 6\\
+            \hline
+            Score requis & 6 & 5 & 4 & 3 & 3\\
+            \hline
+        \end{tabular}
+    \end{center}
+    Il est de plus à noter qu'il est toujours possible de gagner une partie avec le nombre de pions faveur de départ,
+    en respectant ce tableau.
+
+    \paragraph{Tour des joueurs} Le jeu s'effectue dans le sens horaire. Chaque joueur procède en trois étapes:
+    \begin{enumerate}
+        \item Piocher une carte du paquet
+        \item Choisir une de ses deux cartes
+        \item Jouer la carte, résoudre son effet et la place \textbf{face visible} dans la pile
+    \end{enumerate}
+
+    \paragraph{Quitter la manche} Lorsque le joueur est contraint de quitter la manche, il doit défausser sa main \textbf{face visible}
+    et passe bien sûr son tour à chaque itération.
+
+    \paragraph{Cartes personnages} Les cartes en question ont été adaptées à un contexte UTBM et sont décrites en section \ref{subsec:choix}.
+
 %-----------------------
     \subsection{Conventions}\label{subsec:conventions}
 
@@ -125,53 +172,64 @@
     \newpage
     \section{Réalisation du jeu}\label{sec:conception}
 %-----------------------
-    \subsection{Choix}
+    \subsection{Choix}\label{subsec:choix}
+    ADAPTATION UTBM ICI
 %-----------------------
     \subsection{Architecture générale}\label{subsec:architecture-generale}
 %-----------------------
-    \subsection{Organisation des paquets}
+    \subsection{Organisation des paquets}\label{subsec:organisation-des-paquets}
 %-----------------------------------------------
     \newpage
     \section{Conception UML}\label{sec:diagrammes-uml}
+
+    EXPLIQUER ICI LES LIAISONS DE UML + DISCLAIMER
 %-----------------------
     \begin{AThreeLandscape}
         \subsection{Diagramme de classes}\label{subsec:diagramme-de-classes}
-
+        \vspace{2cm}
         \begin{center}
-            \begin{adjustbox}{max width=20cm, max height=20cm, keepaspectratio}
+            \begin{adjustbox}{max width=30cm, max height=30cm, keepaspectratio}
                 \input{uml-class}
             \end{adjustbox}
         \end{center}
     %-----------------------
         \newpage
         \subsection{Diagramme de cas d'utilisation}\label{subsec:diagramme-de-cas-d'utilisation}
-
+        \vspace{2cm}
         \begin{center}
-            \begin{adjustbox}{max width=20cm, max height=20cm, keepaspectratio}
+            \begin{adjustbox}{max width=30cm, max height=30cm, keepaspectratio}
                 \input{uml-use}
             \end{adjustbox}
         \end{center}
     %-----------------------
         \newpage
         \subsection{Diagramme de séquence}\label{subsec:diagramme-de-sequence}
-
-        \begin{center}
-            \begin{adjustbox}{max width=20cm, max height=20cm, keepaspectratio}
-                \input{uml-sequence}
-            \end{adjustbox}
-        \end{center}
+        \vspace{1cm}
+        %\begin{center}
+            %\begin{adjustbox}{max width=30cm, max height=30cm, keepaspectratio}
+                %\input{uml-sequence}
+            %\end{adjustbox}
+            \begin{figure}[h!]
+                \centering
+                \includegraphics[scale=0.7]{UML_Sequence}
+            \end{figure}
+        %\end{center}
     \end{AThreeLandscape}
 %-----------------------------------------------
     \newpage
     \section{Retour d'expérience}\label{sec:retour-d'experience}
 %-----------------------
     \subsection{Organisation}\label{subsec:organisation}
+
 %-----------------------
     \subsection{Difficultés rencontrées}\label{subsec:difficultes-rencontrees}
+
 %-----------------------
     \subsection{Suggestions d'amélioration}\label{subsec:suggestions-d'amelioration}
+
 %-----------------------------------------------
     \newpage
     \section{Conclusion}\label{sec:conclusion}
+
 %-----------------------
 \end{document}
