@@ -181,9 +181,77 @@
 %-----------------------------------------------
     \newpage
     \section{Conception UML}\label{sec:diagrammes-uml}
+%--------------------------------------------------------------------------------------------------------------------------------
 
-    EXPLIQUER ICI LES LIAISONS DE UML + DISCLAIMER
-%-----------------------
+    \paragraph{Avertissement} Le projet étant actuellement à un stade initial de développement, 
+    la modélisation présentée ci-dessous constitue une vision théorique de la solution. Bien que nous ayons 
+    cherché à anticiper les besoins du moteur de jeu, cette architecture est susceptible d'évoluer à la marge durant 
+    la phase d'implémentation pour s'adapter à des contraintes techniques ou des cas limites non identifiés lors de la 
+    conception.
+
+    \paragraph{Note de lecture}
+    Par souci de clarté, les conventions suivantes ont été appliquées sur les diagrammes :
+    \begin{itemize}
+        \item Les accesseurs, mutateurs et constructeurs triviaux sont omis.
+        \item Les classes utilitaires standard (ex: \texttt{java.awt.Color}) ne sont pas représentées.
+        \item Les dépendances mineures ont été simplifiées pour privilégier la lisibilité de l'architecture globale.
+    \end{itemize}
+
+    \subsection{Diagramme de classes}
+    
+    L'architecture (visible en section \ref{subsec:diagramme-de-classes}) ne suit pas un simple modèle MVC, 
+    mais repose sur le pattern \textit{Game Loop}, orchestré par la classe centrale \texttt{LoveLetter}.
+
+    \begin{itemize}
+        \item \textbf{Le Moteur de Jeu (\texttt{LoveLetter}) :} Cette classe est le cœur de l'application. 
+        Elle initialise la fenêtre et centralise les gestionnaires essentiels : \texttt{InputManager} pour les entrées clavier/souris, \texttt{AssetManager} 
+        pour le chargement des ressources (sons, polices, sprites), et \texttt{SceneManager}.
+        
+        \item \textbf{Gestion des Scènes (\texttt{SceneManager}) :} Le jeu est divisé en différents 
+        états logiques (Menu, Jeu, Pause) implémentant l'interface \texttt{IScene}. Le \texttt{SceneManager} 
+        délègue les méthodes \texttt{update()} et \texttt{render()} à la scène active, permettant une transition entre les écrans.
+        
+        \item \textbf{Entités de Jeu (\texttt{GameObject}) :} Tous les objets interactifs (Joueurs, Cartes) 
+        héritent de la classe abstraite \texttt{GameObject}. 
+        \begin{itemize}
+            \item La classe \texttt{Player} encapsule la main du joueur et son score.
+            \item La classe \texttt{Card} hérite de \texttt{GameSpritedObject} (pour la gestion des sprites) 
+            et définit la méthode abstraite \texttt{playEffect()}, assurant le polymorphisme des effets de cartes.
+        \end{itemize}
+    
+        \item \textbf{Interface Utilisateur (\texttt{UIPanel}) :} L'interface graphique superposée 
+        (HUD, boutons) est gérée distinctement du rendu du jeu.
+    \end{itemize}
+
+    \subsection{Diagramme de cas d'utilisation}
+
+
+    L'action principale \textbf{« Jouer son tour »} implique séquentiellement :
+    \begin{enumerate}
+        \item \textbf{Piocher une carte :} Via la méthode \texttt{Player.drawCard()}.
+        \item \textbf{Consulter sa main :} Le joueur visualise ses options.
+        \item \textbf{Choisir une carte :} Via \texttt{Player.chooseCard()}, qui déclenchera 
+        ensuite l'effet associé.
+    \end{enumerate}
+    Par ailleurs, la navigation dans les menus est découplée de la logique de partie, 
+    permettant de démarrer ou quitter le jeu proprement.
+
+
+    \subsection{Diagramme de séquence}\label{subsec:diagramme-de-sequence}
+    \begin{enumerate}
+        \item \textbf{Cycle de mise à jour (\texttt{Update}) :} À chaque \textit{frame}, 
+        la classe principale \texttt{LoveLetter} demande d'abord au gestionnaire d'entrées (\texttt{InputManager}) de capturer l'état des périphériques (souris, clavier).
+        \item \textbf{Propagation :} L'ordre de mise à jour est ensuite transmis au \texttt{SceneManager}, qui le délègue à la scène active (ici, la phase de Jeu).
+        \item \textbf{Interrogation :} La scène interroge activement l'\texttt{InputManager} pour savoir si une action a eu lieu (ex: \texttt{isMouseDown}).
+        \item \textbf{Evenement :} Si un clic est détecté sur une carte, la scène sollicite l'objet \texttt{Player} pour valider la sélection via \texttt{chooseCard()}, avant d'appliquer l'effet de la carte.
+    \end{enumerate}
+
+
+
+
+
+
+%--------------------------------------------------------------------------------------------------------------------------------
     \begin{AThreeLandscape}
         \subsection{Diagramme de classes}\label{subsec:diagramme-de-classes}
         \vspace{2cm}
