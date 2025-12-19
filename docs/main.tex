@@ -260,7 +260,7 @@
 %-----------------------
     \subsection{Organisation des paquets}\label{subsec:organisation-des-paquets}
     Conformément aux conventions d'appellation des paquets en Java, nous avons choisi d'utiliser le domaine de premier niveau :
-    \verb|fr.utbm|. Tout d'abord, cela nous a semblé assez naturel de procéder à ce choix. Ensuite, le fait de choisir un nom unique
+    \verb|fr.utbm|. Tout d'abord, cela nous a semblé naturel de procéder à ce choix. Ensuite, le fait de choisir un nom unique
     plutôt qu'un nom banal pour un paquet, comme \verb|shapes|, permet de travailler proprement en évitant notamment les
     potentielles collisions d'espace avec des bibliothèques.
 
@@ -375,24 +375,31 @@
 %-----------------------
     \subsection{Organisation}\label{subsec:organisation}
 
-    \paragraph{Outils et Versionnage}
-    Nous avons utilisé \textbf{GitHub} pour centraliser le code 
-    et assurer un suivi du projet. Cela a permis de travailler sur 
-    une base commune une fois l'implémentation commencée.
+    \paragraph{Outils \& Versionnage}
+    Nous avons utilisé \textbf{GitHub} afin de centraliser le code tout en assurant un suivi régulier du projet.
+    Cela nous a ainsi permis de travailler sur une base commune une fois l'implémentation commencée.
 
-    \paragraph{Une conception collaborative synchrone}
-    Pour la modélisation UML, nous avons privilégié une approche 
-    basée sur des réunions en présentiel plutôt que sur 
-    des commits via Github.
+    De plus, nous avons cherché à nous placer dans le contexte du travail collaboratif en entreprise, et de ce fait,
+    nous avons travaillé par \textit{Pull Requests}. La branche \verb|master| a été ainsi protégée par défaut des
+    téléversements non approuvés au préalable. Aussi, nous avons procédé de la manière suivante pour la gestion des branches :
+    \begin{itemize}
+        \item \verb|master| : le code source qui contient une version stable du code
+        \item \verb|dev| : la branche d'expérimentation où sont développées les fonctionnalités en cours de conception
+        \item \textbf{nom-de-fonctionnalite} : branche issue de \verb|dev|, où une fonction clef est conçue. Elle est ensuite fusionnée avec \verb|dev|.
+        \item \verb|docs| : branche où la documentation est mise à jour. Le code \LaTeX\; de ce rapport s'y trouve. Elle est repliée ensuite sur \verb|master|0.
+    \end{itemize}
 
-    Entre les réunions, des phases de réflexion individuelle étaient 
-    menées afin d'analyser le sujet en profondeur et d'identifier les 
-    zones de flou du sujet. Ces éléments ont ensuite été traités lors
-    des réunions, ce qui a permit de réaliser des diagrammes en tenant
-    compte d'un maximum d'information sur les points les plus complexes du sujet. 
-    Cela a permis de confronter les vision de tout les membres de l'équipe,
-    ainsi que de commencer l'implementation sur une architecture propre 
-    atteinte par un accord commun.
+    \paragraph{Conception collaborative synchrone}
+    Pour la modélisation UML, nous avons préféré effectuer des réunions en présentiel plutôt que de travailler
+    uniquement à base de commits via GitHub.
+
+    Entre les réunions, des phases de réflexion individuelles ont été menées afin d'analyser le sujet en profondeur
+    et d'identifier les zones moins évidentes du sujet. Ces éléments ont ensuite été traités lors de ces entrevues,
+    ce qui nous a permis de réaliser des diagrammes tout en tenant compte d'un maximum d'informations sur les points
+    les plus complexes du sujet.
+
+    Ainsi, nous avons pu confronter les visions de tous les membres de l'équipe, puis commencer l'implementation du jeu
+    sur une architecture propre atteinte par consensus.
     
 %-----------------------
     \subsection{Difficultés rencontrées}\label{subsec:difficultes-rencontrees}
