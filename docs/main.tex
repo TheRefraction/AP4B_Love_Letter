@@ -9,6 +9,8 @@
 %-----------------------------------------------
 \usepackage{xcolor}
 \usepackage{graphicx}
+\usepackage{array}
+\usepackage{caption}
 \usepackage{tikz,pgf}
 \usepackage{tikz-uml}
 \usepackage{float}
@@ -49,18 +51,7 @@
     \KOMAoptions{paper=a4, paper=portrait}%
     \recalctypearea%
 }
-%-----------------------------------------------
-\newenvironment{AFourLandscape}{%
-    \clearpage
-    \KOMAoptions{paper=a4, paper=landscape}%
-    \recalctypearea%
-    \thispagestyle{plain}%
-}{%
-    \clearpage
-    \KOMAoptions{paper=a4, paper=portrait}%
-    \recalctypearea%
-}
-%-----------------------------------------------
+
 \sloppy
 \hyphenpenalty=10000
 %-----------------------------------------------
@@ -187,6 +178,8 @@
     des éléments de l'interface graphique (\textit{UI}).
 %-----------------------------------------------
     \begin{AThreeLandscape}
+        \newgeometry{top=1.5cm, bottom=1.5cm, left=1.5cm, right=1.5cm}
+
         \newpage
         \section{Réalisation du jeu}\label{sec:conception}
     %-----------------------
@@ -205,7 +198,8 @@
             \centering
             \small
             \caption{Tableau récapitulatif de l'adaptation des cartes et leurs effets respectifs.}
-            \begin{tabular}{|>{\raggedright\arraybackslash}b{3.5cm}|>{\raggedright\arraybackslash}b{3.5cm}|>{\raggedright\arraybackslash}b{3.5cm}|>{\raggedright\arraybackslash}b{10cm}|>{\raggedright\arraybackslash}b{10cm}|}
+            \vspace{20pt}
+            \begin{tabular}{|>{\raggedright\arraybackslash}b{3cm}|>{\raggedright\arraybackslash}b{1.5cm}|>{\raggedright\arraybackslash}b{3cm}|>{\raggedright\arraybackslash}b{13cm}|>{\raggedright\arraybackslash}b{13cm}|}
                 \hline
                 Carte                      & Valeur & Correspondance & Contexte                                                                                                                  & Effet\\
                 \hline
@@ -232,7 +226,7 @@
             \end{tabular}
         \end{table}
 
-
+        \restore
     \item \end{AThreeLandscape}
 %-----------------------
     \subsection{Architecture générale}\label{subsec:architecture-generale}
