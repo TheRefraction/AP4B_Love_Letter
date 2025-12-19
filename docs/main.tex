@@ -151,9 +151,11 @@
     commentaires suivent le format \textit{Doxygen} ; ainsi la signature de chaque fonction/méthode est donnée en entête
     du corps.
 
-    \paragraph{} Les diagrammes UML respectent les conventions classiques de modélisation. Les attributs, méthodes et relations
+    \paragraph{} Les diagrammes UML (\textit{cf. section} \ref{sec:diagrammes-uml}) respectent les conventions classiques de modélisation. Les attributs, méthodes et relations
     sont clairement identifiées. Notons toutefois que les méthodes triviales, commes les \textit{accesseurs} et \textit{mutateurs},
-    ne sont pas représentés.
+    ne sont pas représentés. De même, les classes utilitaires standard (\textit{ex:} \verb|java.awt.Color|)
+    ne sont pas indiquées. Enfin, les dépendances mineures ont été simplifiées afin de privilégier la lisibilité
+    de l'architecture globale.
 %-----------------------
     \subsection{Outils utilisés}\label{subsec:outils-utilises}
 
@@ -167,7 +169,8 @@
 
     \paragraph{} Aucune version de Java n'a été spécifiée pour ce sujet. Ainsi, nous avons choisi d'utiliser Java 21.
     En effet, il s'agit d'une version \textbf{LTS} (\textit{Long Term Support}), i.e une version stable pour le
-    développement, et qui reste relativement moderne et sécurisée.
+    développement, et qui reste relativement moderne et sécurisée. \textit{Swing} est également utilisé pour la gestion
+    des éléments de l'interface graphique (\textit{UI}).
 %-----------------------------------------------
     \newpage
     \section{Réalisation du jeu}\label{sec:conception}
@@ -176,6 +179,60 @@
     ADAPTATION UTBM ICI
 %-----------------------
     \subsection{Architecture générale}\label{subsec:architecture-generale}
+
+    La classe \verb|Main| agit comme le point d'entrée du programme et instancie la classe \verb|LoveLetter|, tout en
+    ouvrant un processus dédié. Celui-ci procède en trois étapes :
+    \begin{enumerate}
+        \item \textbf{Initialisation}
+        \begin{itemize}
+            \item Initialise la gestion des entrées, des scènes et des assets
+            \item Crée et configure la fenêtre, ici un \verb|JFrame|
+            \item Initialise les écouteurs sur fenêtre
+            \item Initialise et remplit les surfaces
+            \item Charge la scène de départ (\textit{l'écran titre})
+        \end{itemize}
+        \item \textbf{Boucle principale} (\textit{tant que la fenêtre n'est pas fermée})
+        \begin{itemize}
+            \item Met à jour les scènes et leur contenu
+            \item Nettoie les registres des entrées
+            \item Rend la surface de jeu à l'écran (\textit{uniquement si nécessaire})
+            \item Met le fil en pause le temps approprié pour garder une fréquence de rafraîchissement stable autour de 60 images par seconde
+        \end{itemize}
+        \item \textbf{Nettoyage \& Fermeture}
+        \begin{itemize}
+            \item Nettoie les écouteurs
+            \item Se débarrasse des scènes, surface et assets
+        \end{itemize}
+    \end{enumerate}
+
+    \paragraph{Entrées} Les entrées sont gérées par la classe \verb|InputManager|. Celle-ci propose des méthodes et
+    écouteurs triviaux, afin de capter les propriétés des touches du clavier, ainsi que de la souris
+    (\textit{e.g la position du curseur, l'appui du bouton gauche, \ldots}). Il est important que les registres associés
+    soient nettoyés à chaque fin de tour de boucle.
+
+    \paragraph{Surfaces} Ce projet supporte deux types de surfaces, à savoir \verb|gamePanel| et \verb|UIPanel|, qui
+    héritent de la classe \verb|JPanel|. La première est dessinée au fond de la fenêtre, et est utilisée afin de rendre
+    des objets et éléments graphiques de façon dynamique à l'écran. La seconde est tracée en dernier, et contient une collection
+    de \verb|Form|. Elle est utilisée pour rendre des éléments graphiques Swing à l'écran, et peut être utilisée par exemple,
+    pour faire des menus ou boîtes de dialogue.
+
+    \paragraph{Objets} Des objets quelconques sont représentés par une classe héritant de \verb|GameObject|. Ces derniers
+    sont stockés et ordonnancés dans une scène donnée. Un objet est rendu sur la surface de jeu, et est trié sur sa
+    \textit{Z-profondeur} (\textit{le repère orthonormal usuel dans} $\mathbb{R}^3$ \textit{est utilisé, d'où plus
+        $z$ est grand, plus l'objet est proche de la caméra}). Un objet peut procéder à diverses opérations dans sa méthode
+    \verb|update|, puis se rende à l'écran suivant un ensemble d'instructions donné, ou bien suivant un \verb|Sprite|
+    pour un objet de type \verb|GameSpritedObject|.
+
+    \paragraph{Sprites} Un sprite est vu comme une collection de sous-images (\textit{ici, des } \verb|BufferedImage|), et
+    affiche la bonne en utilisant la valeur de l'attribut \verb|imageIndex| de l'objet \verb|GameSpritedObject| associé.
+    Ainsi, utiliser le champ \verb|imageSpeed| permet d'animer le sprite à la vitesse donnée.
+    Un sprite importe un fichier image, et le divise en sous-images en utilisant la valeur \verb|imageNumber|
+    donnée dans le constructeur. Chaque sous-image doit se trouver côte à côte et sont indicée de 0 à \verb|imageNumber - 1|,
+    de gauche à droite. Ainsi, la largeur effective d'un sprite est de
+
+    \paragraph{Scènes}
+
+    \paragraph{Gestion des assets}
 %-----------------------
     \subsection{Organisation des paquets}\label{subsec:organisation-des-paquets}
 %-----------------------------------------------
@@ -183,23 +240,13 @@
     \section{Conception UML}\label{sec:diagrammes-uml}
 %--------------------------------------------------------------------------------------------------------------------------------
 
-    \paragraph{Avertissement} Le projet étant actuellement à un stade initial de développement, 
-    la modélisation présentée ci-dessous constitue une vision théorique de la solution. Bien que nous ayons 
-    cherché à anticiper les besoins du moteur de jeu, cette architecture est susceptible d'évoluer à la marge durant 
-    la phase d'implémentation pour s'adapter à des contraintes techniques ou des cas limites non identifiés lors de la 
-    conception.
+    \paragraph{Avertissement} Ce projet ne se trouve pas encore au stade final de développement. De ce fait,
+    les modélisations présentées ci-dessous constituent surtout une vue théorique de la solution. Nous avons ainsi
+    cherché à anticiper au mieux les besoins du moteur de jeu, et par conséquent, cette architecture est susceptible
+    d'évoluer significativement durant la dernière phase de développement, notamment si l'on doit s'adapter à des
+    contraintes techniques ou des cas limites non identifiés lors des phases d'analyse et de conception.
 
-    \paragraph{Note de lecture}
-    Par souci de clarté, les conventions suivantes ont été appliquées sur les diagrammes :
-    \begin{itemize}
-        \item Les accesseurs, mutateurs et constructeurs triviaux sont omis.
-        \item Les classes utilitaires standard (ex: \texttt{java.awt.Color}) ne sont pas représentées.
-        \item Les dépendances mineures ont été simplifiées pour privilégier la lisibilité de l'architecture globale.
-    \end{itemize}
-
-    \subsection{Diagramme de classes}
-    
-    L'architecture (visible en section \ref{subsec:diagramme-de-classes}) ne suit pas un simple modèle MVC, 
+    \paragraph{Classes} L'architecture (visible en section \ref{subsec:diagramme-de-classes}) ne suit pas un simple modèle MVC,
     mais repose sur le pattern \textit{Game Loop}, orchestré par la classe centrale \texttt{LoveLetter}.
 
     \begin{itemize}
@@ -223,10 +270,7 @@
         (HUD, boutons) est gérée distinctement du rendu du jeu.
     \end{itemize}
 
-    \subsection{Diagramme de cas d'utilisation}
-
-
-    L'action principale \textbf{« Jouer son tour »} implique séquentiellement :
+    \paragraph{Utilisation} L'action principale \textbf{« Jouer son tour »} implique séquentiellement :
     \begin{enumerate}
         \item \textbf{Piocher une carte :} Via la méthode \texttt{Player.drawCard()}.
         \item \textbf{Consulter sa main :} Le joueur visualise ses options.
@@ -236,20 +280,14 @@
     Par ailleurs, la navigation dans les menus est découplée de la logique de partie, 
     permettant de démarrer ou quitter le jeu proprement.
 
-
-    \subsection{Diagramme de séquence}\label{subsec:diagramme-de-sequence}
+    \paragraph{Séquence}
     \begin{enumerate}
-        \item \textbf{Cycle de mise à jour (\texttt{Update}) :} À chaque \textit{frame}, 
+        \item \textbf{Cycle de mise à jour (}\verb|Update|\textbf{) :} À chaque \textit{frame},
         la classe principale \texttt{LoveLetter} demande d'abord au gestionnaire d'entrées (\texttt{InputManager}) de capturer l'état des périphériques (souris, clavier).
         \item \textbf{Propagation :} L'ordre de mise à jour est ensuite transmis au \texttt{SceneManager}, qui le délègue à la scène active (ici, la phase de Jeu).
         \item \textbf{Interrogation :} La scène interroge activement l'\texttt{InputManager} pour savoir si une action a eu lieu (ex: \texttt{isMouseDown}).
         \item \textbf{Evenement :} Si un clic est détecté sur une carte, la scène sollicite l'objet \texttt{Player} pour valider la sélection via \texttt{chooseCard()}, avant d'appliquer l'effet de la carte.
     \end{enumerate}
-
-
-
-
-
 
 %--------------------------------------------------------------------------------------------------------------------------------
     \begin{AThreeLandscape}
