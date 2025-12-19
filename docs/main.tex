@@ -210,7 +210,7 @@
     (\textit{e.g la position du curseur, l'appui du bouton gauche, \ldots}). Il est important que les registres associés
     soient nettoyés à chaque fin de tour de boucle.
 
-    \paragraph{Surfaces} Ce projet supporte deux types de surfaces, à savoir \verb|gamePanel| et \verb|UIPanel|, qui
+    \paragraph{Surfaces} Ce projet supporte deux types de surfaces, à savoir \verb|GamePanel| et \verb|UIPanel|, qui
     héritent de la classe \verb|JPanel|. La première est dessinée au fond de la fenêtre, et est utilisée afin de rendre
     des objets et éléments graphiques de façon dynamique à l'écran. La seconde est tracée en dernier, et contient une collection
     de \verb|Form|. Elle est utilisée pour rendre des éléments graphiques Swing à l'écran, et peut être utilisée par exemple,
@@ -226,15 +226,58 @@
     \paragraph{Sprites} Un sprite est vu comme une collection de sous-images (\textit{ici, des } \verb|BufferedImage|), et
     affiche la bonne en utilisant la valeur de l'attribut \verb|imageIndex| de l'objet \verb|GameSpritedObject| associé.
     Ainsi, utiliser le champ \verb|imageSpeed| permet d'animer le sprite à la vitesse donnée.
+
     Un sprite importe un fichier image, et le divise en sous-images en utilisant la valeur \verb|imageNumber|
     donnée dans le constructeur. Chaque sous-image doit se trouver côte à côte et sont indicée de 0 à \verb|imageNumber - 1|,
-    de gauche à droite. Ainsi, la largeur effective d'un sprite est de
+    de gauche à droite. Ainsi, la largeur effective d'un sprite (\textit{en pixels}) est égal au résultat de la division euclidienne de \verb|spriteWidth|
+    par \verb|imageNumber|. Sa hauteur \verb|spriteHeight| reste invariante.
+
+    Un sprite peut être rendu à l'aide de sa méthode \verb|render|, avec une échelle donnée, un angle de rotation
+    (\textit{en degrés}) et origine (\textit{$(0,0)$ par défaut}). Les techniques de \textit{blending} et de rendu avec teinte
+    ne sont pas prises en charge.
 
     \paragraph{Scènes}
+    Un écran donné (\textit{e.g l'écran titre}) et l'ensemble des éléments qui le compose, est représenté par une scène,
+    i.e un objet qui implémente les méthodes définies dans l'interface \verb|IScene|. Elle se comporte comme un
+    automate déterministe simple, entre autres avec les méthodes \verb|enter|, \verb|exit|, \verb|update| et \verb|render|.
+    Une scène se charge aussi de gérer les collections de \verb|GameObject| à l'aide d'un ordonnanceur \verb|GameObjectManager|.
+    Elle constitue de plus la liaison entre les entrées, et les routines dédiées (\textit{e.g, appuyer sur [espace] $\implies$ faire avancer le joueur }).
+    Une telle classe est régie par \verb|SceneManager|.
 
     \paragraph{Gestion des assets}
+    La classe \verb|AssetManager| gère les assets.
+    Les types d'assets suivants sont stockés dans des tables de hachage (\textit{nom\_fichier:ressource}) :
+    \begin{itemize}
+        \item Effets sonores
+        \item Sprites (\textit{créés à partir d'images})
+        \item Polices d'écriture (\textit{format de la clef: nom\_police\#taille})
+        \item Fichiers textes (\textit{e.g TXT ou JSON})
+    \end{itemize}
+    Les assets dans le projets se trouvent dans le dossier \verb|resources|.
+    Les fichiers de sprites, polices, audio et textes prennent respectivement dans leur nom les préfixes \verb|spr_|, \verb|fnt_|,
+    \verb|snd_| et \verb|txt_|.
+
 %-----------------------
     \subsection{Organisation des paquets}\label{subsec:organisation-des-paquets}
+    Conformément aux conventions d'appellation des paquets en Java, nous avons choisi d'utiliser le domaine de premier niveau :
+    \verb|fr.utbm|. Tout d'abord, cela nous a semblé assez naturel de procéder à ce choix. Ensuite, le fait de choisir un nom unique
+    plutôt qu'un nom banal pour un paquet, comme \verb|shapes|, permet de travailler proprement en évitant notamment les
+    potentielles collisions d'espace avec des bibliothèques.
+
+    Ainsi, le code source est reparti dans les dossier/paquets suivants :
+    \begin{itemize}
+        \item \verb|objects|
+        \item \verb|objects.cards|
+        \item \verb|objects.player|
+        \item \verb|scenes|
+        \item \verb|sprites|
+        \item \verb|system| : Contient l'ensemble des classes permettant de gérer un autre type d'objet ou de ressource
+        \item \verb|ui| : Définition des surfaces
+        \item \verb|ui.forms| : Ensemble des \verb|Form| affichées sur la surface \verb|UIPanel|
+        \item \verb|utils| : Contient du code quelconque (\textit{e.g des constantes, des calculs mathématiques, \ldots})
+    \end{itemize}
+
+    \texttt{N.B} : Pour une bonne lecture, le début du nom des paquets \verb|fr.utbm| a été omis.
 %-----------------------------------------------
     \newpage
     \section{Conception UML}\label{sec:diagrammes-uml}
@@ -324,6 +367,11 @@
 %-----------------------------------------------
     \newpage
     \section{Retour d'expérience}\label{sec:retour-d'experience}
+    \paragraph{Avertissement} Cette prochaine section ainsi que la conclusion ne sont pas terminées.
+    En effet, il serait fort mal venu de faire un retour d'expérience et/ou une conclusion sur un projet qui n'est encore pas
+    finalisé, le but étant de mener une analyse réflexive sur le travail qui a été effectué. Nous vous remercions pour votre
+    compréhension.
+
 %-----------------------
     \subsection{Organisation}\label{subsec:organisation}
 
@@ -349,12 +397,15 @@
 %-----------------------
     \subsection{Difficultés rencontrées}\label{subsec:difficultes-rencontrees}
 
+    \textbf{[SECTION NON TERMINEE]}
 %-----------------------
     \subsection{Suggestions d'amélioration}\label{subsec:suggestions-d'amelioration}
 
+    \textbf{[SECTION NON TERMINEE]}
 %-----------------------------------------------
     \newpage
     \section{Conclusion}\label{sec:conclusion}
 
+    \textbf{[SECTION NON TERMINEE]}
 %-----------------------
 \end{document}
