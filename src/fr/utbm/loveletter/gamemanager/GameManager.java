@@ -11,7 +11,7 @@ import fr.utbm.loveletter.card.Card;
 
 public class GameManager {
     private static ArrayList <Player> players;
-    public ArrayList <Card> deck;
+    public ArrayList <Card> deck; // Top of the deck is 0 and bottom is -1
     public ArrayList <Card> hiddenCard; // at the start of the game, it's needed to keep 1 card hidden
     private ArrayList <Card> showCard; //card that are visible for everyone
 

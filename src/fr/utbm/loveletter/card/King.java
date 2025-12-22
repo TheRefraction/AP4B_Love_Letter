@@ -2,15 +2,16 @@ package fr.utbm.loveletter.card;
 import fr.utbm.loveletter.gamemanager.GameManager;
 import fr.utbm.loveletter.player.Player;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class Priest extends Card {
+public class King extends Card {
     public void playEffect(GameManager game, Player owner) {
         Scanner scanner = new Scanner(System.in);
         String name = owner.name;
         while (Objects.equals(name, owner.name)) {
-            System.out.println("Which player's hand would you like to see (you can't choose yourself) ? : ");
+            System.out.println("Which player's hand would you like to exchange with yourself (you can't choose yourself) ? : ");
             name = scanner.nextLine();
             for (Player player : game.getPlayers()) {
                 if (Objects.equals(name, player.name)) {
@@ -23,11 +24,23 @@ public class Priest extends Card {
         }
         for (Player player : game.getPlayers()) {
             if (Objects.equals(name, player.name)) {
-                System.out.println(name + "'s card is the " + player.hand.getFirst().getName());
+                ArrayList<Card> temp = new ArrayList<>();
+                while (!owner.hand.isEmpty()) {
+                    temp.add(owner.hand.getFirst());
+                    owner.hand.removeFirst();
+                }
+                while (!player.hand.isEmpty()) {
+                    owner.hand.add(player.hand.getFirst());
+                    player.hand.removeFirst();
+                }
+                while (!temp.isEmpty()) {
+                    owner.hand.add(temp.getFirst());
+                    temp.removeFirst();
+                }
                 return;
             }
         }
-        //let the owner choose a player and let him see his hand
-    }
+        //the owner can swap hands with another player of his choice
 
+    }
 }
