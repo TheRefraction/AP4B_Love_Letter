@@ -1,4 +1,4 @@
-package fr.utbm.loveletter.card;
+/*package fr.utbm.loveletter.card;
 import fr.utbm.loveletter.gamemanager.GameManager;
 import fr.utbm.loveletter.player.Player;
 
@@ -9,3 +9,4 @@ public class Spy extends Card {
         //--> add attribute somewhere to keep in mind that this card has been played
     }
 }
+*/

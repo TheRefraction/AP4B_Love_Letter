@@ -34,6 +34,12 @@ public abstract class GameSpritedObject extends GameObject {
     }
 
     @Override
+    public void update() {
+        // obligé d'implementer cette methode
+        imageIndex += imageSpeed;
+    }
+
+    @Override
     public void render(Graphics2D g2d) {
         imageIndex += imageSpeed;
         sprite.render(g2d, (int) imageIndex, x, y, imageScaleX, imageScaleY, imageAngle);

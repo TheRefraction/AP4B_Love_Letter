@@ -1,10 +1,13 @@
 package fr.utbm.loveletter.scenes;
 
 import fr.utbm.loveletter.LoveLetter;
+import fr.utbm.loveletter.card.Guard;
 import fr.utbm.loveletter.objects.MovingCircle;
+import fr.utbm.loveletter.player.Player;
 import fr.utbm.loveletter.sprites.Sprite;
 import fr.utbm.loveletter.system.AssetManager;
 import fr.utbm.loveletter.system.GameObjectManager;
+import fr.utbm.loveletter.objects.GameObject;
 
 import java.awt.*;
 
@@ -39,8 +42,20 @@ public class SceneTest implements IScene {
     @Override
     public void enter() {
         System.out.println("Scene has been entered!");
-
         objects = new GameObjectManager();
+
+        //test card
+        Sprite sprGuard = game.getAssets().loadSprite("/sprites/spr_test.png", 0, 0, 1);
+        Sprite sprBack = game.getAssets().loadSprite("/sprites/spr_test.png", 0, 0, 1);
+        //import player for test
+        Player p1 = new Player(0, 100, "Le chat");
+        //import guard for test
+        p1.drawCard(new Guard(sprGuard, sprBack));
+        p1.drawCard(new Guard(sprGuard, sprBack));
+        objects.add(p1);
+
+
+
         objects.add(new MovingCircle(0, 100, game.getInput(), sprite));
     }
 

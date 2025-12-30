@@ -1,4 +1,4 @@
-package fr.utbm.loveletter.card;
+/*package fr.utbm.loveletter.card;
 import fr.utbm.loveletter.gamemanager.GameManager;
 import fr.utbm.loveletter.player.Player;
 
@@ -11,3 +11,4 @@ public class Handmaid extends Card {
         //ANY PLAYER (EVEN THE OWNER) : FORCED TO PLAY THE EFFECT ON HIMSELF
     }
 }
+*/

@@ -1,12 +1,30 @@
 package fr.utbm.loveletter.card;
-import fr.utbm.loveletter.gamemanager.GameManager;
 import fr.utbm.loveletter.player.Player;
 
 import java.util.Objects;
 import java.util.Scanner;
 
+import fr.utbm.loveletter.sprites.Sprite;
 
 public class Guard extends Card {
+
+    public Guard(Sprite front, Sprite back) {
+        // On init a x=0, y=0 car le joueur  repositionnera la carte
+        super(0, 0, 1, "Garde", "Devinez la main d'un joueur", front, back);
+    }
+
+    @Override
+    public void playEffect(Player owner) {
+        System.out.println("Le joueur " + owner.name + " joue un Garde !");
+        //a faire : Ouvrir l'interface pour choisir un joueur cible
+    }
+}
+
+
+
+
+    //ANCIENNE VERSION AVEC SCANNER
+    /*
     public void playEffect(GameManager game, Player owner) {
         Scanner scanner = new Scanner(System.in);
         int guess = 1;
@@ -39,3 +57,4 @@ public class Guard extends Card {
     }
 
 }
+*/

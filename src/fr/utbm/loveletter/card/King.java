@@ -1,4 +1,4 @@
-package fr.utbm.loveletter.card;
+/*package fr.utbm.loveletter.card;
 import fr.utbm.loveletter.gamemanager.GameManager;
 import fr.utbm.loveletter.player.Player;
 
@@ -44,3 +44,4 @@ public class King extends Card {
 
     }
 }
+*/
