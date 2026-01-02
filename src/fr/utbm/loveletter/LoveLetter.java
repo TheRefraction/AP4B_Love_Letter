@@ -1,5 +1,6 @@
 package fr.utbm.loveletter;
 
+import fr.utbm.loveletter.scenes.SceneGame;
 import fr.utbm.loveletter.scenes.SceneTest;
 import fr.utbm.loveletter.system.AssetManager;
 import fr.utbm.loveletter.system.InputManager;
@@ -91,7 +92,7 @@ public class LoveLetter implements Runnable {
 
         initWindow();
 
-        scenes.setScene(new SceneTest(this));
+        scenes.setScene(new SceneGame(this));
 
         running = true;
 
