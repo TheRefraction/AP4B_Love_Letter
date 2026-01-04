@@ -11,6 +11,7 @@ public abstract class GameSpritedObject extends GameObject {
     protected double imageAngle;
     protected double imageScaleX;
     protected double imageScaleY;
+    protected boolean isVisible;
     private Sprite sprite;
 
     public GameSpritedObject(int x, int y, int z, Sprite sprite) {
@@ -31,6 +32,7 @@ public abstract class GameSpritedObject extends GameObject {
         imageAngle = 0;
         imageScaleX = 1;
         imageScaleY = 1;
+        isVisible = true;
     }
 
     @Override
@@ -41,8 +43,10 @@ public abstract class GameSpritedObject extends GameObject {
 
     @Override
     public void render(Graphics2D g2d) {
-        imageIndex += imageSpeed;
-        sprite.render(g2d, (int) imageIndex, x, y, imageScaleX, imageScaleY, imageAngle);
+        if (isVisible) {
+            imageIndex += imageSpeed;
+            sprite.render(g2d, (int) imageIndex, x, y, imageScaleX, imageScaleY, imageAngle);
+        }
     }
 
     public double getImageIndex() {
@@ -83,5 +87,13 @@ public abstract class GameSpritedObject extends GameObject {
 
     public void setImageScaleY(double imageScaleY) {
         this.imageScaleY = imageScaleY;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }

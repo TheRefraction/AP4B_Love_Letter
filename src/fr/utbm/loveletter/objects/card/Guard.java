@@ -1,22 +1,22 @@
-package fr.utbm.loveletter.card;
-import fr.utbm.loveletter.player.Player;
-
-import java.util.Objects;
-import java.util.Scanner;
+package fr.utbm.loveletter.objects.card;
+import fr.utbm.loveletter.objects.player.Player;
 
 import fr.utbm.loveletter.sprites.Sprite;
 
+import java.util.ArrayList;
+
 public class Guard extends Card {
 
-    public Guard(Sprite front, Sprite back) {
+    public Guard(Sprite sprite) {
         // On init a x=0, y=0 car le joueur  repositionnera la carte
-        super(0, 0, 1, "Garde", "Devinez la main d'un joueur", front, back);
+        super(0, 0, 1, "Garde", "Devinez la main d'un joueur", sprite);
     }
 
     @Override
-    public void playEffect(Player owner) {
-        System.out.println("Le joueur " + owner.name + " joue un Garde !");
+    public void playEffect(ArrayList<Player> players, int ownerId) {
+        System.out.println("Le joueur " + players.get(ownerId).toString() + " joue un Garde !");
         //a faire : Ouvrir l'interface pour choisir un joueur cible
+
     }
 }
 

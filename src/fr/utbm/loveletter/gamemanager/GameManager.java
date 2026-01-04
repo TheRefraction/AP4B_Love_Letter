@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import fr.utbm.loveletter.player.Player;
-import fr.utbm.loveletter.card.Card;
+import fr.utbm.loveletter.objects.player.Player;
+import fr.utbm.loveletter.objects.card.Card;
 
 public class GameManager {
     private static ArrayList <Player> players;

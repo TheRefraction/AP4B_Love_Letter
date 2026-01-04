@@ -1,6 +1,6 @@
-/*package fr.utbm.loveletter.card;
+/*package fr.utbm.loveletter.objects.card;
 import fr.utbm.loveletter.gamemanager.GameManager;
-import fr.utbm.loveletter.player.Player;
+import fr.utbm.loveletter.objects.player.Player;
 
 import java.util.Scanner;
 
