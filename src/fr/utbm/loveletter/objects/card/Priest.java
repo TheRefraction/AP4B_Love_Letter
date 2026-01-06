@@ -11,14 +11,14 @@ public class Priest extends Card {
 
     public Priest(Sprite sprite) {
         // On init a x=0, y=0 car le joueur repositionnera la carte
-        super(0, 0, 1, "Prêtre", "NEED TO DESCRIBE", sprite);
+        super(0, 0, 2, "Prêtre", "NEED TO DESCRIBE", sprite);
 
     }
 
 
 
     public void playEffect( ArrayList<Player> players , int ownerId) {
-        System.out.println("Le joueur " + players.get(ownerId).toString() + " joue une Princesse !");
+        System.out.println("Le joueur " + players.get(ownerId).toString() + " joue une Prêtre !");
         Scanner scanner = new Scanner(System.in);
         String name = players.get(ownerId).getName();
         while (Objects.equals(name, players.get(ownerId).getName())) {

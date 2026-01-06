@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Countess extends Card {
 
     public Countess(Sprite sprite) {
-        super(0, 0, 1, "Roi", "NEED TO DESCRIBE", sprite);
+        super(0, 0, 8, "Roi", "NEED TO DESCRIBE", sprite);
     }
 
 

@@ -8,7 +8,7 @@ public class Handmaid extends Card {
 
     public Handmaid(Sprite sprite) {
 
-        super(0, 0, 1, "Roi", "NEED TO DESCRIBE", sprite);
+        super(0, 0, 4, "Servante", "NEED TO DESCRIBE", sprite);
     }
 
 

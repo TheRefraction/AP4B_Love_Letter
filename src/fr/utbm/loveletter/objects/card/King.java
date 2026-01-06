@@ -10,7 +10,7 @@ public class King extends Card {
 
 
     public King(Sprite sprite) {
-        super(0, 0, 1, "Roi", "NEED TO DESCRIBE", sprite);
+        super(0, 0, 7, "Roi", "NEED TO DESCRIBE", sprite);
 
     }
 

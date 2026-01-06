@@ -24,6 +24,12 @@ public class Guard extends Card {
                 canSeeHand.add(p);
             }
         }
+
+        if (canSeeHand.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Aucune cible valide");
+            return;
+        }
+
         Player[] playersArray = canSeeHand.toArray(new Player[0]);
         Player target = (Player) JOptionPane.showInputDialog(
                 null,

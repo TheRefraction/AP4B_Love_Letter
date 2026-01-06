@@ -9,7 +9,7 @@ public class Spy extends Card {
 
     public Spy(Sprite sprite) {
         // On init a x=0, y=0 car le joueur  repositionnera la carte
-        super(0, 0, 1, "Espionne", "NEED TO DESCRIBE", sprite);
+        super(0, 0, 0, "Espionne", "NEED TO DESCRIBE", sprite);
     }
 
 

@@ -10,7 +10,7 @@ public class Baron extends Card {
 
 
     public Baron(Sprite sprite) {
-        super(0, 0, 1, "Roi", "NEED TO DESCRIBE", sprite);
+        super(0, 0, 3, "Roi", "NEED TO DESCRIBE", sprite);
     }
 
     public void playEffect(ArrayList<Player> players , int ownerId) {

@@ -10,6 +10,7 @@ import fr.utbm.loveletter.utils.Const;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
 
 public class SceneGame implements IScene {
     private final LoveLetter game;
@@ -22,6 +23,19 @@ public class SceneGame implements IScene {
 
     private int lastWinner = -1;
     private int currentPlayerIndex = 0; //the actual player, the ones who is playing
+
+    private enum GameState {
+        START_TURN,
+        DRAW_CARD,
+        CHOOSE_CARD,
+        USE_CARD,
+        END_TURN,
+        GAME_OVER
+    }
+
+    private GameState currentState = GameState.START_TURN;
+
+
 
     public SceneGame(LoveLetter game) {
         this.game = game;
@@ -46,8 +60,8 @@ public class SceneGame implements IScene {
         // Init players
         // TODO: Acquisition du nombre de joueurs et des noms ici, à faire une seule fois!!
         players.add(new Player(0, 0, "Le chat"));
-        players.add(new Player(0, 0, "Le chat mais 2"));
-
+        players.add(new Player(0, 0, "marcel"));
+        players.add(new Player(0, 0, "gargantua"));
         initGame();
     }
 
@@ -238,6 +252,74 @@ public class SceneGame implements IScene {
     @Override
     public void update() {
         objects.update();
+        switch(currentState) {
+
+
+            case START_TURN :
+                System.out.println("joueur actuel =" + getActualPlayer());
+                if (getActualPlayer().getProtected()) {
+                    getActualPlayer().setProtected(false);
+                }
+                currentState = GameState.DRAW_CARD;
+
+            break;
+
+
+            case DRAW_CARD :
+                if (deck.isEmpty()) {
+                    System.out.println("deck vide");
+                    currentState = GameState.GAME_OVER;
+                    return;
+                }
+                Card first = deck.removeFirst();
+                if (first != null) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        System.out.println(e);
+                    }
+                    this.getActualPlayer().drawCard(first);
+                }
+                currentState = GameState.CHOOSE_CARD;
+            break;
+
+            case CHOOSE_CARD  :
+                //TODO : implement choose card
+                //test method for now
+                currentState = GameState.USE_CARD;
+            break;
+
+            case USE_CARD :
+
+                Card cardchosen = getActualPlayer().getHand().removeFirst();
+                discardPile.add(cardchosen);
+                objects.add(cardchosen);
+                updateDiscardedCardsPosition();
+                cardchosen.playEffect(players , this.currentPlayerIndex);
+                currentState = GameState.END_TURN;
+
+            break;
+
+
+            case END_TURN :
+                int playersAlive = 0;
+                for(Player p : players) {
+                    if(!p.isEliminated) {
+                        playersAlive++;
+                    }
+                }
+                if (playersAlive <= 1) {
+                    currentState = GameState.GAME_OVER;
+                } else {
+                    nextTurn();
+                    currentState = GameState.START_TURN;
+                }
+            break;
+
+            case GAME_OVER:
+                System.out.println("game over : etat final atteint.");
+                //todo : on change d'etat dans la logique de round.
+        }
 
     }
 

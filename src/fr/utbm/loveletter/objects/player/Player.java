@@ -109,8 +109,12 @@ public class Player extends GameObject implements IPlayer {
         return isEliminated;
     }
 
-    public void setEliminated(boolean eliminated) {
-        this.isEliminated = eliminated;
+    public void setEliminated(boolean eliminated)
+    {
+        if (eliminated) {
+            System.out.println("Le joueur " + this + " est éliminé !");
+            this.isEliminated = eliminated;
+        }
     }
 
     public boolean getProtected() {

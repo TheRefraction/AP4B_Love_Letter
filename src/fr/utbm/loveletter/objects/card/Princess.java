@@ -8,7 +8,7 @@ public class Princess extends Card {
 
     public Princess(Sprite sprite) {
         // On init a x=0, y=0 car le joueur  repositionnera la carte
-        super(0, 0, 1, "Princesse", "NEED TO DESCRIBE", sprite);
+        super(0, 0, 9, "Princesse", "NEED TO DESCRIBE", sprite);
 
     }
 
