@@ -144,10 +144,11 @@ public class SceneGame implements IScene {
 
         //click on card
 
-        Card cardplayed;
+        Card cardchosen = getActualPlayer().getHand().removeFirst();
 
         //play effect
-        //cardplayed.playEffect(players , this.currentPlayerIndex);
+        cardchosen.playEffect(players , this.currentPlayerIndex);
+
 
         // end of turn ---> switch to next player
     }
