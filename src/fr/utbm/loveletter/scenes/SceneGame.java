@@ -5,105 +5,113 @@ import fr.utbm.loveletter.objects.card.*;
 import fr.utbm.loveletter.objects.player.Player;
 import fr.utbm.loveletter.sprites.Sprite;
 import fr.utbm.loveletter.system.GameObjectManager;
+import fr.utbm.loveletter.system.SceneManager;
 import fr.utbm.loveletter.utils.Const;
+import fr.utbm.loveletter.utils.EGameState;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SceneGame implements IScene {
-    private final LoveLetter game;
+    private static final Logger logger = Logger.getLogger(SceneGame.class.getName());
+
+    private final SceneManager manager;
     private final GameObjectManager objects;
 
-    private final ArrayList<Player> players = new ArrayList<>();
+    private Font defaultFont;
+    private boolean isReady = false;
 
+    private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<Card> deck = new ArrayList<>(); // Top of the deck is 0 and bottom is -1
     private final ArrayList<Card> discardPile = new ArrayList<>();
 
     private int lastWinner = -1;
-    private int currentPlayerIndex = 0; //the actual player, the ones who is playing
+    private int currentPlayerIndex = 0; //the actual player, the one who is playing
+    private Card chosenCard;
 
-    private enum GameState {
-        START_TURN,
-        DRAW_CARD,
-        CHOOSE_CARD,
-        USE_CARD,
-        END_TURN,
-        GAME_OVER
-    }
+    private EGameState currentState = EGameState.START_TURN;
 
-    private GameState currentState = GameState.START_TURN;
-
-
-
-    public SceneGame(LoveLetter game) {
-        this.game = game;
+    public SceneGame(SceneManager manager) {
+        this.manager = manager;
         this.objects = new GameObjectManager();
     }
 
     //INIT OF THE GAME
     @Override
     public void enter() {
-        // Init assets
-        Sprite spr0 = game.getAssets().loadSprite("/sprites/spr_card_spy.png", 0, 0, 2);
-        Sprite spr1 = game.getAssets().loadSprite("/sprites/spr_card_guard.png", 0, 0, 2);
-        Sprite spr2 = game.getAssets().loadSprite("/sprites/spr_card_priest.png", 0, 0, 2);
-        Sprite spr3 = game.getAssets().loadSprite("/sprites/spr_card_baron.png", 0, 0, 2);
-        Sprite spr4 = game.getAssets().loadSprite("/sprites/spr_card_handmaid.png", 0, 0, 2);
-        Sprite spr5 = game.getAssets().loadSprite("/sprites/spr_card_prince.png", 0, 0, 2);
-        Sprite spr6 = game.getAssets().loadSprite("/sprites/spr_card_chancellor.png", 0, 0, 2);
-        Sprite spr7 = game.getAssets().loadSprite("/sprites/spr_card_king.png", 0, 0, 2);
-        Sprite spr8 = game.getAssets().loadSprite("/sprites/spr_card_countess.png", 0, 0, 2);
-        Sprite spr9 = game.getAssets().loadSprite("/sprites/spr_card_princess.png", 0, 0, 2);
+        logger.log(Level.INFO, "Entering game scene!");
 
-        // Init players
-        Object[] options = {"2", "3", "4"};
-        String selectedNumber = (String) JOptionPane.showInputDialog(
+        // Pre-fetch assets
+        manager.getAssets().loadSprite("/sprites/spr_card_spy.png", 0, 0, 2);
+        manager.getAssets().loadSprite("/sprites/spr_card_guard.png", 0, 0, 2);
+        manager.getAssets().loadSprite("/sprites/spr_card_priest.png", 0, 0, 2);
+        manager.getAssets().loadSprite("/sprites/spr_card_baron.png", 0, 0, 2);
+        manager.getAssets().loadSprite("/sprites/spr_card_handmaid.png", 0, 0, 2);
+        manager.getAssets().loadSprite("/sprites/spr_card_prince.png", 0, 0, 2);
+        manager.getAssets().loadSprite("/sprites/spr_card_chancellor.png", 0, 0, 2);
+        manager.getAssets().loadSprite("/sprites/spr_card_king.png", 0, 0, 2);
+        manager.getAssets().loadSprite("/sprites/spr_card_countess.png", 0, 0, 2);
+        manager.getAssets().loadSprite("/sprites/spr_card_princess.png", 0, 0, 2);
+
+        defaultFont = manager.getAssets().loadFont("/fonts/fnt_arial.ttf", 20);
+
+        // Init number of players
+        Object[] options = {"2", "3", "4", "5", "6"};
+        String selectedNumber;
+        do {
+            selectedNumber = (String) JOptionPane.showInputDialog(
                 null,
-                "Combien de joueurs " + "souhaitez-vous ?",
+                "Combien de joueurs souhaitez-vous?",
                 "Nombre de joueurs",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
                 "3");
+        } while (selectedNumber == null);
 
         int numberOfPlayers = Integer.parseInt(selectedNumber);
 
-        for (int i = 0; i < numberOfPlayers; i++) {
-            //Name acquisition
-            String playerName = JOptionPane.showInputDialog(
+        // Get names for players
+        for (int i = 1; i <= numberOfPlayers; i++) {
+            String playerName;
+            do {
+                playerName = JOptionPane.showInputDialog(
                     null,
-                    "C'est au joueur " +
-            String.valueOf(i+1) + " d'entrer son nom",
+                    "C'est au joueur " + i + " d'entrer son nom (8 caractères)",
                     "Création des joueurs",
                     JOptionPane.QUESTION_MESSAGE);
+            } while (playerName == null || playerName.length() > 8 || playerName.isEmpty());
 
             players.add(new Player(0, 0, playerName));
         }
-
-        initGame();
-    }
-
-    private void initGame() {
-        // Init assets
-        Sprite spr0 = game.getAssets().loadSprite("/sprites/spr_card_spy.png", 0, 0, 2);
-        Sprite spr1 = game.getAssets().loadSprite("/sprites/spr_card_guard.png", 0, 0, 2);
-        Sprite spr2 = game.getAssets().loadSprite("/sprites/spr_card_priest.png", 0, 0, 2);
-        Sprite spr3 = game.getAssets().loadSprite("/sprites/spr_card_baron.png", 0, 0, 2);
-        Sprite spr4 = game.getAssets().loadSprite("/sprites/spr_card_handmaid.png", 0, 0, 2);
-        Sprite spr5 = game.getAssets().loadSprite("/sprites/spr_card_prince.png", 0, 0, 2);
-        Sprite spr6 = game.getAssets().loadSprite("/sprites/spr_card_chancellor.png", 0, 0, 2);
-        Sprite spr7 = game.getAssets().loadSprite("/sprites/spr_card_king.png", 0, 0, 2);
-        Sprite spr8 = game.getAssets().loadSprite("/sprites/spr_card_countess.png", 0, 0, 2);
-        Sprite spr9 = game.getAssets().loadSprite("/sprites/spr_card_princess.png", 0, 0, 2);
 
         // Register objects in GameObjectManager
         for (Player player : players) {
             objects.add(player);
         }
+
+        // Initialize a round
+        initGame();
+
+        isReady = true;
+    }
+
+    private void initGame() {
+        // Fetch asset
+        Sprite spr0 = manager.getAssets().loadSprite("/sprites/spr_card_spy.png", 0, 0, 2);
+        Sprite spr1 = manager.getAssets().loadSprite("/sprites/spr_card_guard.png", 0, 0, 2);
+        Sprite spr2 = manager.getAssets().loadSprite("/sprites/spr_card_priest.png", 0, 0, 2);
+        Sprite spr3 = manager.getAssets().loadSprite("/sprites/spr_card_baron.png", 0, 0, 2);
+        Sprite spr4 = manager.getAssets().loadSprite("/sprites/spr_card_handmaid.png", 0, 0, 2);
+        Sprite spr5 = manager.getAssets().loadSprite("/sprites/spr_card_prince.png", 0, 0, 2);
+        Sprite spr6 = manager.getAssets().loadSprite("/sprites/spr_card_chancellor.png", 0, 0, 2);
+        Sprite spr7 = manager.getAssets().loadSprite("/sprites/spr_card_king.png", 0, 0, 2);
+        Sprite spr8 = manager.getAssets().loadSprite("/sprites/spr_card_countess.png", 0, 0, 2);
+        Sprite spr9 = manager.getAssets().loadSprite("/sprites/spr_card_princess.png", 0, 0, 2);
 
         // Init deck
         deck.add(new Princess(spr9));
@@ -164,31 +172,6 @@ public class SceneGame implements IScene {
         updatePlayersPosition();
     }
 
-    // TODO: Should be put in the update method
-    private void turn(){
-        //remove protection from previous turn
-        if (getActualPlayer().getProtected()){
-            getActualPlayer().setProtected(false);
-        }
-
-
-        //draw a card
-        Card first = deck.removeFirst();
-        if (first != null) {
-            this.getActualPlayer().getHand().add(first);
-        }
-
-        //click on card
-
-        Card cardchosen = getActualPlayer().getHand().removeFirst();
-
-        //play effect
-        cardchosen.playEffect(players , this.currentPlayerIndex);
-
-
-        // end of turn ---> switch to next player
-    }
-
     private void updateDiscardedCardsPosition() {
         int size = discardPile.size();
         int width = size * 50;
@@ -200,7 +183,6 @@ public class SceneGame implements IScene {
 
             card.setX((Const.WINDOW_WIDTH - width) / 2 + (i % 5) * 50);
             card.setY(100 + (i / 5) * 80);
-
         }
     }
 
@@ -235,7 +217,7 @@ public class SceneGame implements IScene {
 
         JOptionPane.showConfirmDialog(
                 null,
-                "C'est le tour de " + players.get(currentPlayerIndex).toString() + " de jouer !",
+                "C'est le tour de " + players.get(currentPlayerIndex) + " de jouer !",
                 "Changement de joueur",
                 JOptionPane.DEFAULT_OPTION);
         updatePlayersPosition();
@@ -243,12 +225,6 @@ public class SceneGame implements IScene {
 
     // Get the actual player, the one who draw a card
     private Player getActualPlayer() {
-        //render essaie de recuperer le nom du joueur avant son init
-        //on retourne null pour eviter ce probleme
-        if (players == null || players.isEmpty()) {
-            return null;
-        }
-
         return players.get(currentPlayerIndex);
     }
 
@@ -258,6 +234,13 @@ public class SceneGame implements IScene {
         g2d.setColor(new Color(34, 139, 34));
         g2d.fillRect(0, 0, Const.WINDOW_WIDTH, Const.WINDOW_HEIGHT);
 
+        // Do not render objects if the scene is not ready
+        if (!isReady) {
+            return;
+        }
+
+        g2d.setFont(defaultFont);
+
         // Objects rendering
         objects.render(g2d);
 
@@ -265,95 +248,154 @@ public class SceneGame implements IScene {
         Player p = getActualPlayer();
         //verifie si player a deja été init, sinon on affiche pas le nom
         if (p != null) {
-            g2d.drawString("Tour de: " + getActualPlayer().toString(), 8, 20);
+            g2d.drawString("Tour de: " + getActualPlayer(), 8, 20);
         }
         g2d.drawString("Taille de la pioche: " + deck.size(), 8, 40);
 
         g2d.drawString("Liste des joueurs: ", 8, (Const.WINDOW_HEIGHT - (players.size() + 1) * 20) / 2);
-
-
-        //g2d.setColor(Color.BLACK);
-        //g2d.drawLine( 100, 0  , 100 , 600);
-
     }
 
     @Override
     public void update() {
-        objects.update();
+        // Do not update the scene if not ready
+        if (!isReady) {
+            return;
+        }
+
+        // A terrible error occurred
+        if (players.isEmpty()) {
+            exit();
+            return;
+        }
+
+        objects.update(manager.getInput());
+
         switch(currentState) {
-
-
             case START_TURN :
                 System.out.println("joueur actuel =" + getActualPlayer());
                 if (getActualPlayer().getProtected()) {
                     getActualPlayer().setProtected(false);
                 }
-                currentState = GameState.DRAW_CARD;
+                currentState = EGameState.DRAW_CARD;
 
-            break;
-
-
+                break;
             case DRAW_CARD :
                 if (deck.isEmpty()) {
                     System.out.println("deck vide");
-                    currentState = GameState.GAME_OVER;
+                    currentState = EGameState.ROUND_OVER;
                     return;
                 }
+
                 Card first = deck.removeFirst();
                 if (first != null) {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        System.out.println(e);
-                    }
-                    this.getActualPlayer().drawCard(first);
+                    getActualPlayer().drawCard(first);
                 }
-                currentState = GameState.CHOOSE_CARD;
-            break;
 
-            case CHOOSE_CARD  :
-                //TODO : implement choose card
-                //test method for now
-                currentState = GameState.USE_CARD;
-            break;
+                chosenCard = null;
+                currentState = EGameState.CHOOSE_CARD;
+                break;
+            case CHOOSE_CARD:
+                for (Card card : getActualPlayer().getHand()) {
+                    if (card.hasBeenClicked()) {
+                        chosenCard = card;
+                    }
+                }
 
+                if (chosenCard != null) {
+                    currentState = EGameState.USE_CARD;
+                }
+
+                break;
             case USE_CARD :
-
-                Card cardchosen = getActualPlayer().getHand().removeFirst();
-                discardPile.add(cardchosen);
-                objects.add(cardchosen);
+                discardPile.add(chosenCard);
+                objects.add(chosenCard);
                 updateDiscardedCardsPosition();
-                cardchosen.playEffect(players , this.currentPlayerIndex);
-                currentState = GameState.END_TURN;
+                chosenCard.playEffect(players, this.currentPlayerIndex);
 
-            break;
-
-
+                currentState = EGameState.END_TURN;
+                break;
             case END_TURN :
-                int playersAlive = 0;
-                for(Player p : players) {
-                    if(!p.isEliminated) {
-                        playersAlive++;
-                    }
-                }
+                int playersAlive = getPlayersAlive();
                 if (playersAlive <= 1) {
-                    currentState = GameState.GAME_OVER;
+
+
+                    currentState = EGameState.ROUND_OVER;
                 } else {
                     nextTurn();
-                    currentState = GameState.START_TURN;
+                    currentState = EGameState.START_TURN;
                 }
-            break;
+
+                break;
+
+
+
+            case ROUND_OVER:
+                System.out.println("round over");
+                //todo : on change d'etat dans la logique de round.
+                int [] NeededPointsPerPlayers = {6,5,4,3,3};
+                Player winner = null;
+                int maxCard = 0;
+
+
+                for (Player p : players) {
+                    if (!p.isEliminated) {
+                        //todo : en cas d'egalité, besoin d'attribuer les points aux deux.
+                        if (p.getHand().get(0).getValue() > maxCard) {
+                            winner = p;
+                            maxCard = (p.getHand().get(0).getValue());
+                        }
+                    }
+                }
+
+                setScoreToWinner(winner);
+
+                if (winner.getScore() >= NeededPointsPerPlayers[players.size()-2]){
+                    currentState = EGameState.GAME_OVER;
+                }
+                else {
+
+                    currentState = EGameState.START_TURN;
+                }
+                break;
+
+
+
+
 
             case GAME_OVER:
-                System.out.println("game over : etat final atteint.");
-                //todo : on change d'etat dans la logique de round.
+                break;
+
+            default:
+                logger.log(Level.SEVERE, "Unknown state: " + currentState);
         }
+    }
+
+
+    private int getPlayersAlive() {
+        int playersAlive = 0;
+        for (Player p : players) {
+            if (!p.isEliminated) {
+                playersAlive++;
+            }
+
+        }
+        return playersAlive;
+    }
+
+    private void setScoreToWinner (Player winner) {
+        if (winner.getHasUsedSpy()) {
+            winner.setScore(winner.getScore()+2);
+            winner.setHasUsedSpy(false);
+        }
+        winner.setScore(winner.getScore()+1);
 
     }
 
     @Override
     public void exit() {
-        System.out.println("SceneGame has been exited!");
+        logger.log(Level.INFO,"SceneGame has been exited!");
         objects.clear();
+
+        isReady = false;
     }
 }

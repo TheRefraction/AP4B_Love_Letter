@@ -2,6 +2,7 @@ package fr.utbm.loveletter.objects.player;
 
 import fr.utbm.loveletter.objects.card.Card;
 import fr.utbm.loveletter.objects.GameObject;
+import fr.utbm.loveletter.system.InputManager;
 import fr.utbm.loveletter.utils.Const;
 
 import java.awt.*;
@@ -24,14 +25,8 @@ public class Player extends GameObject implements IPlayer {
     }
 
     public void drawCard(Card card) {
-
-
         hand.add(card);
         updatePosition();
-    }
-
-    public void chooseCard(){
-
     }
 
     public ArrayList<Card> getHand() {
@@ -86,7 +81,6 @@ public class Player extends GameObject implements IPlayer {
         }
     }
 
-
     public String getName(){return this.name;}
 
     public int getScore() {
@@ -109,8 +103,7 @@ public class Player extends GameObject implements IPlayer {
         return isEliminated;
     }
 
-    public void setEliminated(boolean eliminated)
-    {
+    public void setEliminated(boolean eliminated) {
         if (eliminated) {
             System.out.println("Le joueur " + this + " est éliminé !");
             this.isEliminated = eliminated;
@@ -139,8 +132,8 @@ public class Player extends GameObject implements IPlayer {
     }
 
     @Override
-    public void update() {
-        for (Card c : hand) c.update();
+    public void update(InputManager input) {
+        for (Card c : hand) c.update(input);
     }
 
     @Override
@@ -154,8 +147,7 @@ public class Player extends GameObject implements IPlayer {
 
         if (isEliminated) {
             g2d.setColor(Color.RED);
-            g2d.drawLine(x, y, x + 50, y + 50);
-            g2d.drawLine(x + 50, y, x, y + 50);
+            g2d.drawLine(x, y-5, x + 50, y-5);
         }
     }
 }

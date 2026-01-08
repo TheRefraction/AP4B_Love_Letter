@@ -1,6 +1,8 @@
 package fr.utbm.loveletter.objects;
 
+import fr.utbm.loveletter.collisions.AABB;
 import fr.utbm.loveletter.sprites.Sprite;
+import fr.utbm.loveletter.system.InputManager;
 
 import java.awt.*;
 
@@ -17,11 +19,13 @@ public abstract class GameSpritedObject extends GameObject {
     public GameSpritedObject(int x, int y, int z, Sprite sprite) {
         super(x, y, z);
         initSprite(sprite);
+
+        boundingBox.setWidth(sprite.getWidth());
+        boundingBox.setHeight(sprite.getHeight());
     }
 
     public GameSpritedObject(int x, int y, Sprite sprite) {
-        super(x, y, 0);
-        initSprite(sprite);
+        this(x, y, 0, sprite);
     }
 
     private void initSprite(Sprite sprite) {
@@ -36,17 +40,22 @@ public abstract class GameSpritedObject extends GameObject {
     }
 
     @Override
-    public void update() {
-        // obligé d'implementer cette methode
-        imageIndex += imageSpeed;
+    public void update(InputManager input) {
+        if (isSolid) {
+            boundingBox.setX(x);
+            boundingBox.setY(y);
+            boundingBox.setWidth((int) (sprite.getWidth() * imageScaleX));
+            boundingBox.setHeight((int) (sprite.getHeight() * imageScaleY));
+        }
     }
 
     @Override
     public void render(Graphics2D g2d) {
         if (isVisible) {
-            imageIndex += imageSpeed;
             sprite.render(g2d, (int) imageIndex, x, y, imageScaleX, imageScaleY, imageAngle);
         }
+
+        imageIndex += imageSpeed;
     }
 
     public double getImageIndex() {

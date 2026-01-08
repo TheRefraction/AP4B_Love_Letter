@@ -88,7 +88,7 @@ public class InputManager implements KeyListener, MouseListener, MouseMotionList
         return mouseY;
     }
 
-    public boolean isMouseDown(int keyCode) {
+    public boolean isMouseDown() {
         return mouseDown;
     }
 

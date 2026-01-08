@@ -12,20 +12,32 @@ public class GameObjectManager {
     private final List<GameObject> objects = new ArrayList<>();
 
     public void add(GameObject obj) {
-        objects.add(obj);
+        if (!objects.contains(obj)) {
+            objects.add(obj);
+        }
     }
 
     public void remove(GameObject obj) {
         objects.remove(obj);
     }
 
+    public void remove(int index) {
+        if (index >= 0 && index < objects.size()) {
+            objects.remove(index);
+        }
+    }
+
+    public boolean contains(GameObject obj) {
+        return objects.contains(obj);
+    }
+
     public void clear() {
         objects.clear();
     }
 
-    public void update() {
+    public void update(InputManager input) {
         for (GameObject obj : objects) {
-            obj.update();
+            obj.update(input);
         }
     }
 

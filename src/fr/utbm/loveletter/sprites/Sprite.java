@@ -14,6 +14,9 @@ public class Sprite {
     private int originX;
     private int originY;
 
+    private int width;
+    private int height;
+
     public Sprite(BufferedImage sprite, int originX, int originY, int imageNumber) {
         int width = sprite.getWidth();
         int height = sprite.getHeight();
@@ -32,6 +35,8 @@ public class Sprite {
 
         this.originX = originX;
         this.originY = originY;
+        this.width = width;
+        this.height = height;
     }
 
     public Sprite(BufferedImage sprite) {
@@ -83,4 +88,15 @@ public class Sprite {
         this.originY = originY;
     }
 
+    public int getImageNumber() {
+        return imageNumber;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
 }

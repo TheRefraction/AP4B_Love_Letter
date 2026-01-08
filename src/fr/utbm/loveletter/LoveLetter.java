@@ -1,7 +1,6 @@
 package fr.utbm.loveletter;
 
 import fr.utbm.loveletter.scenes.SceneGame;
-import fr.utbm.loveletter.scenes.SceneTest;
 import fr.utbm.loveletter.system.AssetManager;
 import fr.utbm.loveletter.system.InputManager;
 import fr.utbm.loveletter.system.SceneManager;
@@ -20,6 +19,7 @@ import java.util.logging.Logger;
 
 public class LoveLetter implements Runnable {
     private static final Logger logger = Logger.getLogger(LoveLetter.class.getName());
+
     private Thread game;
     private InputManager input;
     private SceneManager scenes;
@@ -87,12 +87,12 @@ public class LoveLetter implements Runnable {
         logger.log(Level.INFO, "Initializing game");
 
         input = new InputManager();
-        scenes = new SceneManager();
+        scenes = new SceneManager(this);
         assets = new AssetManager(LoveLetter.class);
 
         initWindow();
 
-        scenes.setScene(new SceneGame(this));
+        scenes.loadScene(0);
 
         running = true;
 
@@ -121,6 +121,7 @@ public class LoveLetter implements Runnable {
         }
 
         close();
+        logger.log(Level.INFO, "Closing game");
     }
 
     private void render() {
@@ -137,20 +138,20 @@ public class LoveLetter implements Runnable {
         }
 
         // Ditto
-        if (input.isKeyDown(KeyEvent.VK_ESCAPE)) {
+        /*if (input.isKeyDown(KeyEvent.VK_ESCAPE)) {
             uiPanel.showForm("main");
-        } else uiPanel.hideForm();
+        } else uiPanel.hideForm();*/
 
         scenes.update();
         input.endFrame();
     }
 
     private void close() {
-        System.out.println("Closing");
+        logger.log(Level.INFO, "Cleanup...");
 
         cleanupListeners();
 
-        scenes.clearScene();
+        scenes.cleanup();
         uiPanel.disposeForms();
         assets.dispose();
         window.dispose();
@@ -177,5 +178,9 @@ public class LoveLetter implements Runnable {
 
     public AssetManager getAssets() {
         return assets;
+    }
+
+    public JFrame getWindow() {
+        return window;
     }
 }
