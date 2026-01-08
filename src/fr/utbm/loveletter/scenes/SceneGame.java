@@ -31,7 +31,7 @@ public class SceneGame implements IScene {
     private int lastWinner = -1;
     private int currentPlayerIndex = 0; //the actual player, the one who is playing
     private Card chosenCard;
-    private int[] neededPointsPerPlayers = {6,5,4,3,3};
+    private final int[] neededPointsPerPlayers = {6,5,4,3,3};
 
     private EGameState currentState = EGameState.START_TURN;
 
