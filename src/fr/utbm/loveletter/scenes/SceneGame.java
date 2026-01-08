@@ -1,6 +1,5 @@
 package fr.utbm.loveletter.scenes;
 
-import fr.utbm.loveletter.LoveLetter;
 import fr.utbm.loveletter.objects.card.*;
 import fr.utbm.loveletter.objects.player.Player;
 import fr.utbm.loveletter.sprites.Sprite;
@@ -32,6 +31,7 @@ public class SceneGame implements IScene {
     private int lastWinner = -1;
     private int currentPlayerIndex = 0; //the actual player, the one who is playing
     private Card chosenCard;
+    private int[] neededPointsPerPlayers = {6,5,4,3,3};
 
     private EGameState currentState = EGameState.START_TURN;
 
@@ -57,7 +57,7 @@ public class SceneGame implements IScene {
         manager.getAssets().loadSprite("/sprites/spr_card_countess.png", 0, 0, 2);
         manager.getAssets().loadSprite("/sprites/spr_card_princess.png", 0, 0, 2);
 
-        defaultFont = manager.getAssets().loadFont("/fonts/fnt_arial.ttf", 20);
+        defaultFont = manager.getAssets().loadFont("/fonts/fnt_arial.ttf", 18);
 
         // Init number of players
         Object[] options = {"2", "3", "4", "5", "6"};
@@ -95,13 +95,13 @@ public class SceneGame implements IScene {
         }
 
         // Initialize a round
-        initGame();
+        initRound();
 
         isReady = true;
     }
 
-    private void initGame() {
-        // Fetch asset
+    private void initRound() {
+        // Fetch assets
         Sprite spr0 = manager.getAssets().loadSprite("/sprites/spr_card_spy.png", 0, 0, 2);
         Sprite spr1 = manager.getAssets().loadSprite("/sprites/spr_card_guard.png", 0, 0, 2);
         Sprite spr2 = manager.getAssets().loadSprite("/sprites/spr_card_priest.png", 0, 0, 2);
@@ -113,7 +113,19 @@ public class SceneGame implements IScene {
         Sprite spr8 = manager.getAssets().loadSprite("/sprites/spr_card_countess.png", 0, 0, 2);
         Sprite spr9 = manager.getAssets().loadSprite("/sprites/spr_card_princess.png", 0, 0, 2);
 
-        // Init deck
+        // Reset objects
+        deck.clear();
+
+        for (Card card : discardPile) {
+            objects.remove(card);
+        }
+
+        discardPile.clear();
+        for (Player p : players) {
+            p.reset();
+        }
+
+        // Initialize deck
         deck.add(new Princess(spr9));
         deck.add(new Countess(spr8));
         deck.add(new King(spr7));
@@ -220,6 +232,7 @@ public class SceneGame implements IScene {
                 "C'est le tour de " + players.get(currentPlayerIndex) + " de jouer !",
                 "Changement de joueur",
                 JOptionPane.DEFAULT_OPTION);
+
         updatePlayersPosition();
     }
 
@@ -244,14 +257,11 @@ public class SceneGame implements IScene {
         // Objects rendering
         objects.render(g2d);
 
+        // GUI rendering
         g2d.setColor(Color.WHITE);
-        Player p = getActualPlayer();
-        //verifie si player a deja été init, sinon on affiche pas le nom
-        if (p != null) {
-            g2d.drawString("Tour de: " + getActualPlayer(), 8, 20);
-        }
-        g2d.drawString("Taille de la pioche: " + deck.size(), 8, 40);
 
+        g2d.drawString("Tour de: " + getActualPlayer(), 8, 20);
+        g2d.drawString("Taille de la pioche: " + deck.size(), 8, 40);
         g2d.drawString("Liste des joueurs: ", 8, (Const.WINDOW_HEIGHT - (players.size() + 1) * 20) / 2);
     }
 
@@ -271,54 +281,55 @@ public class SceneGame implements IScene {
         objects.update(manager.getInput());
 
         switch(currentState) {
-            case START_TURN :
-                System.out.println("joueur actuel =" + getActualPlayer());
+            case START_TURN:
+                logger.log(Level.INFO, "Player " + getActualPlayer() + " is playing!");
+
+                // Reset variables at the beginning of the turn
+                chosenCard = null;
                 if (getActualPlayer().getProtected()) {
                     getActualPlayer().setProtected(false);
                 }
-                currentState = EGameState.DRAW_CARD;
 
-                break;
-            case DRAW_CARD :
-                if (deck.isEmpty()) {
-                    System.out.println("deck vide");
-                    currentState = EGameState.ROUND_OVER;
-                    return;
-                }
-
+                // Draw card
                 Card first = deck.removeFirst();
                 if (first != null) {
                     getActualPlayer().drawCard(first);
                 }
 
-                chosenCard = null;
                 currentState = EGameState.CHOOSE_CARD;
+
                 break;
             case CHOOSE_CARD:
+                // Player chooses between the two cards he owns
                 for (Card card : getActualPlayer().getHand()) {
-                    if (card.hasBeenClicked()) {
+                    if (card.isClicked(manager.getInput())) {
                         chosenCard = card;
+                        break;
                     }
                 }
 
+                // If a card has been chosen, then play effect
                 if (chosenCard != null) {
-                    currentState = EGameState.USE_CARD;
+                    getActualPlayer().getHand().remove(chosenCard);
+
+                    // FIXME: Peut-être bloquant ? Ajouter un état supplémentaire
+                    chosenCard.playEffect(players, currentPlayerIndex);
+
+                    // Card must be discarded and registered by GameObjectManager
+                    discardPile.add(chosenCard);
+                    objects.add(chosenCard);
+
+                    updateDiscardedCardsPosition();
+
+                    currentState = EGameState.END_TURN;
                 }
 
                 break;
-            case USE_CARD :
-                discardPile.add(chosenCard);
-                objects.add(chosenCard);
-                updateDiscardedCardsPosition();
-                chosenCard.playEffect(players, this.currentPlayerIndex);
-
-                currentState = EGameState.END_TURN;
-                break;
-            case END_TURN :
+            case END_TURN:
                 int playersAlive = getPlayersAlive();
-                if (playersAlive <= 1) {
 
-
+                // If only one player is alive, then end of round (second condition)
+                if (playersAlive <= 1 || deck.isEmpty()) {
                     currentState = EGameState.ROUND_OVER;
                 } else {
                     nextTurn();
@@ -326,45 +337,57 @@ public class SceneGame implements IScene {
                 }
 
                 break;
-
-
-
             case ROUND_OVER:
-                System.out.println("round over");
-                //todo : on change d'etat dans la logique de round.
-                int [] NeededPointsPerPlayers = {6,5,4,3,3};
-                Player winner = null;
-                int maxCard = 0;
+                logger.log(Level.INFO, "Round is over.");
 
+                // Recover each winner for this round
+                ArrayList<Player> winners = new ArrayList<>();
+                int maxCard = -1;
 
                 for (Player p : players) {
                     if (!p.isEliminated) {
-                        //todo : en cas d'egalité, besoin d'attribuer les points aux deux.
-                        if (p.getHand().get(0).getValue() > maxCard) {
-                            winner = p;
-                            maxCard = (p.getHand().get(0).getValue());
+                        int currentCardScore = p.getHand().getFirst().getValue();
+
+                        if (currentCardScore == maxCard) {
+                            winners.add(p);
+                        } else if (currentCardScore > maxCard) {
+                            winners.clear();
+
+                            maxCard = currentCardScore;
+                            winners.add(p);
                         }
                     }
                 }
 
-                setScoreToWinner(winner);
+                // Update all scores and determine if game over
+                boolean won = false;
+                for (Player p : winners) {
+                    updateScore(p);
 
-                if (winner.getScore() >= NeededPointsPerPlayers[players.size()-2]){
-                    currentState = EGameState.GAME_OVER;
+                    if (p.getScore() >= neededPointsPerPlayers[players.size() - 2]) {
+                        won = true;
+                    }
                 }
-                else {
+
+                // First player to play next round is selected randomly in the winners list
+                lastWinner = (int) (Math.random() * winners.size());
+
+                // Go to next state
+                if (won) {
+                    currentState = EGameState.GAME_OVER;
+                } else {
+                    // TODO: Message box here for end of round
+
+                    initRound();
 
                     currentState = EGameState.START_TURN;
                 }
+
                 break;
-
-
-
-
-
             case GAME_OVER:
-                break;
+                logger.log(Level.INFO, "Game is over now");
 
+                break;
             default:
                 logger.log(Level.SEVERE, "Unknown state: " + currentState);
         }
@@ -377,18 +400,16 @@ public class SceneGame implements IScene {
             if (!p.isEliminated) {
                 playersAlive++;
             }
-
         }
+
         return playersAlive;
     }
 
-    private void setScoreToWinner (Player winner) {
-        if (winner.getHasUsedSpy()) {
-            winner.setScore(winner.getScore()+2);
-            winner.setHasUsedSpy(false);
-        }
-        winner.setScore(winner.getScore()+1);
+    private void updateScore(Player winner) {
+        int inc = 1;
+        if (winner.getHasUsedSpy()) inc = 2;
 
+        winner.setScore(winner.getScore() + inc);
     }
 
     @Override

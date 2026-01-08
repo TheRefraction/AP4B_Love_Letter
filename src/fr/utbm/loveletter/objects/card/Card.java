@@ -18,8 +18,6 @@ public abstract class Card extends GameSpritedObject implements IObjectClickable
     private final String name;
     private final String description;// description of the effect of the card, can be potentially displayed
 
-    private boolean clicked = false;
-
     public Card(int x, int y, int value, String name, String description, Sprite sprite) {
         super(x, y, 10, sprite);
         this.value = value;
@@ -29,8 +27,11 @@ public abstract class Card extends GameSpritedObject implements IObjectClickable
         setFaceUp(true);
     }
 
-    public boolean hasBeenClicked() {
-        return clicked;
+    public boolean isClicked(InputManager input) {
+        int mx = input.getMouseX();
+        int my = input.getMouseY();
+
+        return this.intersects(mx, my) && input.isMouseDown();
     }
 
     public abstract void playEffect(ArrayList<Player> players, int ownerId);
@@ -38,11 +39,6 @@ public abstract class Card extends GameSpritedObject implements IObjectClickable
     @Override
     public void update(InputManager input) {
         super.update(input);
-
-        int mx = input.getMouseX();
-        int my = input.getMouseY();
-
-        clicked = this.intersects(mx, my) && input.isMouseDown();
     }
 
     @Override

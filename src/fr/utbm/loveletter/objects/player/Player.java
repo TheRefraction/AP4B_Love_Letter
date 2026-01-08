@@ -104,10 +104,7 @@ public class Player extends GameObject implements IPlayer {
     }
 
     public void setEliminated(boolean eliminated) {
-        if (eliminated) {
-            System.out.println("Le joueur " + this + " est éliminé !");
-            this.isEliminated = eliminated;
-        }
+        this.isEliminated = eliminated;
     }
 
     public boolean getProtected() {
@@ -126,6 +123,14 @@ public class Player extends GameObject implements IPlayer {
         this.hasUsedSpy = hasUsedSpy;
     }
 
+    public void reset() {
+        isPlaying = false;
+        isEliminated = false;
+        isProtected = false;
+        hasUsedSpy = false;
+        hand.clear();
+    }
+
     @Override
     public String toString() {
         return this.name;
@@ -133,7 +138,9 @@ public class Player extends GameObject implements IPlayer {
 
     @Override
     public void update(InputManager input) {
-        for (Card c : hand) c.update(input);
+        if (isPlaying) {
+            for (Card c : hand) c.update(input);
+        }
     }
 
     @Override

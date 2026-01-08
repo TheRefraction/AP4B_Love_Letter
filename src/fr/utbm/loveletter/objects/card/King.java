@@ -32,7 +32,7 @@ public class King extends Card {
             }
         }
         for (Player player :players) {
-            if (Objects.equals(name, players.get(ownerId).getName())) {
+            if (Objects.equals(name, player.getName())) {
                 ArrayList<Card> temp = new ArrayList<>();
                 while (!players.get(ownerId).getHand().isEmpty()) {
                     temp.add(players.get(ownerId).getHand().getFirst());
