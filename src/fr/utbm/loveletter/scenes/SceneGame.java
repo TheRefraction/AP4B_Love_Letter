@@ -7,9 +7,11 @@ import fr.utbm.loveletter.sprites.Sprite;
 import fr.utbm.loveletter.system.GameObjectManager;
 import fr.utbm.loveletter.utils.Const;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class SceneGame implements IScene {
@@ -58,10 +60,30 @@ public class SceneGame implements IScene {
         Sprite spr9 = game.getAssets().loadSprite("/sprites/spr_card_princess.png", 0, 0, 2);
 
         // Init players
-        // TODO: Acquisition du nombre de joueurs et des noms ici, à faire une seule fois!!
-        players.add(new Player(0, 0, "Le chat"));
-        players.add(new Player(0, 0, "marcel"));
-        players.add(new Player(0, 0, "gargantua"));
+        Object[] options = {"2", "3", "4"};
+        String selectedNumber = (String) JOptionPane.showInputDialog(
+                null,
+                "Combien de joueurs " + "souhaitez-vous ?",
+                "Nombre de joueurs",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                "3");
+
+        int numberOfPlayers = Integer.parseInt(selectedNumber);
+
+        for (int i = 0; i < numberOfPlayers; i++) {
+            //Name acquisition
+            String playerName = JOptionPane.showInputDialog(
+                    null,
+                    "C'est au joueur " +
+            String.valueOf(i+1) + " d'entrer son nom",
+                    "Création des joueurs",
+                    JOptionPane.QUESTION_MESSAGE);
+
+            players.add(new Player(0, 0, playerName));
+        }
+
         initGame();
     }
 
@@ -210,6 +232,12 @@ public class SceneGame implements IScene {
         } while(players.get(currentPlayerIndex).isEliminated);
 
         players.get(currentPlayerIndex).setPlaying(true);
+
+        JOptionPane.showConfirmDialog(
+                null,
+                "C'est le tour de " + players.get(currentPlayerIndex).toString() + " de jouer !",
+                "Changement de joueur",
+                JOptionPane.DEFAULT_OPTION);
         updatePlayersPosition();
     }
 
