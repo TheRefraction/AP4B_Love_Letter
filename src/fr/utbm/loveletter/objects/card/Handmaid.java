@@ -7,13 +7,28 @@ import java.util.ArrayList;
 
 import static fr.utbm.loveletter.utils.ECardValue.HANDMAID;
 
+/**
+ * @brief Handmaid card
+ *
+ * @see Card
+ */
 public class Handmaid extends Card {
+    /**
+     * Creates the specified card
+     * @param sprite The image to display for the card
+     */
     public Handmaid(Sprite sprite) {
         super(0, 0, HANDMAID.getValue(), HANDMAID.getName(), "Jusquʼà au prochain tour, aucun\n" +
                 "adversaire ne peut cibler le\n" +
                 "joueur.", sprite);
     }
 
+    /**
+     * Play the effect of the current card
+     * @param players List of all players
+     * @param ownerId Owner of the current card
+     */
+    @Override
     public void playEffect(ArrayList<Player> players , int ownerId) {
         Player owner = players.get(ownerId);
 

@@ -7,7 +7,16 @@ import java.util.ArrayList;
 
 import static fr.utbm.loveletter.utils.ECardValue.CHANCELLOR;
 
+/**
+ * @brief Chancellor card
+ *
+ * @see Card
+ */
 public class Chancellor extends Card {
+    /**
+     * Creates the specified card
+     * @param sprite The image to display for the card
+     */
     public Chancellor(Sprite sprite) {
         super(0, 0, CHANCELLOR.getValue(), CHANCELLOR.getName(), "Le joueur pioche deux cartes (il\n" +
                 "en alors 3 en main) il choisit\n" +
@@ -25,6 +34,12 @@ public class Chancellor extends Card {
                 "en sa possesion.", sprite);
     }
 
+    /**
+     * Play the effect of the current card
+     * @param players List of all players
+     * @param ownerId Owner of the current card
+     */
+    @Override
     public void playEffect(ArrayList<Player> players, int ownerId) {
         // Void
     }

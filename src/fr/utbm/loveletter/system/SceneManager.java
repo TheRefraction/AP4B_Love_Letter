@@ -21,6 +21,8 @@ public class SceneManager {
     public SceneManager(LoveLetter engine) {
         this.engine = engine;
 
+        // All scenes must be registered
+
         //scene index 0 : MENU
         scenes.add(() -> new SceneMenu(this));
 
@@ -67,6 +69,7 @@ public class SceneManager {
     }
 
     public void endGame() {
+        // Issues the game to close
         engine.setRunning(false);
     }
 

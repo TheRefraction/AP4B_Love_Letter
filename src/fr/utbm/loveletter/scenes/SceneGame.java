@@ -107,10 +107,10 @@ public class SceneGame implements IScene {
             do {
                 playerName = JOptionPane.showInputDialog(
                     null,
-                    "C'est au joueur " + i + " d'entrer son nom (8 caractères)",
+                    "C'est au joueur " + i + " d'entrer son nom (12 caractères)",
                     "Création des joueurs",
                     JOptionPane.QUESTION_MESSAGE);
-            } while (playerName == null || playerName.length() > 8 || playerName.isEmpty());
+            } while (playerName == null || playerName.length() > 12 || playerName.isEmpty());
 
             players.add(new Player(0, 0, playerName));
         }

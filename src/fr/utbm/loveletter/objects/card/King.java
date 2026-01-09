@@ -8,7 +8,16 @@ import java.util.ArrayList;
 
 import static fr.utbm.loveletter.utils.ECardValue.KING;
 
+/**
+ * @brief King card
+ *
+ * @see Card
+ */
 public class King extends Card {
+    /**
+     * Creates the specified card
+     * @param sprite The image to display for the card
+     */
     public King(Sprite sprite) {
         super(0, 0, KING.getValue(), KING.getName(), "Le joueur choisit un adversaire\n" +
                 "avec qui échanger sa carte\n" +
@@ -16,6 +25,11 @@ public class King extends Card {
 
     }
 
+    /**
+     * Play the effect of the current card
+     * @param players List of all players
+     * @param ownerId Owner of the current card
+     */
     @Override
     public void playEffect(ArrayList<Player> players, int ownerId) {
         Player owner = players.get(ownerId);

@@ -12,6 +12,9 @@ import java.util.ArrayList;
 
 import static fr.utbm.loveletter.utils.ECardValue.*;
 
+/**
+ *
+ */
 public class Player extends GameObject implements IPlayer {
     private final ArrayList<Card> hand = new ArrayList<>();
     private final String name;

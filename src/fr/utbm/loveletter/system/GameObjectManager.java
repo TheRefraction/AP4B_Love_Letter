@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@SuppressWarnings("unused")
+/**
+ * This class manages all objects registered in a scene
+ * Each object has a unique index
+ */
 public class GameObjectManager {
     private final List<GameObject> objects = new ArrayList<>();
 

@@ -8,7 +8,16 @@ import java.util.ArrayList;
 
 import static fr.utbm.loveletter.utils.ECardValue.PRIEST;
 
+/**
+ * @brief Priest card
+ *
+ * @see Card
+ */
 public class Priest extends Card {
+    /**
+     * Creates the specified card
+     * @param sprite The image to display for the card
+     */
     public Priest(Sprite sprite) {
         super(0, 0, PRIEST.getValue(), PRIEST.getName(), "Le joueur peut regarder la carte\n" +
                 "dʼun adversaire de votre choix. Il\n" +
@@ -16,6 +25,11 @@ public class Priest extends Card {
                 "de ce quʼelle a vu.", sprite);
     }
 
+    /**
+     * Play the effect of the current card
+     * @param players List of all players
+     * @param ownerId Owner of the current card
+     */
     @Override
     public void playEffect(ArrayList<Player> players, int ownerId) {
         Player owner = players.get(ownerId);

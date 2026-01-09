@@ -11,8 +11,11 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- *
+ * @brief Object representing a card
  * imageIndex = 0 -> Down, 1 -> Up
+ *
+ * @see GameSpritedObject
+ * @see IObjectClickable
  */
 public abstract class Card extends GameSpritedObject implements IObjectClickable {
     private final int value;
@@ -22,6 +25,15 @@ public abstract class Card extends GameSpritedObject implements IObjectClickable
     private boolean showToolTip = false;
     private int timer = 0;
 
+    /**
+     * Creates a card
+     * @param x
+     * @param y
+     * @param value
+     * @param name
+     * @param description
+     * @param sprite
+     */
     public Card(int x, int y, int value, String name, String description, Sprite sprite) {
         super(x, y, 10, sprite);
         this.value = value;
@@ -31,12 +43,18 @@ public abstract class Card extends GameSpritedObject implements IObjectClickable
         setFaceUp(true);
     }
 
+    /**
+     * Is the user clicking the card
+     * @param input Handle of the input manager
+     * @return has the card been clicked
+     */
     public boolean isClicked(InputManager input) {
         int mx = input.getMouseX();
         int my = input.getMouseY();
 
         boolean res = this.intersects(mx, my) && input.isMouseDown();
 
+        // Close tooltip if clicking
         if (res) {
             timer = 0;
             showToolTip = false;
@@ -45,8 +63,17 @@ public abstract class Card extends GameSpritedObject implements IObjectClickable
         return res;
     }
 
+    /**
+     * Play card effect
+     * @param players List of players
+     * @param ownerId Owner of current card
+     */
     public abstract void playEffect(ArrayList<Player> players, int ownerId);
 
+    /**
+     * Update loop
+     * @param input Handle on input manager
+     */
     @Override
     public void update(InputManager input) {
         super.update(input);
@@ -63,6 +90,11 @@ public abstract class Card extends GameSpritedObject implements IObjectClickable
 
     }
 
+    /**
+     * Render loop
+     * @param g2d Handle on surface
+     * @param assets Handle on assets
+     */
     @Override
     public void render(Graphics2D g2d, AssetManager assets) {
         super.render(g2d, assets);

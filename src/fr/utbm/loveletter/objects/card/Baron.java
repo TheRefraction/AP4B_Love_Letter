@@ -8,7 +8,16 @@ import java.util.ArrayList;
 
 import static fr.utbm.loveletter.utils.ECardValue.BARON;
 
+/**
+ * @brief Baron card
+ *
+ * @see Card
+ */
 public class Baron extends Card {
+    /**
+     * Creates the specified card
+     * @param sprite The image to display for the card
+     */
     public Baron(Sprite sprite) {
         super(0, 0, BARON.getValue(), BARON.getName(), "Le joueur choisit une carte dʼun\n" +
                 "adversaire. Les deux joueurs se\n" +
@@ -22,6 +31,11 @@ public class Baron extends Card {
                 "dʼégalité, rien ne se passe.", sprite);
     }
 
+    /**
+     * Play the effect of the current card
+     * @param players List of all players
+     * @param ownerId Owner of the current card
+     */
     @Override
     public void playEffect(ArrayList<Player> players, int ownerId) {
         Player owner = players.get(ownerId);

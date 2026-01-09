@@ -14,8 +14,8 @@ public class Sprite {
     private int originX;
     private int originY;
 
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
     public Sprite(BufferedImage sprite, int originX, int originY, int imageNumber) {
         int width = sprite.getWidth();
@@ -28,6 +28,7 @@ public class Sprite {
 
         width = width / imageNumber;
 
+        // Split the sprite in subimages
         for (int i = 0; i < imageNumber; i++) {
             BufferedImage subImage = sprite.getSubimage(width * i, 0, width, height);
             images.add(subImage);
@@ -66,8 +67,6 @@ public class Sprite {
         transform.translate(-originX, -originY);
 
         g2d.drawImage(images.get(imageIndex), transform, null);
-
-        g2d.setTransform(old);
 
         g2d.setTransform(old);
     }

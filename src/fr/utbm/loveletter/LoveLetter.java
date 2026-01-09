@@ -97,15 +97,21 @@ public class LoveLetter implements Runnable {
         logger.log(Level.INFO, "Success!");
     }
 
+    /**
+     * Main loop
+     */
     public void run() {
         init();
 
+        // Main game loop
         while (running) {
             long startTime = System.currentTimeMillis();
 
+            // First update, then render
             update();
             render();
 
+            // Sleep the appropriate amount of time
             long elapsed = System.currentTimeMillis() - startTime;
             long sleepTime = Const.OPTIMAL_TIME - elapsed;
             if (sleepTime > 0) {
@@ -130,6 +136,10 @@ public class LoveLetter implements Runnable {
     }
 
     private void update() {
+        /*
+            This is not finished.
+            This is where the logic to determine if the screen must be redrawn, must be put.
+        */
         frames++;
         if (frames % 2 == 0) {
             dirty = true;
@@ -141,6 +151,7 @@ public class LoveLetter implements Runnable {
         } else uiPanel.hideForm();*/
 
         scenes.update();
+        // Reset inputs
         input.endFrame();
     }
 

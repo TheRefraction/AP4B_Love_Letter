@@ -8,8 +8,17 @@ import javax.swing.JOptionPane;
 
 import static fr.utbm.loveletter.utils.ECardValue.*;
 
+/**
+ * @brief Guard card
+ *
+ * @see Card
+ */
 public class Guard extends Card {
     public Guard(Sprite sprite) {
+        /**
+         * Creates the specified card
+         * @param sprite The image to display for the card
+         */
         super(0, 0, GUARD.getValue(), GUARD.getName(), "Le joueur désigne un adversaire\n" +
                 "autour de la table et essaye de\n" +
                 "deviner sa carte. Il peut citer\n" +
@@ -23,9 +32,14 @@ public class Guard extends Card {
                 "pour rejouer.", sprite);
     }
 
+    /**
+     * Play the effect of the current card
+     * @param players List of all players
+     * @param ownerId Owner of the current card
+     */
     @Override
     public void playEffect(ArrayList<Player> players, int ownerId) {
-        Player owner  = players.get(ownerId);
+        Player owner = players.get(ownerId);
 
         // Recover targetable players
         ArrayList<Player> canSeeHand = new ArrayList<>();

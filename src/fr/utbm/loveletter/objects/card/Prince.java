@@ -8,7 +8,16 @@ import java.util.ArrayList;
 
 import static fr.utbm.loveletter.utils.ECardValue.PRINCE;
 
+/**
+ * @brief Prince card
+ *
+ * @see Card
+ */
 public class Prince extends Card {
+    /**
+     * Creates the specified card
+     * @param sprite The image to display for the card
+     */
     public Prince(Sprite sprite) {
         super(0, 0, PRINCE.getValue(), PRINCE.getName(), "Le joueur choisit un adversaire\n" +
                 "ou lui-même. Le joueur choisit\n" +
@@ -24,6 +33,11 @@ public class Prince extends Card {
                 "Prototypeˮ.", sprite);
     }
 
+    /**
+     * Play the effect of the current card
+     * @param players List of all players
+     * @param ownerId Owner of the current card
+     */
     @Override
     public void playEffect(ArrayList<Player> players, int ownerId) {
         Player owner = players.get(ownerId);
