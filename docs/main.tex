@@ -463,11 +463,14 @@
 %-----------------------
     \subsection{Difficultés rencontrées}\label{subsec:difficultes-rencontrees}
 
-    \textbf{[SECTION NON TERMINEE]}
+    L'intégration du Chancelier et du Prince a présenté une particularité : contrairement aux autres cartes, ils nécessitent un accès au \texttt{deck}, ce qui n'est pas prévu initialement dans notre méthode \texttt{playEffect}. Cela nous a demandé de gérer ces cas               spécifiquement.
+    Pour le Prince, la méthode \texttt{playEffect} permet au joueur de sélectionner une cible. Nous passons alors l'attribut \texttt{princed} du joueur visé à \texttt{true} afin de pouvoir l'identifier une fois la méthode terminée. Cela permet ensuite de défausser la main       du joueur sélectionné et de lui faire piocher une nouvelle carte.
+    Quant au Chancelier, son implémentation a nécessité la création d'un nouvel état de jeu, afin de permettre au joueur de choisir la carte qu'il souhaite conserver en cliquant dessus.
+    
 %-----------------------
     \subsection{Suggestions d'amélioration}\label{subsec:suggestions-d'amelioration}
 
-    \textbf{[SECTION NON TERMINEE]}
+    Pour le moment, notre jeu ne permet de jouer qu’à plusieurs. L’implémentation d’une IA est envisageable : pour commencer, elle pourrait choisir aléatoirement ses cartes, et par la suite se baser sur les probabilités en fonction des cartes déjà jouées.
 %-----------------------------------------------
     \newpage
     \section{Conclusion}\label{sec:conclusion}
