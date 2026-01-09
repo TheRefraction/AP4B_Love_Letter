@@ -13,7 +13,7 @@
 \usepackage{tikz-uml}
 \usepackage{array}
 \usepackage{float}
-\usetikzlibrary{arrows,shapes,positioning}
+\usetikzlibrary{arrows,shapes,positioning,automata}
 
 \usepackage{adjustbox}
 %-----------------------------------------------
@@ -68,7 +68,7 @@
 \title{
     \Huge Love Letter\\
     \Large Projet AP4B\\
-    \large Version de pré-rendu
+    \large Version finale
 }
 
 \author{
@@ -78,7 +78,7 @@
     Théo \textsc{RIGAL}
 }
 
-\date{19 décembre 2025}
+\date{9 janvier 2026}
 %-----------------------------------------------
 \begin{document}
 
@@ -218,7 +218,7 @@
             \hline
             Évaluation de l’innovation & 3      & Baron          & Le joueur veut évaluer les projets des autres équipes par rapport au sien pour se situer. Attention, ça peut être risqué. & Le joueur choisit une carte d’un adversaire et les deux se montrent leurs cartes. Celui qui a la plus petite est éliminé de la manche. En cas d'égalité, rien ne se passe.\\
             \hline
-            Travail En Profondeur      & 4      & Servante       & Le joueur en possession de cette carte reste concentré sur son travail.                                                   & Jusqu'au prochain tour, aucun adversaire ne peut cibler le joueur.\\
+            Travail En Profondeur      & 4      & Servante       & Le joueur en possession de cette carte reste concentré sur son travail.                                                   & Jusqu'à son prochain tour, aucun adversaire ne peut cibler le joueur.\\
             \hline
             Étape Suivante             & 5      & Prince         & Le joueur trouve que son équipe n’avance pas assez vite, il l'encourage à avancer.                                        & Le joueur choisit un adversaire ou lui-même. L'intéressé doit alors défausser sa carte et en piocher une nouvelle. Attention, ici la carte jetée sera révélée à tout le monde, mais son effet ne s'appliquera pas ; il ne se passera rien de particulier pour celui qui jette la carte sauf si c'est le \textit{Brisage de Prototype}. Si la pioche est vide, alors le joueur prend la première carte face cachée du début de la manche.\\
             \hline
@@ -274,6 +274,9 @@
     de \verb|Form|. Elle est utilisée pour rendre des éléments graphiques Swing à l'écran, et peut être utilisée par exemple,
     pour faire des menus ou boîtes de dialogue.
 
+    \underline{Nota Bene :} La surface \verb|UIPanel| bien que fonctionnelle n'a en fin de compte pas été utilisée dans le
+    jeu car les boîtes de dialogue étaient suffisantes.
+
     \paragraph{Objets} Des objets quelconques sont représentés par une classe héritant de \verb|GameObject|. Ces derniers
     sont stockés et ordonnancés dans une scène donnée. Un objet est rendu sur la surface de jeu, et est trié sur sa
     \textit{Z-profondeur} (\textit{le repère orthonormal usuel dans} $\mathbb{R}^3$ \textit{est utilisé, d'où plus
@@ -314,14 +317,14 @@
     Les assets dans le projets se trouvent dans le dossier \verb|resources|.
     Les fichiers de sprites, polices, audio et textes prennent respectivement dans leur nom les préfixes \verb|spr_|, \verb|fnt_|,
     \verb|snd_| et \verb|txt_|.
-
     
     \subsection{Fonctionnement Partie}\label{subsec:fonctionnement-partie}
 
-    Ci-dessous un automate présentant le fonctionnement d'une partie de LoveCrunchTime. L'automate est basé sur les
-    différents états que peut prendre la variable \verb |EGameState|.
+    Ci-dessous un automate représentant le fonctionnement d'une partie de LoveCrunchTime. Ce dernier est basé sur les
+    différents états que peut prendre la variable \verb |gameState|, définie dans l'énumérateur \verb|EGameState|.
     \vspace{2 cm}
 
+    \begin{center}
     \begin{tikzpicture}
         \node[state,initial](START_TURN) at (-4,0) {$S_0$};
         \node[draw, circle] (CHOOSE_CARD) at (-2,0) {$S_1$};
@@ -349,6 +352,8 @@
         $S_4$ : ROUND\_OVER.\\
         $S_5$ : GAME\_OVER.}
 
+    \end{center}
+
 %-----------------------
     \newpage
     \subsection{Organisation des paquets}\label{subsec:organisation-des-paquets}
@@ -359,6 +364,7 @@
 
     Ainsi, le code source est reparti dans les dossier/paquets suivants :
     \begin{itemize}
+        \item \verb|collisions| : Contient l'ensemble des classes pour gérer les collisions
         \item \verb|objects|
         \item \verb|objects.cards|
         \item \verb|objects.player|
@@ -375,12 +381,6 @@
     \newpage
     \section{Conception UML}\label{sec:diagrammes-uml}
 %--------------------------------------------------------------------------------------------------------------------------------
-
-    \paragraph{Avertissement} Ce projet ne se trouve pas encore au stade final de développement. De ce fait,
-    les modélisations présentées ci-dessous constituent surtout une vue théorique de la solution. Nous avons ainsi
-    cherché à anticiper au mieux les besoins du moteur de jeu, et par conséquent, cette architecture est susceptible
-    d'évoluer significativement durant la dernière phase de développement, notamment si l'on doit s'adapter à des
-    contraintes techniques ou des cas limites non identifiés lors des phases d'analyse et de conception.
 
     \paragraph{Classes} L'architecture (visible en section \ref{subsec:diagramme-de-classes}) ne suit pas un simple modèle MVC,
     mais repose sur le pattern \textit{Game Loop}, orchestré par la classe centrale \texttt{LoveLetter}.
@@ -410,7 +410,7 @@
     \begin{enumerate}
         \item \textbf{Piocher une carte :} Via la méthode \texttt{Player.drawCard()}.
         \item \textbf{Consulter sa main :} Le joueur visualise ses options.
-        \item \textbf{Choisir une carte :} Via \texttt{Player.chooseCard()}, qui déclenchera
+        \item \textbf{Choisir une carte :} Via l'état \verb|CHOOSE_CARD|, qui déclenchera
         ensuite l'effet associé.
     \end{enumerate}
     Par ailleurs, la navigation dans les menus est découplée de la logique de partie,
@@ -422,7 +422,7 @@
         la classe principale \texttt{LoveLetter} demande d'abord au gestionnaire d'entrées (\texttt{InputManager}) de capturer l'état des périphériques (souris, clavier).
         \item \textbf{Propagation :} L'ordre de mise à jour est ensuite transmis au \texttt{SceneManager}, qui le délègue à la scène active (ici, la phase de Jeu).
         \item \textbf{Interrogation :} La scène interroge activement l'\texttt{InputManager} pour savoir si une action a eu lieu (ex: \texttt{isMouseDown}).
-        \item \textbf{Evenement :} Si un clic est détecté sur une carte, la scène sollicite l'objet \texttt{Player} pour valider la sélection via \texttt{chooseCard()}, avant d'appliquer l'effet de la carte.
+        \item \textbf{Evenement :} Si un clic est détecté sur une carte, la scène sollicite l'objet \texttt{Player} pour valider la sélection via l'état \verb|CHOOSE_CARD|, avant d'appliquer l'effet de la carte.
     \end{enumerate}
 
 %--------------------------------------------------------------------------------------------------------------------------------
@@ -460,10 +460,6 @@
 %-----------------------------------------------
     \newpage
     \section{Retour d'expérience}\label{sec:retour-d'experience}
-    \paragraph{Avertissement} Cette prochaine section ainsi que la conclusion ne sont pas terminées.
-    En effet, il serait fort mal venu de faire un retour d'expérience et/ou une conclusion sur un projet qui n'est encore pas
-    finalisé, le but étant de mener une analyse réflexive sur le travail qui a été effectué. Nous vous remercions pour votre
-    compréhension.
 
 %-----------------------
     \subsection{Organisation}\label{subsec:organisation}
@@ -497,24 +493,34 @@
 %-----------------------
     \subsection{Difficultés rencontrées}\label{subsec:difficultes-rencontrees}
 
-    L'intégration du Chancelier et du Prince a présenté une particularité : contrairement aux autres cartes, ils nécessitent un accès au \texttt{deck}, ce qui n'est pas prévu initialement dans notre méthode \texttt{playEffect}. Cela nous a demandé de gérer ces cas               spécifiquement.
-    Pour le Prince, la méthode \texttt{playEffect} permet au joueur de sélectionner une cible. Nous passons alors l'attribut \texttt{princed} du joueur visé à \texttt{true} afin de pouvoir l'identifier une fois la méthode terminée. Cela permet ensuite de défausser la main       du joueur sélectionné et de lui faire piocher une nouvelle carte.
-    Quant au Chancelier, son implémentation a nécessité la création d'un nouvel état de jeu, afin de permettre au joueur de choisir la carte qu'il souhaite conserver en cliquant dessus.
-
+    L'intégration du Chancelier et du Prince a présenté une particularité : contrairement aux autres cartes, ils
+    nécessitent un accès à la \texttt{pioche}, ce qui n'est pas prévu initialement dans notre méthode \texttt{playEffect}.
+    Cela nous a demandé de gérer ces cas spécifiquement.
+    Pour le Prince, la méthode \verb|playEffect| permet au joueur de sélectionner une cible.
+    Nous passons alors l'attribut \verb|princed| du joueur visé à \verb|true| afin de pouvoir l'identifier une fois
+    la méthode terminée. Cela permet ensuite de défausser la main du joueur sélectionné et de lui faire piocher une nouvelle carte.
+    Quant au Chancelier, son implémentation a nécessité la création d'un nouvel état de jeu,
+    afin de permettre au joueur de choisir la carte qu'il souhaite conserver en cliquant dessus.
     
 %-----------------------
     \subsection{Suggestions d'amélioration}\label{subsec:suggestions-d'amelioration}
 
-    Pour le moment, notre jeu ne permet de jouer qu’à plusieurs sur un seul écran. On pourrait proposer une fonctionnalité multi-fenêtre qui permettrait à chaque joueur
-    de voir son jeu en tout temps.
+    Pour le moment, notre jeu ne permet de jouer qu’à plusieurs sur un seul écran. On pourrait proposer une
+    fonctionnalité de multi-fenêtrage qui permettrait à chaque joueur de voir son jeu en tout temps.
     On peut aussi envisager de rendre notre jeu disponible en multijoueur en LAN, en utilisant par exemple la bibliothèque \verb|LibGDX|.
-    L’implémentation d’une IA est envisageable : pour commencer, elle pourrait choisir aléatoirement ses cartes,
+    Enfin, l’implémentation d’une IA est envisageable : pour commencer, elle pourrait choisir aléatoirement ses cartes,
     et par la suite se baser sur les probabilités en fonction des cartes déjà jouées.
 
 %-----------------------------------------------
     \newpage
     \section{Conclusion}\label{sec:conclusion}
 
-    \textbf{[SECTION NON TERMINEE]}
+    Ce projet nous a permis de comprendre l'importance d'avoir une base conceptuelle avant de commencer
+    l'implémentation d'un problème en Informatique. En effet, il est nécessaire d'avoir une base rigoureuse et bien structurée
+    afin de pouvoir par la suite avoir une certaine flexibilité dans les futurs ajouts ou modifications. De plus,
+    cela permet d'anticiper des problèmes potentiels en termes de relations entre classes, et ainsi de ne pas perdre de
+    temps dans la phase de développement quand un problème grave est rencontré. Enfin, cela nous a également appris à
+    collaborer autour d'un projet, notamment avec l'utilisation du versionnage mais nous avons pu aussi nous entraider avec
+    par exemple la gestion de l'interface graphique, que peu maîtrisaient.
 %-----------------------
 \end{document}
