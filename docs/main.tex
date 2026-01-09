@@ -315,6 +315,40 @@
     Les fichiers de sprites, polices, audio et textes prennent respectivement dans leur nom les préfixes \verb|spr_|, \verb|fnt_|,
     \verb|snd_| et \verb|txt_|.
 
+    
+    \subsection{Fonctionnement Partie}\label{subsec:fonctionnement-partie}
+
+    Ci-dessous un automate présentant le fonctionnement d'une partie de LoveCrunchTime. L'automate est basé sur les
+    différents états que peut prendre la variable \verb |EGameState|.
+    \vspace{2 cm}
+
+    \begin{tikzpicture}
+        \node[state,initial](START_TURN) at (-4,0) {$S_0$};
+        \node[draw, circle] (CHOOSE_CARD) at (-2,0) {$S_1$};
+        \node[draw, circle] (CHANCELLOR_TURN) at (0,1) {$S_2$};
+        \node[draw, circle] (END_TURN) at (2,0) {$S_3$};
+        \node[draw, circle] (ROUND_OVER) at (4,0) {$S_4$};
+        \node[state,accepting] (GAME_OVER) at (4,-2) {$S_5$};
+
+        % Transitions
+        \draw[->,>=latex] (START_TURN) edge[bend left] (CHOOSE_CARD);
+        \draw[->,>=latex] (CHOOSE_CARD) edge[bend left] (CHANCELLOR_TURN) edge[loop above] (CHOOSE_CARD);
+        \draw[->,>=latex] (CHANCELLOR_TURN) edge[bend left] (END_TURN);
+        \draw[->,>=latex] (CHOOSE_CARD) edge (END_TURN);
+        \draw[->,>=latex] (END_TURN) edge[bend left] (ROUND_OVER) edge[bend left] (START_TURN) ;
+        \draw[->,>=latex] (ROUND_OVER) edge (GAME_OVER)  edge[bend left] (START_TURN);
+
+
+    \end{tikzpicture}
+
+    \textbf{Légende :\\
+        $S_0$ : START\_TURN.\\
+        $S_1$ : CHOOSE\_CARD.\\
+        $S_2$ : CHANCELLOR\_TURN.\\
+        $S_3$ : END\_TURN.\\
+        $S_4$ : ROUND\_OVER.\\
+        $S_5$ : GAME\_OVER.}
+
 %-----------------------
     \newpage
     \subsection{Organisation des paquets}\label{subsec:organisation-des-paquets}
