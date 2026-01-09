@@ -1,70 +1,526 @@
-\documentclass[a4paper,11pt,titlepage]{article}
-
+\documentclass[paper=a4,fontsize=12pt,titlepage]{scrartcl}
+%-----------------------------------------------
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[english]{babel}
-\usepackage{color}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+%-----------------------------------------------
+\usepackage{amsmath,amssymb,mathtools,stmaryrd}
+%-----------------------------------------------
 \usepackage{xcolor}
 \usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage{stmaryrd}
-\usepackage[hmargin={2.5cm,2.5cm},top=2.5cm,bottom=2.5cm]{geometry}
-\usepackage{lmodern}
+\usepackage{tikz,pgf}
+\usepackage{tikz-uml}
+\usepackage{array}
+\usepackage{float}
+\usetikzlibrary{arrows,shapes,positioning,automata}
+
+\usepackage{adjustbox}
+%-----------------------------------------------
 \usepackage[ruled,lined]{algorithm2e}
 \usepackage{listings}
-\usepackage{tikz, pgf}
+%-----------------------------------------------
+\usepackage[
+    colorlinks=true,
+    breaklinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Project},
+    pdfsubject={Project}
+]{hyperref}
+%-----------------------------------------------
+\usepackage{typearea}
 
-\usepackage[colorlinks=true,breaklinks=true,linkcolor=blue,filecolor=magenta,urlcolor=cyan,pdftitle={Project},pdfsubject={Project}]{hyperref}
+\KOMAoptions{
+    DIV=12,
+    BCOR=0mm,
+    abstract=true,
+    pagesize=auto
+}
+\recalctypearea
+%-----------------------------------------------
+\newenvironment{AThreeLandscape}{%
+    \clearpage
+    \KOMAoptions{paper=a3, paper=landscape}%
+    \recalctypearea%
+    \thispagestyle{plain}%
+}{%
+    \clearpage
+    \KOMAoptions{paper=a4, paper=portrait}%
+    \recalctypearea%
+}
+%-----------------------------------------------
+\newenvironment{AFourLandscape}{%
+    \clearpage
+    \KOMAoptions{paper=a4, paper=landscape}%
+    \recalctypearea%
+    \thispagestyle{plain}%
+}{%
+    \clearpage
+    \KOMAoptions{paper=a4, paper=portrait}%
+    \recalctypearea%
+}
+%-----------------------------------------------
+\sloppy
+\hyphenpenalty=10000
+%-----------------------------------------------
+\title{
+    \Huge Love Letter\\
+    \Large Projet AP4B\\
+    \large Version finale
+}
 
-\usetikzlibrary{arrows,shapes,positioning}
+\author{
+    Julie \textsc{BENED}\\
+    Corentin \textsc{HAUTEFAYE}\\
+    Loïc \textsc{MORIN}\\
+    Théo \textsc{RIGAL}
+}
 
-\title{AP4B Project Template}
-\author{blah}
-
-
+\date{9 janvier 2026}
+%-----------------------------------------------
 \begin{document}
 
-	\maketitle
-	\newpage
+    \maketitle
 
-	\tableofcontents
-	\newpage
+    \renewcommand*{\abstractname}{Introduction}
+    \begin{abstract}
+        \thispagestyle{plain}
+        Dans le cadre de l'UE AP4B (\textit{Semestre A25}), nous avons réalisé une adaptation du jeu \textit{Love Letter}
+        en Java. L'objectif principal de ce projet est de concevoir une application fonctionnelle, robuste,
+        clairement structurée, tout en respectant les principes fondamentaux de la programmation orientée objet.
 
-	\section{Introduction}\label{sec:introduction}
+        L'accent est ainsi mis sur la conception UML, l'organisation du code ainsi que la capacité à modéliser
+        efficacement les entités essentielles d'un moteur de jeu simple.
 
-    \begin{align*}
-		x = 2 &\implies x²=4 \text{ dtdtdtdt}
-	\end{align*}
+        Par ailleurs, cette adaptation vise à préserver l'esprit et les règles du jeu original, tout en y intégrant
+        une dimension créative et ludique en lien avec le contexte universitaire.
+    \end{abstract}
 
-	\verb|azerxdrsdr5|
+    \tableofcontents
+    \clearpage
+%-----------------------------------------------
+    \section{Présentation}\label{sec:presentation}
+%-----------------------
+    \subsection{Règles du jeu}\label{subsec:definition-du-sujet}
+
+    \textit{Love Letter} est un jeu de cartes qui se joue de 2 à 6 joueurs et dont le principe est assez simple.
+    Vous incarnez un courtisan qui cherche à transmettre une missive d'amour à la princesse, tout en éliminant ses
+    opposants.
+
+    \paragraph{Mise en place} Vous disposez d'un ensemble de 21 cartes personnages mélangées, face cachée ; il s'agit de la pioche.
+    La première carte en est defaussée et est placée \textbf{face cachée} dans la pile de jeu. Si la partie comporte
+    exactement deux joueurs, alors il convient d'enlever trois cartes supplémentaires de la pioche ; ces dernières sont
+    placées dans la pile, \textbf{face visible}. Ensuite, une carte est distribuée à chaque joueur ; cela constitue leur main.
+    Le premier joueur à commencer est celui qui a remporté la dernière manche. S'il s'agit de la première manche,
+    ou qu'il y a eu égalité, il est choisi aléatoirement.
+
+    \paragraph{Victoire d'une manche} Une manche arrive à échéance lorsqu'une des deux conditions suivantes est remplie:
+    \begin{itemize}
+        \item Être le dernier joueur en partie
+        \item La pioche est vide
+    \end{itemize}
+    Dans le second cas, une fois que le tour du joueur en cour est terminé, chacun dévoile sa main. Celui qui dispose de
+    la plus grande carte remporte la manche. Notons que les égalités sont tolérées.
+    Enfin à l'issue de la manche, chaque vainqueur gagne un point faveur.
+
+    \paragraph{Victoire d'une partie} On considère qu'il y a un total de treize points faveur par partie. Ainsi, elle est
+    gagnée s'il existe au moins un joueur dont le score est d'au moins la valeur indiquée dans le tableau ci-dessous:
+    \begin{center}
+        \begin{tabular}{|l||c|c|c|c|c|}
+            \hline
+            Nombre de joueurs & 2 & 3 & 4 & 5 & 6\\
+            \hline
+            Score requis & 6 & 5 & 4 & 3 & 3\\
+            \hline
+        \end{tabular}
+    \end{center}
+    Il est de plus à noter qu'il est toujours possible de gagner une partie avec le nombre de pions faveur de départ,
+    en respectant ce tableau.
+
+    \paragraph{Tour des joueurs} Le jeu s'effectue dans le sens horaire. Chaque joueur procède en trois étapes:
+    \begin{enumerate}
+        \item Piocher une carte du paquet
+        \item Choisir une de ses deux cartes
+        \item Jouer la carte, résoudre son effet et la place \textbf{face visible} dans la pile
+    \end{enumerate}
+
+    \paragraph{Quitter la manche} Lorsque le joueur est contraint de quitter la manche, il doit défausser sa main \textbf{face visible}
+    et passe bien sûr son tour à chaque itération.
+
+    \paragraph{Cartes personnages} Les cartes en question ont été adaptées à un contexte UTBM et sont décrites en section \ref{subsec:choix}.
+
+%-----------------------
+    \subsection{Conventions}\label{subsec:conventions}
+
+    Afin d'assurer une meilleure lisibilité ainsi qu'une cohérence globale du projet, plusieurs convetions ont été
+    adoptées tout au long du développement.
+
+    \paragraph{} Tout d'abord, le code source et les commentaires sont rédigés en Anglais ; cela est en effet conforme
+    aux standards couramment utilisés en programmation, notamment en entreprise. La typographie utilisée est la norme
+    Java : les noms de classes utilisent la notation \textit{PascalCase}, tandis que les noms de méthodes et atributs
+    suivent le format \textit{camelCase}. Les constantes sont placées dans un fichier dédié (\verb|Const.java|) et
+    sont notées en majuscules avec des \textit{underscores} en tant que séparateurs. En sus de cela, les classes spéciales
+    comme les énumérateurs et interfaces, sont respectivement préfixées par un \verb|E| et un \verb|I|. Enfin, les
+    commentaires suivent le format \textit{Doxygen} ; ainsi la signature de chaque fonction/méthode est donnée en entête
+    du corps.
+
+    \paragraph{} Les diagrammes UML (\textit{cf. section} \ref{sec:diagrammes-uml}) respectent les conventions classiques de modélisation. Les attributs, méthodes et relations
+    sont clairement identifiées. Notons toutefois que les méthodes triviales, commes les \textit{accesseurs} et \textit{mutateurs},
+    ne sont pas représentés. De même, les classes utilitaires standard (\textit{ex:} \verb|java.awt.Color|)
+    ne sont pas indiquées. Enfin, les dépendances mineures ont été simplifiées afin de privilégier la lisibilité
+    de l'architecture globale.
+%-----------------------
+    \subsection{Outils utilisés}\label{subsec:outils-utilises}
+
+    Pour réaliser ce projet, les outils suivants ont été utilisés :
+    \begin{itemize}
+        \item \textbf{IntelliJ IDEA} pour l'environnement de développement
+        \item \textbf{Git} et \textbf{GitHub} pour le contrôle des versions
+        \item \textbf{\LaTeX} pour la rédaction du rapport
+        \item \textbf{tikz-uml} pour dessiner les diagrammes UML en \LaTeX
+    \end{itemize}
+
+    \paragraph{} Aucune version de Java n'a été spécifiée pour ce sujet. Ainsi, nous avons choisi d'utiliser Java 21.
+    En effet, il s'agit d'une version \textbf{LTS} (\textit{Long Term Support}), i.e une version stable pour le
+    développement, et qui reste relativement moderne et sécurisée. \textit{Swing} est également utilisé pour la gestion
+    des éléments de l'interface graphique (\textit{UI}).
+%-----------------------------------------------
+    \begin{AThreeLandscape}
+        \newpage
+        \section{Réalisation du jeu}\label{sec:conception}
+        %-----------------------
+        \subsection{Choix}\label{subsec:choix}
+
+        Nous avons adapté le jeu de carte \textit{Love Letter} à la période du Crunch Time. Dans cette optique,
+        nous imaginons que chaque joueur est membre d’une équipe au Crunch Time et la représente pendant le jeu.
+
+        Une manche est donc équivalente à une édition du Crunch Time : gagner la manche signifie remporter la faveur du jury pour
+        son équipe et donc recevoir la meilleure note du Crunch Time.
+
+        Pour gagner la partie, il faut remporter un certain nombre de manches pour son équipe (\textit{cf. section}~\ref{subsec:definition-du-sujet}) et devenir l’expert du Crunch Time.
+
+        \begin{table}[H]
+            \centering
+            \small
+            \caption{Tableau récapitulatif de l'adaptation des cartes et leurs effets respectifs.}
+            %\vspace{20pt}
+            \begin{tabular}{|>{\raggedright\arraybackslash}b{3cm}|>{\raggedright\arraybackslash}b{1cm}|>{\raggedright\arraybackslash}b{3cm}|>{\raggedright\arraybackslash}b{11cm}|>{\raggedright\arraybackslash}b{11cm}|}    \hline
+            \textbf{Carte}                      & \textbf{Valeur} & \textbf{Correspondance} & \textbf{Contexte}                                                                                                                  & \textbf{Effet}\\
+            \hline
+            \hline
+            Super Cohésion             & 0      & Espionne       & L'équipe du joueur a une super cohésion et travaille très bien en équipe.                                                 & Si le dernier joueur en lice a réussi à défausser la carte \textit{Super Cohésion}, il gagne un \textbf{seul} point de faveur en plus.\\
+            \hline
+            Soupçon De Copie           & 1      & Garde          & Le joueur soupçonne qu’une équipe observe la sienne d’un peu trop près …                                                  & Le joueur désigne un adversaire autour de la table et essaie de deviner sa carte. Il peut citer n'importe quelle carte sauf le \textit{Soupçon De Copie} (\textit{ne peut pas se vérifier avec un autre Soupçon De Copie}). Si la carte est trouvée, l'adversaire est éliminé.\\
+            \hline
+            Espionnage Industriel      & 2      & Prêtre         & Le joueur veut se renseigner sur les innovations des autres équipes.                                                      & Le joueur peut regarder la carte d’un adversaire de votre choix. Il ne peut pas informer les autres de ce qu’elle a vu.\\
+            \hline
+            Évaluation de l’innovation & 3      & Baron          & Le joueur veut évaluer les projets des autres équipes par rapport au sien pour se situer. Attention, ça peut être risqué. & Le joueur choisit une carte d’un adversaire et les deux se montrent leurs cartes. Celui qui a la plus petite est éliminé de la manche. En cas d'égalité, rien ne se passe.\\
+            \hline
+            Travail En Profondeur      & 4      & Servante       & Le joueur en possession de cette carte reste concentré sur son travail.                                                   & Jusqu'à son prochain tour, aucun adversaire ne peut cibler le joueur.\\
+            \hline
+            Étape Suivante             & 5      & Prince         & Le joueur trouve que son équipe n’avance pas assez vite, il l'encourage à avancer.                                        & Le joueur choisit un adversaire ou lui-même. L'intéressé doit alors défausser sa carte et en piocher une nouvelle. Attention, ici la carte jetée sera révélée à tout le monde, mais son effet ne s'appliquera pas ; il ne se passera rien de particulier pour celui qui jette la carte sauf si c'est le \textit{Brisage de Prototype}. Si la pioche est vide, alors le joueur prend la première carte face cachée du début de la manche.\\
+            \hline
+            Brainstorming              & 6      & Chancelier     & Il est temps pour l'équipe du joueur de se renouveler avec des idées novatrices.                                          & Le joueur pioche deux cartes (\textit{il en alors 3 en main}) il choisit d’en garder une et met les deux autres en dessous de la pioche dans l'ordre de son choix. S'il n'y a qu’une seule carte dans la pioche, la carte \textit{Brainstorming}, alors le joueur peut faire la manipulation, mais en prenant une seule carte. Si la pioche est vide, aucun effet ne se produit.\\
+            \hline
+            Changement de sujet        & 7      & Roi            & Le joueur veut changer de sujet de CrunchTime pour son équipe.                                                            & Le joueur choisit un adversaire avec qui échanger sa carte restante.\\
+            \hline
+            Pitch inopiné              & 8      & Comtesse       & Il faut bien présenter à un moment ! Le joueur mène son équipe à la présentation.                                         & Si le joueur a la carte \textit{Changement De Sujet} ou la carte \textit{Étape Suivante} avec cette carte, il est obligé de jouer \textit{Pitch Inopiné}. Autrement, elle n'a pas d'effet.\\
+            \hline
+            Brisage de prototype       & 9      & Princesse      & Le joueur a accidentellement renversé le prototype de son équipe.                                                         & Si le joueur joue ou défausse cette carte, il est éliminé.\\
+            \hline
+            \end{tabular}
+        \end{table}
 
 
-	\begin{center}
-		\begin{tikzpicture}
-			\node[draw, circle] (S0) at (-1,0) {$S_0$} ;
-			\node[draw, circle] (S1) at (2,2) {$S_1$} ;
-			\node[draw, circle] (S2) at (2,-2) {$S_2$} ;
-			\node[draw, circle] (S3) at (-2,-2) {$S_3$} ;
-			\node[draw, circle] (Err) at (2,0) {$Err$} ;
+    \end{AThreeLandscape}
+%-----------------------
+    \subsection{Architecture générale}\label{subsec:architecture-generale}
 
-			\draw (S0) to[bend right=75](-2,1);
-			\draw[->,>=latex](-2,1) to[bend right=75](S0);
+    La classe \verb|Main| agit comme le point d'entrée du programme et instancie la classe \verb|LoveLetter|, tout en
+    ouvrant un processus dédié. Celui-ci procède en trois étapes :
+    \begin{enumerate}
+        \item \textbf{Initialisation}
+        \begin{itemize}
+            \item Initialise la gestion des entrées, des scènes et des assets
+            \item Crée et configure la fenêtre, ici un \verb|JFrame|
+            \item Initialise les écouteurs sur fenêtre
+            \item Initialise et remplit les surfaces
+            \item Charge la scène de départ (\textit{l'écran titre})
+        \end{itemize}
+        \item \textbf{Boucle principale} (\textit{tant que la fenêtre n'est pas fermée})
+        \begin{itemize}
+            \item Met à jour les scènes et leur contenu
+            \item Nettoie les registres des entrées
+            \item Rend la surface de jeu à l'écran (\textit{uniquement si nécessaire})
+            \item Met le fil en pause le temps approprié pour garder une fréquence de rafraîchissement stable autour de 60 images par seconde
+        \end{itemize}
+        \item \textbf{Nettoyage \& Fermeture}
+        \begin{itemize}
+            \item Nettoie les écouteurs
+            \item Se débarrasse des scènes, surface et assets
+        \end{itemize}
+    \end{enumerate}
 
-			\draw[->,>=latex] (S0) edge[bend left] (S1) ;
-			\draw[->,>=latex] (S0) edge[bend right] (S2) ;
-			\draw[->,>=latex] (S0) edge (S3) ;
+    \paragraph{Entrées} Les entrées sont gérées par la classe \verb|InputManager|. Celle-ci propose des méthodes et
+    écouteurs triviaux, afin de capter les propriétés des touches du clavier, ainsi que de la souris
+    (\textit{e.g la position du curseur, l'appui du bouton gauche, \ldots}). Il est important que les registres associés
+    soient nettoyés à chaque fin de tour de boucle.
 
-			\draw[->,>=latex] (S1) edge[bend left] (S0) ;
-			\draw (S1) to[bend right=75](3,3);
-			\draw[->,>=latex](3,3) to[bend right=75](S1);
+    \paragraph{Surfaces} Ce projet supporte deux types de surfaces, à savoir \verb|GamePanel| et \verb|UIPanel|, qui
+    héritent de la classe \verb|JPanel|. La première est dessinée au fond de la fenêtre, et est utilisée afin de rendre
+    des objets et éléments graphiques de façon dynamique à l'écran. La seconde est tracée en dernier, et contient une collection
+    de \verb|Form|. Elle est utilisée pour rendre des éléments graphiques Swing à l'écran, et peut être utilisée par exemple,
+    pour faire des menus ou boîtes de dialogue.
 
-			\draw[->,>=latex] (S2) edge[bend right] (S0) ;
-			\draw[->,>=latex] (S2) edge[bend right] (Err) ;
+    \underline{Nota Bene :} La surface \verb|UIPanel| bien que fonctionnelle n'a en fin de compte pas été utilisée dans le
+    jeu car les boîtes de dialogue étaient suffisantes.
 
-			\draw[->,>=latex] (Err) edge (S0) ;
-		\end{tikzpicture}
-	\end{center}
+    \paragraph{Objets} Des objets quelconques sont représentés par une classe héritant de \verb|GameObject|. Ces derniers
+    sont stockés et ordonnancés dans une scène donnée. Un objet est rendu sur la surface de jeu, et est trié sur sa
+    \textit{Z-profondeur} (\textit{le repère orthonormal usuel dans} $\mathbb{R}^3$ \textit{est utilisé, d'où plus
+        $z$ est grand, plus l'objet est proche de la caméra}). Un objet peut procéder à diverses opérations dans sa méthode
+    \verb|update|, puis se rende à l'écran suivant un ensemble d'instructions donné, ou bien suivant un \verb|Sprite|
+    pour un objet de type \verb|GameSpritedObject|.
 
+    \paragraph{Sprites} Un sprite est vu comme une collection de sous-images (\textit{ici, des } \verb|BufferedImage|), et
+    affiche la bonne en utilisant la valeur de l'attribut \verb|imageIndex| de l'objet \verb|GameSpritedObject| associé.
+    Ainsi, utiliser le champ \verb|imageSpeed| permet d'animer le sprite à la vitesse donnée.
+
+    Un sprite importe un fichier image, et le divise en sous-images en utilisant la valeur \verb|imageNumber|
+    donnée dans le constructeur. Chaque sous-image doit se trouver côte à côte et sont indicée de 0 à \verb|imageNumber - 1|,
+    de gauche à droite. Ainsi, la largeur effective d'un sprite (\textit{en pixels}) est égal au résultat de la division euclidienne de \verb|spriteWidth|
+    par \verb|imageNumber|. Sa hauteur \verb|spriteHeight| reste invariante.
+
+    Un sprite peut être rendu à l'aide de sa méthode \verb|render|, avec une échelle donnée, un angle de rotation
+    (\textit{en degrés}) et origine (\textit{$(0,0)$ par défaut}). Les techniques de \textit{blending} et de rendu avec teinte
+    ne sont pas prises en charge.
+
+    \paragraph{Scènes}
+    Un écran donné (\textit{e.g l'écran titre}) et l'ensemble des éléments qui le compose, est représenté par une scène,
+    i.e un objet qui implémente les méthodes définies dans l'interface \verb|IScene|. Elle se comporte comme un
+    automate déterministe simple, entre autres avec les méthodes \verb|enter|, \verb|exit|, \verb|update| et \verb|render|.
+    Une scène se charge aussi de gérer les collections de \verb|GameObject| à l'aide d'un ordonnanceur \verb|GameObjectManager|.
+    Elle constitue de plus la liaison entre les entrées, et les routines dédiées (\textit{e.g, appuyer sur [espace] $\implies$ faire avancer le joueur }).
+    Une telle classe est régie par \verb|SceneManager|.
+
+    \paragraph{Gestion des assets}
+    La classe \verb|AssetManager| gère les assets.
+    Les types d'assets suivants sont stockés dans des tables de hachage (\textit{nom\_fichier:ressource}) :
+    \begin{itemize}
+        \item Effets sonores
+        \item Sprites (\textit{créés à partir d'images})
+        \item Polices d'écriture (\textit{format de la clef: nom\_police\#taille})
+        \item Fichiers textes (\textit{e.g TXT ou JSON})
+    \end{itemize}
+    Les assets dans le projets se trouvent dans le dossier \verb|resources|.
+    Les fichiers de sprites, polices, audio et textes prennent respectivement dans leur nom les préfixes \verb|spr_|, \verb|fnt_|,
+    \verb|snd_| et \verb|txt_|.
+    
+    \subsection{Fonctionnement Partie}\label{subsec:fonctionnement-partie}
+
+    Ci-dessous un automate représentant le fonctionnement d'une partie de LoveCrunchTime. Ce dernier est basé sur les
+    différents états que peut prendre la variable \verb |gameState|, définie dans l'énumérateur \verb|EGameState|.
+    \vspace{2 cm}
+
+    \begin{center}
+    \begin{tikzpicture}
+        \node[state,initial](START_TURN) at (-4,0) {$S_0$};
+        \node[draw, circle] (CHOOSE_CARD) at (-2,0) {$S_1$};
+        \node[draw, circle] (CHANCELLOR_TURN) at (0,1) {$S_2$};
+        \node[draw, circle] (END_TURN) at (2,0) {$S_3$};
+        \node[draw, circle] (ROUND_OVER) at (4,0) {$S_4$};
+        \node[state,accepting] (GAME_OVER) at (4,-2) {$S_5$};
+
+        % Transitions
+        \draw[->,>=latex] (START_TURN) edge[bend left] (CHOOSE_CARD);
+        \draw[->,>=latex] (CHOOSE_CARD) edge[bend left] (CHANCELLOR_TURN) edge[loop above] (CHOOSE_CARD);
+        \draw[->,>=latex] (CHANCELLOR_TURN) edge[bend left] (END_TURN);
+        \draw[->,>=latex] (CHOOSE_CARD) edge (END_TURN);
+        \draw[->,>=latex] (END_TURN) edge[bend left] (ROUND_OVER) edge[bend left] (START_TURN) ;
+        \draw[->,>=latex] (ROUND_OVER) edge (GAME_OVER)  edge[bend left] (START_TURN);
+
+
+    \end{tikzpicture}
+
+    \textbf{Légende :\\
+        $S_0$ : START\_TURN.\\
+        $S_1$ : CHOOSE\_CARD.\\
+        $S_2$ : CHANCELLOR\_TURN.\\
+        $S_3$ : END\_TURN.\\
+        $S_4$ : ROUND\_OVER.\\
+        $S_5$ : GAME\_OVER.}
+
+    \end{center}
+
+%-----------------------
+    \newpage
+    \subsection{Organisation des paquets}\label{subsec:organisation-des-paquets}
+    Conformément aux conventions d'appellation des paquets en Java, nous avons choisi d'utiliser le domaine de premier niveau :
+    \verb|fr.utbm|. Tout d'abord, cela nous a semblé naturel de procéder à ce choix. Ensuite, le fait de choisir un nom unique
+    plutôt qu'un nom banal pour un paquet, comme \verb|shapes|, permet de travailler proprement en évitant notamment les
+    potentielles collisions d'espace avec des bibliothèques.
+
+    Ainsi, le code source est reparti dans les dossier/paquets suivants :
+    \begin{itemize}
+        \item \verb|collisions| : Contient l'ensemble des classes pour gérer les collisions
+        \item \verb|objects|
+        \item \verb|objects.cards|
+        \item \verb|objects.player|
+        \item \verb|scenes|
+        \item \verb|sprites|
+        \item \verb|system| : Contient l'ensemble des classes permettant de gérer un autre type d'objet ou de ressource
+        \item \verb|ui| : Définition des surfaces
+        \item \verb|ui.forms| : Ensemble des \verb|Form| affichées sur la surface \verb|UIPanel|
+        \item \verb|utils| : Contient du code quelconque (\textit{e.g des constantes, des calculs mathématiques, \ldots})
+    \end{itemize}
+
+    \texttt{N.B} : Pour une bonne lecture, le début du nom des paquets \verb|fr.utbm| a été omis.
+%-----------------------------------------------
+    \newpage
+    \section{Conception UML}\label{sec:diagrammes-uml}
+%--------------------------------------------------------------------------------------------------------------------------------
+
+    \paragraph{Classes} L'architecture (visible en section \ref{subsec:diagramme-de-classes}) ne suit pas un simple modèle MVC,
+    mais repose sur le pattern \textit{Game Loop}, orchestré par la classe centrale \texttt{LoveLetter}.
+
+    \begin{itemize}
+        \item \textbf{Le Moteur de Jeu (\texttt{LoveLetter}) :} Cette classe est le cœur de l'application.
+        Elle initialise la fenêtre et centralise les gestionnaires essentiels : \texttt{InputManager} pour les entrées clavier/souris, \texttt{AssetManager}
+        pour le chargement des ressources (sons, polices, sprites), et \texttt{SceneManager}.
+
+        \item \textbf{Gestion des Scènes (\texttt{SceneManager}) :} Le jeu est divisé en différents
+        états logiques (Menu, Jeu, Pause) implémentant l'interface \texttt{IScene}. Le \texttt{SceneManager}
+        délègue les méthodes \texttt{update()} et \texttt{render()} à la scène active, permettant une transition entre les écrans.
+
+        \item \textbf{Entités de Jeu (\texttt{GameObject}) :} Tous les objets interactifs (Joueurs, Cartes)
+        héritent de la classe abstraite \texttt{GameObject}.
+        \begin{itemize}
+            \item La classe \texttt{Player} encapsule la main du joueur et son score.
+            \item La classe \texttt{Card} hérite de \texttt{GameSpritedObject} (pour la gestion des sprites)
+            et définit la méthode abstraite \texttt{playEffect()}, assurant le polymorphisme des effets de cartes.
+        \end{itemize}
+
+        \item \textbf{Interface Utilisateur (\texttt{UIPanel}) :} L'interface graphique superposée
+        (HUD, boutons) est gérée distinctement du rendu du jeu.
+    \end{itemize}
+
+    \paragraph{Utilisation} L'action principale \textbf{« Jouer son tour »} implique séquentiellement :
+    \begin{enumerate}
+        \item \textbf{Piocher une carte :} Via la méthode \texttt{Player.drawCard()}.
+        \item \textbf{Consulter sa main :} Le joueur visualise ses options.
+        \item \textbf{Choisir une carte :} Via l'état \verb|CHOOSE_CARD|, qui déclenchera
+        ensuite l'effet associé.
+    \end{enumerate}
+    Par ailleurs, la navigation dans les menus est découplée de la logique de partie,
+    permettant de démarrer ou quitter le jeu proprement.
+
+    \paragraph{Séquence}
+    \begin{enumerate}
+        \item \textbf{Cycle de mise à jour (}\verb|Update|\textbf{) :} À chaque \textit{frame},
+        la classe principale \texttt{LoveLetter} demande d'abord au gestionnaire d'entrées (\texttt{InputManager}) de capturer l'état des périphériques (souris, clavier).
+        \item \textbf{Propagation :} L'ordre de mise à jour est ensuite transmis au \texttt{SceneManager}, qui le délègue à la scène active (ici, la phase de Jeu).
+        \item \textbf{Interrogation :} La scène interroge activement l'\texttt{InputManager} pour savoir si une action a eu lieu (ex: \texttt{isMouseDown}).
+        \item \textbf{Evenement :} Si un clic est détecté sur une carte, la scène sollicite l'objet \texttt{Player} pour valider la sélection via l'état \verb|CHOOSE_CARD|, avant d'appliquer l'effet de la carte.
+    \end{enumerate}
+
+%--------------------------------------------------------------------------------------------------------------------------------
+    \begin{AThreeLandscape}
+        \subsection{Diagramme de classes}\label{subsec:diagramme-de-classes}
+        \vspace{2cm}
+        \begin{center}
+            \begin{adjustbox}{max width=30cm, max height=30cm, keepaspectratio}
+                \input{uml-class}
+            \end{adjustbox}
+        \end{center}
+        %-----------------------
+        \newpage
+        \subsection{Diagramme de cas d'utilisation}\label{subsec:diagramme-de-cas-d'utilisation}
+        \vspace{2cm}
+        \begin{center}
+            \begin{adjustbox}{max width=30cm, max height=30cm, keepaspectratio}
+                \input{uml-use}
+            \end{adjustbox}
+        \end{center}
+        %-----------------------
+        \newpage
+        \subsection{Diagramme de séquence}\label{subsec:diagramme-de-sequence}
+        \vspace{1cm}
+        %\begin{center}
+        %\begin{adjustbox}{max width=30cm, max height=30cm, keepaspectratio}
+        %\input{uml-sequence}
+        %\end{adjustbox}
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[scale=0.7]{UML_Sequence}
+        \end{figure}
+        %\end{center}
+    \end{AThreeLandscape}
+%-----------------------------------------------
+    \newpage
+    \section{Retour d'expérience}\label{sec:retour-d'experience}
+
+%-----------------------
+    \subsection{Organisation}\label{subsec:organisation}
+
+    \paragraph{Outils \& Versionnage}
+    Nous avons utilisé \textbf{GitHub} afin de centraliser le code tout en assurant un suivi régulier du projet.
+    Cela nous a ainsi permis de travailler sur une base commune une fois l'implémentation commencée.
+
+    De plus, nous avons cherché à nous placer dans le contexte du travail collaboratif en entreprise, et de ce fait,
+    nous avons travaillé par \textit{Pull Requests}. La branche \verb|master| a été ainsi protégée par défaut des
+    téléversements non approuvés au préalable. Aussi, nous avons procédé de la manière suivante pour la gestion des branches :
+    \begin{itemize}
+        \item \verb|master| : le code source qui contient une version stable du code
+        \item \verb|dev| : la branche d'expérimentation où sont développées les fonctionnalités en cours de conception
+        \item \textbf{nom-de-fonctionnalite} : branche issue de \verb|dev|, où une fonction clef est conçue. Elle est ensuite fusionnée avec \verb|dev|.
+        \item \verb|docs| : branche où la documentation est mise à jour. Le code \LaTeX\; de ce rapport s'y trouve. Elle est repliée ensuite sur \verb|master|.
+    \end{itemize}
+
+    \paragraph{Conception collaborative synchrone}
+    Pour la modélisation UML, nous avons préféré effectuer des réunions en présentiel plutôt que de travailler
+    uniquement à base de commits via GitHub.
+
+    Entre les réunions, des phases de réflexion individuelles ont été menées afin d'analyser le sujet en profondeur
+    et d'identifier les zones moins évidentes du sujet. Ces éléments ont ensuite été traités lors de ces entrevues,
+    ce qui nous a permis de réaliser des diagrammes tout en tenant compte d'un maximum d'informations sur les points
+    les plus complexes du sujet.
+
+    Ainsi, nous avons pu confronter les visions de tous les membres de l'équipe, puis commencer l'implementation du jeu
+    sur une architecture propre atteinte par consensus.
+
+%-----------------------
+    \subsection{Difficultés rencontrées}\label{subsec:difficultes-rencontrees}
+
+    L'intégration du Chancelier et du Prince a présenté une particularité : contrairement aux autres cartes, ils
+    nécessitent un accès à la \texttt{pioche}, ce qui n'est pas prévu initialement dans notre méthode \texttt{playEffect}.
+    Cela nous a demandé de gérer ces cas spécifiquement.
+    Pour le Prince, la méthode \verb|playEffect| permet au joueur de sélectionner une cible.
+    Nous passons alors l'attribut \verb|princed| du joueur visé à \verb|true| afin de pouvoir l'identifier une fois
+    la méthode terminée. Cela permet ensuite de défausser la main du joueur sélectionné et de lui faire piocher une nouvelle carte.
+    Quant au Chancelier, son implémentation a nécessité la création d'un nouvel état de jeu,
+    afin de permettre au joueur de choisir la carte qu'il souhaite conserver en cliquant dessus.
+    
+%-----------------------
+    \subsection{Suggestions d'amélioration}\label{subsec:suggestions-d'amelioration}
+
+    Pour le moment, notre jeu ne permet de jouer qu’à plusieurs sur un seul écran. On pourrait proposer une
+    fonctionnalité de multi-fenêtrage qui permettrait à chaque joueur de voir son jeu en tout temps.
+    On peut aussi envisager de rendre notre jeu disponible en multijoueur en LAN, en utilisant par exemple la bibliothèque \verb|LibGDX|.
+    Enfin, l’implémentation d’une IA est envisageable : pour commencer, elle pourrait choisir aléatoirement ses cartes,
+    et par la suite se baser sur les probabilités en fonction des cartes déjà jouées.
+
+%-----------------------------------------------
+    \newpage
+    \section{Conclusion}\label{sec:conclusion}
+
+    Ce projet nous a permis de comprendre l'importance d'avoir une base conceptuelle avant de commencer
+    l'implémentation d'un problème en Informatique. En effet, il est nécessaire d'avoir une base rigoureuse et bien structurée
+    afin de pouvoir par la suite avoir une certaine flexibilité dans les futurs ajouts ou modifications. De plus,
+    cela permet d'anticiper des problèmes potentiels en termes de relations entre classes, et ainsi de ne pas perdre de
+    temps dans la phase de développement quand un problème grave est rencontré. Enfin, cela nous a également appris à
+    collaborer autour d'un projet, notamment avec l'utilisation du versionnage mais nous avons pu aussi nous entraider avec
+    par exemple la gestion de l'interface graphique, que peu maîtrisaient.
+%-----------------------
 \end{document}

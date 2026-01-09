@@ -1,0 +1,29 @@
+\begin{tikzpicture}
+    \umlactor[x=-8,y=0]{Joueur}
+    \begin{umlsystem}[x=0,y=0]{Jeu Love Letter}
+        \umlusecase[x=0,y=3]{Lancer le jeu}
+        \umlusecase[x=0,y=1]{Quitter le jeu}
+        \umlusecase[x=0,y=-1]{Jouer son tour}
+        \umlusecase[x=0,y=-3]{Naviguer dans les menus}
+
+        \umlusecase[x=10,y=3]{Consulter sa main / Score}
+        \umlusecase[x=10,y=1]{Choisir une carte à jouer}
+        \umlusecase[x=10,y=-1]{Piocher une carte}
+        \umlusecase[x=10,y=-3]{Démarrer une partie}
+    \end{umlsystem}
+
+    \umlinclude{usecase-3}{usecase-5}
+    \umlinclude{usecase-3}{usecase-6}
+    \umlinclude{usecase-3}{usecase-7}
+    \umlinclude{usecase-4}{usecase-8}
+
+    \umlassoc{Joueur}{usecase-1}
+    \umlassoc{Joueur}{usecase-2}
+    \umlassoc{Joueur}{usecase-3}
+    \umlassoc{Joueur}{usecase-4}
+
+    \umlnote[x=0,y=5]{usecase-1}{Via Main et LoveLetter}
+    \umlnote[x=16,y=1]{usecase-6}{Méthode Player.chooseCard()}
+    \umlnote[x=16,y=-1]{usecase-7}{Méthode Player.drawCard()}
+    \umlnote[x=0,y=-5]{usecase-4}{Via SceneManager}
+\end{tikzpicture}
