@@ -66,6 +66,10 @@ public class SceneManager {
         }
     }
 
+    public void endGame() {
+        engine.setRunning(false);
+    }
+
     public InputManager getInput() {
         return engine.getInput();
     }

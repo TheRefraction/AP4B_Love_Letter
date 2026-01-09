@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 //scene index 0 : MENU
 public class SceneMenu implements IScene {
 
@@ -30,15 +29,13 @@ public class SceneMenu implements IScene {
     public void enter() {
         logger.log(Level.INFO, "Entering Menu scene!");
 
-        titleFont = new Font("Serif", Font.BOLD, 60);
-        menuFont = new Font("Arial", Font.PLAIN, 24);
+        titleFont = manager.getAssets().loadFont("/fonts/fnt_arial.ttf", 60);
+        menuFont = manager.getAssets().loadFont("/fonts/fnt_arial.ttf", 24);
     }
 
     @Override
     public void update() {
-
         objects.update(manager.getInput());
-
 
         if (manager.getInput().isKeyDown(KeyEvent.VK_ENTER)) {
             logger.log(Level.INFO, "Start Game requested");
@@ -46,7 +43,7 @@ public class SceneMenu implements IScene {
         }
 
         if (manager.getInput().isKeyDown(KeyEvent.VK_ESCAPE)) {
-            System.exit(0);
+            manager.endGame();
         }
     }
 
@@ -57,7 +54,7 @@ public class SceneMenu implements IScene {
 
         g2d.setFont(titleFont);
         g2d.setColor(new Color(255, 255, 255));
-        drawCenteredString(g2d, "LOVE LETTER", Const.WINDOW_HEIGHT / 3);
+        drawCenteredString(g2d, "LOVE CRUNCH TIME", Const.WINDOW_HEIGHT / 3);
 
         g2d.setFont(menuFont);
         g2d.setColor(Color.WHITE);
@@ -65,9 +62,6 @@ public class SceneMenu implements IScene {
         if ((System.currentTimeMillis() / 500) % 2 == 0) {
             drawCenteredString(g2d, "Appuyez sur [ENTREE] pour jouer", Const.WINDOW_HEIGHT / 2);
         }
-
-
-
     }
 
     @Override

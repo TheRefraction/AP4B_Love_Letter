@@ -2,6 +2,7 @@ package fr.utbm.loveletter.objects;
 
 import fr.utbm.loveletter.collisions.AABB;
 import fr.utbm.loveletter.sprites.Sprite;
+import fr.utbm.loveletter.system.AssetManager;
 import fr.utbm.loveletter.system.InputManager;
 
 import java.awt.*;
@@ -50,7 +51,7 @@ public abstract class GameSpritedObject extends GameObject {
     }
 
     @Override
-    public void render(Graphics2D g2d) {
+    public void render(Graphics2D g2d, AssetManager assets) {
         if (isVisible) {
             sprite.render(g2d, (int) imageIndex, x, y, imageScaleX, imageScaleY, imageAngle);
         }

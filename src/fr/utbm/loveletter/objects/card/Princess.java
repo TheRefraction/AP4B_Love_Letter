@@ -5,17 +5,17 @@ import fr.utbm.loveletter.sprites.Sprite;
 
 import java.util.ArrayList;
 
+import static fr.utbm.loveletter.utils.ECardValue.PRINCESS;
+
 public class Princess extends Card {
-
     public Princess(Sprite sprite) {
-        // On init a x=0, y=0 car le joueur  repositionnera la carte
-        super(0, 0, 9, "Princesse", "NEED TO DESCRIBE", sprite);
-
+        super(0, 0, PRINCESS.getValue(), PRINCESS.getName(), "Si le joueur joue cette carte, il\n" +
+                "est éliminé.", sprite);
     }
 
     public void playEffect(ArrayList<Player> players, int ownerId) {
-        System.out.println("Le joueur " + players.get(ownerId).toString() + " joue une Princesse !");
         players.get(ownerId).setEliminated(true);
+
         //if played OR DISCARDED, the owner get out of the round
     }
 }

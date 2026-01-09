@@ -1,27 +1,26 @@
 package fr.utbm.loveletter.objects.card;
+
 import fr.utbm.loveletter.objects.player.Player;
 import fr.utbm.loveletter.sprites.Sprite;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Scanner;
+
+import static fr.utbm.loveletter.utils.ECardValue.PRIEST;
 
 public class Priest extends Card {
-
-
     public Priest(Sprite sprite) {
-        // On init a x=0, y=0 car le joueur repositionnera la carte
-        super(0, 0, 2, "Prêtre", "NEED TO DESCRIBE", sprite);
-
+        super(0, 0, PRIEST.getValue(), PRIEST.getName(), "Le joueur peut regarder la carte\n" +
+                "dʼun adversaire de votre choix. Il\n" +
+                "ne peut pas informer les autres\n" +
+                "de ce quʼelle a vu.", sprite);
     }
-
 
     @Override
     public void playEffect(ArrayList<Player> players, int ownerId) {
-        System.out.println("Le joueur " + players.get(ownerId).toString() + " joue un prêtre !");
-        Player owner  = players.get(ownerId);
+        Player owner = players.get(ownerId);
 
+        // Get targetable players
         ArrayList<Player> canSeeHand = new ArrayList<>();
         for (Player p : players) {
             if (p != owner && !p.isEliminated() && !p.isProtected()) {
@@ -34,31 +33,31 @@ public class Priest extends Card {
             return;
         }
 
+        // Get target
         Player[] playersArray = canSeeHand.toArray(new Player[0]);
-        Player target = (Player) JOptionPane.showInputDialog(
-                null,
-                "Choisissez un joueur à cibler :",
-                "Effet du Prêtre",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                playersArray,
-                playersArray[0]
-        );
+        Player target;
 
-        if (target == null) return;
+        do {
+            target = (Player) JOptionPane.showInputDialog(
+                    null,
+                    "Choisissez un joueur à cibler:",
+                    "Effet de l'Espionnage Industriel ",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    playersArray,
+                    playersArray[0]
+            );
+        } while (target == null);
 
-        Card targetCard = target.getHand().get(0);
+        // Show card
+        Card targetCard = target.getHand().getFirst();
         JOptionPane.showMessageDialog(
                 null,
-                "Le joueur " + target.getName() + " possède la carte :\n\n" +
-                        "Nom : " + targetCard.getName() + "\n" +
-                        "Valeur : " + targetCard.getValue() + "\n" +
-                        "Description : " + targetCard.getDescription(),
-                "Vision du Prêtre",
+                "Le joueur " + target.getName() + " possède la carte:\n\n" +
+                        "Nom: " + targetCard.getName() + "\n" +
+                        "Valeur: " + targetCard.getValue() + "\n" +
+                        "Description: " + targetCard.getDescription(),
+                "Espionnage Industriel",
                 JOptionPane.INFORMATION_MESSAGE);
-
-
-
     }
-
 }

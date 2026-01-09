@@ -5,19 +5,28 @@ import fr.utbm.loveletter.sprites.Sprite;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Scanner;
+
+import static fr.utbm.loveletter.utils.ECardValue.BARON;
 
 public class Baron extends Card {
     public Baron(Sprite sprite) {
-        super(0, 0, 3, "Baron", "NEED TO DESCRIBE", sprite);
+        super(0, 0, BARON.getValue(), BARON.getName(), "Le joueur choisit une carte dʼun\n" +
+                "adversaire. Les deux joueurs se\n" +
+                "montrent leurs cartes. Si la\n" +
+                "carte de lʼadversaire est plus\n" +
+                "petite que celle du joueur,\n" +
+                "lʼadversaire est éliminé de la\n" +
+                "manche. Si la carte de\n" +
+                "lʼadversaire est plus haute, cʼest\n" +
+                "le joueur qui est éliminé. En cas\n" +
+                "dʼégalité, rien ne se passe.", sprite);
     }
 
     @Override
     public void playEffect(ArrayList<Player> players, int ownerId) {
-        System.out.println("Le joueur " + players.get(ownerId).toString() + " joue un baron !");
-        Player owner  = players.get(ownerId);
+        Player owner = players.get(ownerId);
 
+        // Recover list of targetable players
         ArrayList<Player> canSeeHand = new ArrayList<>();
         for (Player p : players) {
             if (p != owner && !p.isEliminated() && !p.isProtected()) {
@@ -30,57 +39,48 @@ public class Baron extends Card {
             return;
         }
 
+        // Get target
         Player[] playersArray = canSeeHand.toArray(new Player[0]);
-        Player target = (Player) JOptionPane.showInputDialog(
-                null,
-                "Choisissez un joueur à cibler :",
-                "Effet du Baron",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                playersArray,
-                playersArray[0]
-        );
+        Player target;
 
-        if (target == null) return;
+        do {
+            target = (Player) JOptionPane.showInputDialog(
+                    null,
+                    "Choisissez un joueur à cibler:",
+                    "Effet de l'Évaluation de lʼinnovation",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    playersArray,
+                    playersArray[0]
+            );
+        } while (target == null);
 
-
-
-
+        // Compare cards
         Card ownerCard = owner.getHand().getFirst();
         Card targetCard = target.getHand().getFirst();
 
-
-
         StringBuilder resultMsg = new StringBuilder();
-        resultMsg.append(" Duel du Baron \n\n");
-        resultMsg.append(owner.getName()).append(" révèle : ").append(ownerCard.getName())
+        resultMsg.append("Duel de projet\n\n");
+        resultMsg.append(owner.getName()).append(" révèle: ").append(ownerCard.getName())
                 .append(" (").append(ownerCard.getValue()).append(")\n");
-        resultMsg.append(target.getName()).append(" révèle : ").append(targetCard.getName())
+        resultMsg.append(target.getName()).append(" révèle: ").append(targetCard.getName())
                 .append(" (").append(targetCard.getValue()).append(")\n\n");
-
 
         if (ownerCard.getValue() > targetCard.getValue()) {
             target.setEliminated(true);
-            resultMsg.append("RÉSULTAT : ").append(target.getName()).append(" est éliminé !");
-        }
-        else if (ownerCard.getValue() < targetCard.getValue()) {
+            resultMsg.append("RÉSULTAT: ").append(target.getName()).append(" est éliminé !");
+        } else if (ownerCard.getValue() < targetCard.getValue()) {
             owner.setEliminated(true);
-            resultMsg.append("RÉSULTAT : ").append(owner.getName()).append(" est éliminé !");
-        }
-        else {
-            resultMsg.append("RÉSULTAT : Égalité ! Personne n'est éliminé.");
+            resultMsg.append("RÉSULTAT: ").append(owner.getName()).append(" est éliminé !");
+        } else {
+            resultMsg.append("RÉSULTAT: Égalité ! Personne n'est éliminé.");
         }
 
         JOptionPane.showMessageDialog(
                 null,
                 resultMsg.toString(),
-                "Résultat du Baron",
+                "Résultat de l'évaluation",
                 JOptionPane.INFORMATION_MESSAGE
         );
-
-
     }
-        //let the owner choose another player
-        //display all the cards to the 2 players
-        //the player with the lowest card's value get out of round
 }

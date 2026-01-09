@@ -41,13 +41,13 @@ public class GameObjectManager {
         }
     }
 
-    public void render(Graphics2D g2d) {
+    public void render(Graphics2D g2d, AssetManager assets) {
         // Z-Depth sorting
         // The bigger z is, the closer it is to the camera (no perspective)
         objects.sort(Comparator.comparingInt(GameObject::getZ));
 
         for (GameObject obj : objects) {
-            obj.render(g2d);
+            obj.render(g2d, assets);
         }
     }
 }

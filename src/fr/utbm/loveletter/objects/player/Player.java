@@ -2,11 +2,15 @@ package fr.utbm.loveletter.objects.player;
 
 import fr.utbm.loveletter.objects.card.Card;
 import fr.utbm.loveletter.objects.GameObject;
+import fr.utbm.loveletter.system.AssetManager;
 import fr.utbm.loveletter.system.InputManager;
 import fr.utbm.loveletter.utils.Const;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+
+import static fr.utbm.loveletter.utils.ECardValue.*;
 
 public class Player extends GameObject implements IPlayer {
     private final ArrayList<Card> hand = new ArrayList<>();
@@ -52,21 +56,31 @@ public class Player extends GameObject implements IPlayer {
 
     //verify for the countess problem
     public boolean canPlayCard(Card cardToPlay) {
+        boolean res = true;
+
         boolean hasCountess = false;
         boolean hasPrinceOrKing = false;
 
         for (Card c : hand) {
-            if (c.getValue() == 8) hasCountess = true;
-            if (c.getValue() == 5 || c.getValue() == 7) hasPrinceOrKing = true;
+            if (c.getValue() == COUNTESS.getValue()) hasCountess = true;
+            if (c.getValue() == PRINCE.getValue() || c.getValue() == KING.getValue()) hasPrinceOrKing = true;
         }
 
+        // Cannot play current card if countess + king or prince
         if (hasCountess && hasPrinceOrKing) {
-            if (cardToPlay.getValue() != 8) {
-                System.out.println("Règle : Vous devez jouer la Comtesse !");
-                return false;
+            if (cardToPlay.getValue() != COUNTESS.getValue()) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Vous devez jouer le " + cardToPlay.getName() + " (" + cardToPlay.getValue() + ") !",
+                        "Erreur",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+
+                res = false;
             }
         }
-        return true;
+
+        return res;
     }
 
     //method to reposition the cards --> size, position, etc...
@@ -149,23 +163,41 @@ public class Player extends GameObject implements IPlayer {
 
     @Override
     public void update(InputManager input) {
+        z = 5;
+
         if (isPlaying) {
-            for (Card c : hand) c.update(input);
+            for (Card c : hand) {
+                c.update(input);
+
+                // Display tooltip above everything else
+                // as cards in hand are not registered by GameObjectManager
+                if (c.isShowToolTip()) {
+                    z = 20;
+                }
+            }
         }
     }
 
     @Override
-    public void render(Graphics2D g2d) {
+    public void render(Graphics2D g2d, AssetManager assets) {
+        String txt = name + " (" + score + ")";
+
+        g2d.setFont(assets.loadFont("/fonts/fnt_arial.ttf", 16));
         g2d.setColor(Color.WHITE);
-        g2d.drawString(name + " (" + score + ")", x, y);
+        g2d.drawString(txt, x, y);
 
         if (isPlaying) {
-            for (Card c : hand) c.render(g2d);
+            for (Card c : hand) c.render(g2d, assets);
         }
 
         if (isEliminated) {
+            FontMetrics metrics = g2d.getFontMetrics();
+
+            int width = metrics.stringWidth(txt);
+            int height = metrics.getHeight();
+
             g2d.setColor(Color.RED);
-            g2d.drawLine(x, y-5, x + 50, y-5);
+            g2d.drawLine(x, y - height / 2 + 4, x + width, y - height / 2 + 4);
         }
 
     }

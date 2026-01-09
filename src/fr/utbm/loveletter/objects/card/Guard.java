@@ -1,23 +1,33 @@
 package fr.utbm.loveletter.objects.card;
-import fr.utbm.loveletter.objects.player.Player;
 
+import fr.utbm.loveletter.objects.player.Player;
 import fr.utbm.loveletter.sprites.Sprite;
 
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
 
-public class Guard extends Card {
+import static fr.utbm.loveletter.utils.ECardValue.*;
 
+public class Guard extends Card {
     public Guard(Sprite sprite) {
-        // On init a x=0, y=0 car le joueur  repositionnera la carte
-        super(0, 0, 1, "Garde", "Devinez la main d'un joueur", sprite);
+        super(0, 0, GUARD.getValue(), GUARD.getName(), "Le joueur désigne un adversaire\n" +
+                "autour de la table et essaye de\n" +
+                "deviner sa carte. Il peut citer\n" +
+                "nʼimporte quelle carte sauf le\n" +
+                "“Soupçon De Copieˮ (un\n" +
+                "“Soupçon De Copieˮ ne peut\n" +
+                "pas être vérifié avec un autre\n" +
+                "“Soupçon De Copieˮ). Si la carte\n" +
+                "est trouvée, lʼadversaire doit\n" +
+                "attendre la manche suivante\n" +
+                "pour rejouer.", sprite);
     }
 
     @Override
     public void playEffect(ArrayList<Player> players, int ownerId) {
-        System.out.println("Le joueur " + players.get(ownerId).toString() + " joue un Garde !");
         Player owner  = players.get(ownerId);
+
+        // Recover targetable players
         ArrayList<Player> canSeeHand = new ArrayList<>();
         for (Player p : players) {
             if (p != owner && !p.isEliminated() && !p.isProtected()) {
@@ -26,86 +36,62 @@ public class Guard extends Card {
         }
 
         if (canSeeHand.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Aucune cible valide");
+            JOptionPane.showMessageDialog(null, "Aucune cible valide !");
             return;
         }
 
         Player[] playersArray = canSeeHand.toArray(new Player[0]);
-        Player target = (Player) JOptionPane.showInputDialog(
-                null,
-                "Choisissez un joueur à cibler :",
-                "Effet du Garde",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                playersArray,
-                playersArray[0]
-        );
+        Player target;
 
-        String[] cardValues = {"0 - Espionne", "2 - Prêtre", "3 - Baron", "4 - Servante", "5 - Prince", "6 - Chancelier", "7 - Roi", "8 - Comtesse", "9 - Princesse"};
+        do {
+            target = (Player) JOptionPane.showInputDialog(
+                    null,
+                    "Choisissez un joueur à cibler:",
+                    "Effet du Soupçon De Copie",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    playersArray,
+                    playersArray[0]
+            );
+        } while (target == null);
 
-        String selectedCardString = (String) JOptionPane.showInputDialog(
+        String[] cardValues = {
+                SPY.toString(),
+                PRIEST.toString(),
+                BARON.toString(),
+                HANDMAID.toString(),
+                PRINCE.toString(),
+                CHANCELLOR.toString(),
+                KING.toString(),
+                COUNTESS.toString(),
+                PRINCESS.toString()
+        };
+
+        String selectedCardString;
+
+        do {
+            selectedCardString = (String) JOptionPane.showInputDialog(
                 null,
-                "Quelle carte pensez-vous que " + target.toString() + " possède ?",
-                "Effet du Garde",
+                "Quelle carte pensez-vous que " + target + " possède ?",
+                "Effet de soupçon",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 cardValues,
-                cardValues[0]
-        );
+                cardValues[0]);
+        } while (selectedCardString == null);
 
-        if (selectedCardString == null) return;
-
-        //recupere le 1er chiffre du txt (a verifier)
+        // Recover first number from string
         int guessedValue = Integer.parseInt(selectedCardString.substring(0, 1));
 
         if (!target.getHand().isEmpty()) {
-            Card targetCard = target.getHand().get(0);
+            Card targetCard = target.getHand().getFirst();
 
             if (targetCard.getValue() == guessedValue) {
-                JOptionPane.showMessageDialog(null, "Bien joué ! " + target.toString() + " avait bien un " + targetCard.getName() + ".\nIl est éliminé");
+                JOptionPane.showMessageDialog(null, "Bien joué ! " + target + " avait bien un " + targetCard.getName() + ".\nIl a essayé de vous copier, il est donc éliminé !");
                 target.setEliminated(true); // the player is eliminated
             } else {
-                JOptionPane.showMessageDialog(null, "Non, " + target.toString() + " n'a pas cette carte.");
+                JOptionPane.showMessageDialog(null, "Non, " + target + " ne vous a pas copié.");
             }
         }
     }
 }
-
-
-
-
-    //ANCIENNE VERSION AVEC SCANNER
-    /*
-    public void playEffect(GameManager game, Player owner) {
-        Scanner scanner = new Scanner(System.in);
-        int guess = 1;
-        String name = owner.name;
-        while (guess == 1) {
-            System.out.println("Which card would you like to guess (You can't guess the guard) ? : ");
-            guess = Integer.parseInt(scanner.nextLine());
-        }
-        while (Objects.equals(name, owner.name)) {
-            System.out.println("Which player would you like to eliminate (you can't choose yourself) ? : ");
-            name = scanner.nextLine();
-            for (Player player : game.getPlayers()) {
-                if (Objects.equals(name, player.name)) {
-                    if (player.handmaid) {
-                        name = owner.name;
-                        System.out.println("You can't choose them because they are protected by the Handmaid.");
-                    }
-                }
-            }
-        }
-        for (Player player : game.getPlayers()) {
-            if (Objects.equals(name, player.name)) {
-                if (player.hand.getFirst().getValue() == guess) {
-                    game.eleminate(player);
-                }
-            }
-        }
-        //let the owner choose one card of the game (0-9), choose one player (other than himself)
-        // if the card is in the other player's hand, he gets out of the round
-    }
-
-}
-*/

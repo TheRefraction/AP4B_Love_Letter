@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static fr.utbm.loveletter.utils.ECardValue.*;
+
 //scene index 1 : GAME
 public class SceneGame implements IScene {
     private static final Logger logger = Logger.getLogger(SceneGame.class.getName());
@@ -33,6 +35,7 @@ public class SceneGame implements IScene {
     private int currentPlayerIndex = 0; //the actual player, the one who is playing
     private Card chosenCard;
     private final int[] neededPointsPerPlayers = {6,5,4,3,3};
+    private boolean classicVersion = false;
 
     private EGameState currentState = EGameState.START_TURN;
 
@@ -59,14 +62,36 @@ public class SceneGame implements IScene {
         manager.getAssets().loadSprite("/sprites/spr_card_princess.png", 0, 0, 2);
 
         defaultFont = manager.getAssets().loadFont("/fonts/fnt_arial.ttf", 18);
+        manager.getAssets().loadFont("/fonts/fnt_arial.ttf", 16); // Player font
+        manager.getAssets().loadFont("/fonts/fnt_arial.ttf", 12); // Tooltip font
+
+        // What game to play?
+        int selectedGame = -1;
+        do {
+            selectedGame = JOptionPane.showConfirmDialog(
+                    null,
+                    "Voulez-vous jouer à la version classique ?",
+                    "Mode de jeu",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+        } while (selectedGame == -1);
+
+        classicVersion = (selectedGame == JOptionPane.YES_OPTION);
 
         // Init number of players
-        Object[] options = {"2", "3", "4", "5", "6"};
+        Object[] options;
+
+        if (classicVersion) {
+            options = new Object[]{"2", "3", "4"};
+        } else {
+            options = new Object[]{"2", "3", "4", "5", "6"};
+        }
+
         String selectedNumber;
         do {
             selectedNumber = (String) JOptionPane.showInputDialog(
                 null,
-                "Combien de joueurs souhaitez-vous?",
+                "Combien de joueurs souhaitez-vous ?",
                 "Nombre de joueurs",
                 JOptionPane.QUESTION_MESSAGE,
                 null,
@@ -130,8 +155,6 @@ public class SceneGame implements IScene {
         deck.add(new Princess(spr9));
         deck.add(new Countess(spr8));
         deck.add(new King(spr7));
-        deck.add(new Chancellor(spr6));
-        deck.add(new Chancellor(spr6));
         deck.add(new Prince(spr5));
         deck.add(new Prince(spr5));
         deck.add(new Handmaid(spr4));
@@ -145,9 +168,15 @@ public class SceneGame implements IScene {
         deck.add(new Guard(spr1));
         deck.add(new Guard(spr1));
         deck.add(new Guard(spr1));
-        deck.add(new Guard(spr1));
-        deck.add(new Spy(spr0));
-        deck.add(new Spy(spr0));
+        
+        // If normal version, then add all cards
+        if (!classicVersion) {
+            deck.add(new Guard(spr1));
+            deck.add(new Spy(spr0));
+            deck.add(new Spy(spr0));
+            deck.add(new Chancellor(spr6));
+            deck.add(new Chancellor(spr6));
+        }
 
         // Shuffle cards
         Collections.shuffle(deck);
@@ -253,17 +282,20 @@ public class SceneGame implements IScene {
             return;
         }
 
-        g2d.setFont(defaultFont);
-
         // Objects rendering
-        objects.render(g2d);
+        objects.render(g2d, manager.getAssets());
 
         // GUI rendering
+        g2d.setFont(defaultFont);
         g2d.setColor(Color.WHITE);
 
         g2d.drawString("Tour de: " + getActualPlayer(), 8, 20);
         g2d.drawString("Taille de la pioche: " + deck.size(), 8, 40);
         g2d.drawString("Liste des joueurs: ", 8, (Const.WINDOW_HEIGHT - (players.size() + 1) * 20) / 2);
+
+        // Very important
+        g2d.setFont(manager.getAssets().loadFont("/fonts/fnt_arial.ttf", 12));
+        g2d.drawString("Sponsorisé par le CrunchTime©", 4, Const.WINDOW_HEIGHT - 40);
     }
 
     @Override
@@ -310,18 +342,22 @@ public class SceneGame implements IScene {
                     }
                 }
 
+                // To avoid being able to use card when not allowed
+                if (chosenCard != null && !getActualPlayer().canPlayCard(chosenCard)) {
+                    chosenCard = null;
+                }
+
                 // If a card has been chosen, then play effect
                 if (chosenCard != null) {
                     getActualPlayer().getHand().remove(chosenCard);
 
-                    // FIXME: Peut-être bloquant ? Ajouter un état supplémentaire
                     chosenCard.playEffect(players, currentPlayerIndex);
 
                     // Change state
                     currentState = EGameState.END_TURN;
 
                     // Effect of Prince after player has been princed
-                    if (chosenCard.getValue() == 5) {
+                    if (chosenCard.getValue() == PRINCE.getValue()) {
                         for (Player p : players) {
                             if (p.isPrinced()) {
                                 // Hand is empty afterwards
@@ -330,7 +366,7 @@ public class SceneGame implements IScene {
                                 objects.add(card);
 
                                 // If princess is being thrown out
-                                if (card.getValue() == 9) {
+                                if (card.getValue() == PRINCESS.getValue()) {
                                     p.setEliminated(true);
                                 } else {
                                     if (deck.isEmpty()) {
@@ -347,7 +383,7 @@ public class SceneGame implements IScene {
                                 p.setPrinced(false);
                             }
                         }
-                    } else if (chosenCard.getValue() == 6 && !deck.isEmpty()) { // If chancellor is played
+                    } else if (chosenCard.getValue() == CHANCELLOR.getValue() && !deck.isEmpty()) { // If chancellor is played
                         // Draw two or one cards depending on the deck
                         getActualPlayer().drawCard(deck.removeFirst());
                         if (!deck.isEmpty()) {
@@ -391,6 +427,7 @@ public class SceneGame implements IScene {
                 break;
             }
             case END_TURN: {
+                // Get number of players alive and discard hand of dead players
                 int playersAlive = 0;
                 for (Player p : players) {
                     if (!p.isEliminated()) {
@@ -452,28 +489,27 @@ public class SceneGame implements IScene {
                 StringBuilder message = new StringBuilder();
                 message.append("Fin de la manche !\n\n");
 
-                //display the winners
+                // Display the winners
                 if (winners.size() == 1) {
-                    Player w = winners.get(0);
-                    message.append("Le vainqueur est : ").append(w.getName()).append("\n");
+                    Player w = winners.getFirst();
+                    message.append("Le vainqueur est: ").append(w.getName()).append("\n");
                 } else {
-                    message.append("Égalité entre : ");
+                    message.append("Égalité entre: ");
                     for (Player w : winners) {
                         message.append(w.getName()).append(", ");
                     }
                 }
-                // show the scores of all players
+
+                // Show scores of all players
                 message.append("\n--- Scores actuels ---\n");
                 for (Player p : players) {
-                    message.append(p.getName()).append(" : ").append(p.getScore()).append(" points");
+                    message.append(p.getName()).append(": ").append(p.getScore()).append(" points");
 
-                    // if someone win the game, display GAGNANT next to his name
+                    // If someone won the game, display GAGNANT next to his name
                     int targetScore = neededPointsPerPlayers[players.size() - 2] ;
                     if (p.getScore() >= targetScore) message.append(" (GAGNANT !)");
                     message.append("\n");
                 }
-
-
 
                 JOptionPane.showMessageDialog(
                         null,
@@ -482,7 +518,6 @@ public class SceneGame implements IScene {
                         JOptionPane.INFORMATION_MESSAGE
                 );
 
-
                 // First player to play next round is selected randomly in the winners list
                 lastWinner = (int) (Math.random() * winners.size());
 
@@ -490,8 +525,6 @@ public class SceneGame implements IScene {
                 if (won) {
                     currentState = EGameState.GAME_OVER;
                 } else {
-                    // TODO: Message box here for end of round
-
                     initRound();
 
                     currentState = EGameState.START_TURN;

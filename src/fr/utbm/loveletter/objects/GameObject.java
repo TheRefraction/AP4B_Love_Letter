@@ -1,6 +1,7 @@
 package fr.utbm.loveletter.objects;
 
 import fr.utbm.loveletter.collisions.AABB;
+import fr.utbm.loveletter.system.AssetManager;
 import fr.utbm.loveletter.system.InputManager;
 
 import java.awt.*;
@@ -64,5 +65,5 @@ public abstract class GameObject {
 
     public abstract void update(InputManager input);
 
-    public abstract void render(Graphics2D g2d);
+    public abstract void render(Graphics2D g2d, AssetManager assets);
 }

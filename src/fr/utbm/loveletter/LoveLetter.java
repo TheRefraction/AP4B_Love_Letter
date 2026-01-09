@@ -1,6 +1,5 @@
 package fr.utbm.loveletter;
 
-import fr.utbm.loveletter.scenes.SceneGame;
 import fr.utbm.loveletter.system.AssetManager;
 import fr.utbm.loveletter.system.InputManager;
 import fr.utbm.loveletter.system.SceneManager;
@@ -181,5 +180,13 @@ public class LoveLetter implements Runnable {
 
     public JFrame getWindow() {
         return window;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 }
