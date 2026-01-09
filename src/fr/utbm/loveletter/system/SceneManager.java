@@ -21,6 +21,10 @@ public class SceneManager {
     public SceneManager(LoveLetter engine) {
         this.engine = engine;
 
+        //scene index 0 : MENU
+        scenes.add(() -> new SceneMenu(this));
+
+        //scene index 1 ; GAME
         scenes.add(() -> new SceneGame(this));
     }
 

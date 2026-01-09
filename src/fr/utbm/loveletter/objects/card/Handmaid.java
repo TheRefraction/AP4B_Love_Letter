@@ -18,8 +18,11 @@ public class Handmaid extends Card {
         System.out.println("Le joueur " + players.get(ownerId).toString() + " joue une Servante!");
         players.get(ownerId).setProtected(true);
         //give the owner a protection against other card until his next turn.
-        //IF ALL PLAYER ARE PROTECTED :
-        //ANOTHER PLAYER : card has no effect.
-        //ANY PLAYER (EVEN THE OWNER) : FORCED TO PLAY THE EFFECT ON HIMSELF
+        javax.swing.JOptionPane.showMessageDialog(
+                null,
+                "Vous êtes protégé jusqu'au début de votre prochain tour !",
+                "Effet de la Servante",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE
+        );
     }
 }

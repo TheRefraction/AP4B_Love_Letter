@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//scene index 1 : GAME
 public class SceneGame implements IScene {
     private static final Logger logger = Logger.getLogger(SceneGame.class.getName());
 
@@ -128,7 +129,7 @@ public class SceneGame implements IScene {
         // Initialize deck
         deck.add(new Princess(spr9));
         deck.add(new Countess(spr8));
-        //deck.add(new King(spr7));
+        deck.add(new King(spr7));
         deck.add(new Chancellor(spr6));
         deck.add(new Chancellor(spr6));
         deck.add(new Prince(spr5));
@@ -447,6 +448,41 @@ public class SceneGame implements IScene {
                     }
                 }
 
+                // Message of end round
+                StringBuilder message = new StringBuilder();
+                message.append("Fin de la manche !\n\n");
+
+                //display the winners
+                if (winners.size() == 1) {
+                    Player w = winners.get(0);
+                    message.append("Le vainqueur est : ").append(w.getName()).append("\n");
+                } else {
+                    message.append("Égalité entre : ");
+                    for (Player w : winners) {
+                        message.append(w.getName()).append(", ");
+                    }
+                }
+                // show the scores of all players
+                message.append("\n--- Scores actuels ---\n");
+                for (Player p : players) {
+                    message.append(p.getName()).append(" : ").append(p.getScore()).append(" points");
+
+                    // if someone win the game, display GAGNANT next to his name
+                    int targetScore = neededPointsPerPlayers[players.size() - 2] ;
+                    if (p.getScore() >= targetScore) message.append(" (GAGNANT !)");
+                    message.append("\n");
+                }
+
+
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        message.toString(),
+                        "Résultat de la manche",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+
+
                 // First player to play next round is selected randomly in the winners list
                 lastWinner = (int) (Math.random() * winners.size());
 
@@ -465,7 +501,7 @@ public class SceneGame implements IScene {
             }
             case GAME_OVER: {
                 logger.log(Level.INFO, "Game is over now");
-
+                manager.loadScene(0);
                 break;
             }
             default: {

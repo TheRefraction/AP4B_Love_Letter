@@ -20,6 +20,7 @@ public class Player extends GameObject implements IPlayer {
     private boolean isProtected = false;
     private boolean princed = false;
 
+
     public Player(int x, int y, String name) {
         super(x, y, 5);
         this.name = name;
@@ -166,5 +167,6 @@ public class Player extends GameObject implements IPlayer {
             g2d.setColor(Color.RED);
             g2d.drawLine(x, y-5, x + 50, y-5);
         }
+
     }
 }

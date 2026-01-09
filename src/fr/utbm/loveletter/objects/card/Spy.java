@@ -14,6 +14,12 @@ public class Spy extends Card {
     public void playEffect(ArrayList<Player> players, int ownerId) {
         System.out.println("Le joueur " + players.get(ownerId).toString() + " joue une Espionne !");
         //no effect, but must add 1 score if still in the round at the end
+        javax.swing.JOptionPane.showMessageDialog(
+                null,
+                "Si vous gagner le round, vous aurez un point en plus !",
+                "Effet de l'Espionne",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE
+        );
         players.get(ownerId).setHasUsedSpy(true);
     }
 }

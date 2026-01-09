@@ -2,6 +2,7 @@ package fr.utbm.loveletter.objects.card;
 import fr.utbm.loveletter.objects.player.Player;
 import fr.utbm.loveletter.sprites.Sprite;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
@@ -15,41 +16,44 @@ public class King extends Card {
     }
 
 
-    public void playEffect( ArrayList<Player> players , int ownerId) {
-        System.out.println("Le joueur " + players.get(ownerId).toString() + " joue un Roi !");
-        Scanner scanner = new Scanner(System.in);
-        String name = players.get(ownerId).getName();
-        while (Objects.equals(name, players.get(ownerId).getName())) {
-            System.out.println("Which player's hand would you like to exchange with yourself (you can't choose yourself) ? : ");
-            name = scanner.nextLine();
-            for (Player player : players) {
-                if (Objects.equals(name, player.getName())) {
-                    if (player.isProtected()) {
-                        name = players.get(ownerId).getName();
-                        System.out.println("You can't choose them because they are protected by the Handmaid.");
-                    }
-                }
+    @Override
+    public void playEffect(ArrayList<Player> players, int ownerId) {
+        System.out.println("Le joueur " + players.get(ownerId).toString() + " joue un roi !");
+        Player owner  = players.get(ownerId);
+
+        ArrayList<Player> canSeeHand = new ArrayList<>();
+        for (Player p : players) {
+            if (!p.isEliminated() && !p.isProtected() && p != owner) {
+                canSeeHand.add(p);
             }
         }
-        for (Player player :players) {
-            if (Objects.equals(name, player.getName())) {
-                ArrayList<Card> temp = new ArrayList<>();
-                while (!players.get(ownerId).getHand().isEmpty()) {
-                    temp.add(players.get(ownerId).getHand().getFirst());
-                    players.get(ownerId).getHand().removeFirst();
-                }
-                while (!player.getHand().isEmpty()) {
-                    players.get(ownerId).getHand().add(player.getHand().getFirst());
-                    player.getHand().removeFirst();
-                }
-                while (!temp.isEmpty()) {
-                    players.get(ownerId).getHand().add(temp.getFirst());
-                    temp.removeFirst();
-                }
-                return;
-            }
+
+        if (canSeeHand.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Personne ne peut être ciblé (tous protégés ou éliminés).");
+            return;
         }
-        //the owner can swap hands with another player of his choice
+
+        Player[] playersArray = canSeeHand.toArray(new Player[0]);
+        Player target = (Player) JOptionPane.showInputDialog(
+                null,
+                "Choisissez un joueur avec qui échanger votre main :",
+                "Effet du roi",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                playersArray,
+                playersArray[0]
+        );
+
+        if (target == null) {
+            return;
+        }
+
+        Card ownerToTarget = owner.getHand().removeFirst();
+        Card targetToOwner = target.getHand().removeFirst();
+        owner.drawCard(targetToOwner);
+        target.drawCard(ownerToTarget);
+
 
     }
+
 }
