@@ -128,11 +128,11 @@ public class SceneGame implements IScene {
         // Initialize deck
         deck.add(new Princess(spr9));
         deck.add(new Countess(spr8));
-        deck.add(new King(spr7));
-        /*deck.add(new Chancellor(spr6));
+        //deck.add(new King(spr7));
+        deck.add(new Chancellor(spr6));
         deck.add(new Chancellor(spr6));
         deck.add(new Prince(spr5));
-        deck.add(new Prince(spr5));*/
+        deck.add(new Prince(spr5));
         deck.add(new Handmaid(spr4));
         deck.add(new Handmaid(spr4));
         deck.add(new Baron(spr3));
@@ -223,7 +223,7 @@ public class SceneGame implements IScene {
         players.get(currentPlayerIndex).setPlaying(false);
         do {
             currentPlayerIndex = (currentPlayerIndex + 1) % size;
-        } while(players.get(currentPlayerIndex).isEliminated);
+        } while(players.get(currentPlayerIndex).isEliminated());
 
         players.get(currentPlayerIndex).setPlaying(true);
 
@@ -281,12 +281,12 @@ public class SceneGame implements IScene {
         objects.update(manager.getInput());
 
         switch(currentState) {
-            case START_TURN:
+            case START_TURN: {
                 logger.log(Level.INFO, "Player " + getActualPlayer() + " is playing!");
 
                 // Reset variables at the beginning of the turn
                 chosenCard = null;
-                if (getActualPlayer().getProtected()) {
+                if (getActualPlayer().isProtected()) {
                     getActualPlayer().setProtected(false);
                 }
 
@@ -299,7 +299,8 @@ public class SceneGame implements IScene {
                 currentState = EGameState.CHOOSE_CARD;
 
                 break;
-            case CHOOSE_CARD:
+            }
+            case CHOOSE_CARD: {
                 // Player chooses between the two cards he owns
                 for (Card card : getActualPlayer().getHand()) {
                     if (card.isClicked(manager.getInput())) {
@@ -315,18 +316,94 @@ public class SceneGame implements IScene {
                     // FIXME: Peut-être bloquant ? Ajouter un état supplémentaire
                     chosenCard.playEffect(players, currentPlayerIndex);
 
+                    // Change state
+                    currentState = EGameState.END_TURN;
+
+                    // Effect of Prince after player has been princed
+                    if (chosenCard.getValue() == 5) {
+                        for (Player p : players) {
+                            if (p.isPrinced()) {
+                                // Hand is empty afterwards
+                                Card card = p.getHand().removeFirst();
+                                discardPile.add(card);
+                                objects.add(card);
+
+                                // If princess is being thrown out
+                                if (card.getValue() == 9) {
+                                    p.setEliminated(true);
+                                } else {
+                                    if (deck.isEmpty()) {
+                                        Card hiddenCard = discardPile.removeFirst();
+                                        objects.remove(hiddenCard);
+                                        hiddenCard.setFaceUp(true);
+
+                                        p.drawCard(hiddenCard);
+                                    } else {
+                                        p.drawCard(deck.removeFirst());
+                                    }
+                                }
+
+                                p.setPrinced(false);
+                            }
+                        }
+                    } else if (chosenCard.getValue() == 6 && !deck.isEmpty()) { // If chancellor is played
+                        // Draw two or one cards depending on the deck
+                        getActualPlayer().drawCard(deck.removeFirst());
+                        if (!deck.isEmpty()) {
+                            getActualPlayer().drawCard(deck.removeFirst());
+                        }
+
+                        currentState = EGameState.CHANCELLOR_TURN;
+                    }
+
                     // Card must be discarded and registered by GameObjectManager
                     discardPile.add(chosenCard);
                     objects.add(chosenCard);
 
                     updateDiscardedCardsPosition();
 
+                    chosenCard = null;
+                }
+
+                break;
+            }
+            case CHANCELLOR_TURN: {
+                // Player chooses the card he wants to keep
+                for (Card card : getActualPlayer().getHand()) {
+                    if (card.isClicked(manager.getInput())) {
+                        chosenCard = card;
+                        break;
+                    }
+                }
+
+                if (chosenCard != null) {
+                    getActualPlayer().getHand().remove(chosenCard);
+
+                    deck.addAll(getActualPlayer().getHand());
+                    getActualPlayer().getHand().clear();
+
+                    getActualPlayer().drawCard(chosenCard);
+
                     currentState = EGameState.END_TURN;
                 }
 
                 break;
-            case END_TURN:
-                int playersAlive = getPlayersAlive();
+            }
+            case END_TURN: {
+                int playersAlive = 0;
+                for (Player p : players) {
+                    if (!p.isEliminated()) {
+                        playersAlive++;
+                    } else {
+                        for (Card card : p.getHand()) {
+                            discardPile.add(card);
+                            objects.add(card);
+                        }
+                        p.getHand().clear();
+
+                        updateDiscardedCardsPosition();
+                    }
+                }
 
                 // If only one player is alive, then end of round (second condition)
                 if (playersAlive <= 1 || deck.isEmpty()) {
@@ -337,7 +414,8 @@ public class SceneGame implements IScene {
                 }
 
                 break;
-            case ROUND_OVER:
+            }
+            case ROUND_OVER: {
                 logger.log(Level.INFO, "Round is over.");
 
                 // Recover each winner for this round
@@ -345,7 +423,7 @@ public class SceneGame implements IScene {
                 int maxCard = -1;
 
                 for (Player p : players) {
-                    if (!p.isEliminated) {
+                    if (!p.isEliminated()) {
                         int currentCardScore = p.getHand().getFirst().getValue();
 
                         if (currentCardScore == maxCard) {
@@ -384,30 +462,21 @@ public class SceneGame implements IScene {
                 }
 
                 break;
-            case GAME_OVER:
+            }
+            case GAME_OVER: {
                 logger.log(Level.INFO, "Game is over now");
 
                 break;
-            default:
+            }
+            default: {
                 logger.log(Level.SEVERE, "Unknown state: " + currentState);
-        }
-    }
-
-
-    private int getPlayersAlive() {
-        int playersAlive = 0;
-        for (Player p : players) {
-            if (!p.isEliminated) {
-                playersAlive++;
             }
         }
-
-        return playersAlive;
     }
 
     private void updateScore(Player winner) {
         int inc = 1;
-        if (winner.getHasUsedSpy()) inc = 2;
+        if (winner.hasUsedSpy()) inc = 2;
 
         winner.setScore(winner.getScore() + inc);
     }

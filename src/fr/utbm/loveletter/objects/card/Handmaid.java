@@ -16,7 +16,7 @@ public class Handmaid extends Card {
 
     public void playEffect(ArrayList<Player> players , int ownerId) {
         System.out.println("Le joueur " + players.get(ownerId).toString() + " joue une Servante!");
-        players.get(ownerId).isProtected = true;
+        players.get(ownerId).setProtected(true);
         //give the owner a protection against other card until his next turn.
         //IF ALL PLAYER ARE PROTECTED :
         //ANOTHER PLAYER : card has no effect.

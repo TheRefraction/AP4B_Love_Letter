@@ -24,7 +24,7 @@ public class King extends Card {
             name = scanner.nextLine();
             for (Player player : players) {
                 if (Objects.equals(name, player.getName())) {
-                    if (player.isProtected) {
+                    if (player.isProtected()) {
                         name = players.get(ownerId).getName();
                         System.out.println("You can't choose them because they are protected by the Handmaid.");
                     }

@@ -9,15 +9,16 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Player extends GameObject implements IPlayer {
-    private ArrayList<Card> hand = new ArrayList<>();
+    private final ArrayList<Card> hand = new ArrayList<>();
     private final String name;
     private int score = 0;
     private boolean isPlaying = false;
 
     // Helper variables
-    public boolean hasUsedSpy = false;
-    public boolean isEliminated = false;
-    public boolean isProtected = false;
+    private boolean hasUsedSpy = false;
+    private boolean isEliminated = false;
+    private boolean isProtected = false;
+    private boolean princed = false;
 
     public Player(int x, int y, String name) {
         super(x, y, 5);
@@ -99,7 +100,7 @@ public class Player extends GameObject implements IPlayer {
         this.isPlaying = playing;
     }
 
-    public boolean getEliminated() {
+    public boolean isEliminated() {
         return isEliminated;
     }
 
@@ -107,7 +108,7 @@ public class Player extends GameObject implements IPlayer {
         this.isEliminated = eliminated;
     }
 
-    public boolean getProtected() {
+    public boolean isProtected() {
         return isProtected;
     }
 
@@ -115,7 +116,7 @@ public class Player extends GameObject implements IPlayer {
         this.isProtected = aProtected;
     }
 
-    public boolean getHasUsedSpy() {
+    public boolean hasUsedSpy() {
         return hasUsedSpy;
     }
 
@@ -123,11 +124,20 @@ public class Player extends GameObject implements IPlayer {
         this.hasUsedSpy = hasUsedSpy;
     }
 
+    public boolean isPrinced() {
+        return princed;
+    }
+
+    public void setPrinced(boolean princed) {
+        this.princed = princed;
+    }
+
     public void reset() {
         isPlaying = false;
         isEliminated = false;
         isProtected = false;
         hasUsedSpy = false;
+        princed = false;
         hand.clear();
     }
 

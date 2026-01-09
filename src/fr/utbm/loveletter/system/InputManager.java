@@ -95,5 +95,6 @@ public class InputManager implements KeyListener, MouseListener, MouseMotionList
     public void endFrame() {
         keysPressed.clear();
         keysReleased.clear();
+        mouseDown = false;
     }
 }

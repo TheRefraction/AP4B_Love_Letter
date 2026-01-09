@@ -1,4 +1,5 @@
 package fr.utbm.loveletter.objects.card;
+
 import fr.utbm.loveletter.objects.player.Player;
 import fr.utbm.loveletter.sprites.Sprite;
 
@@ -7,14 +8,11 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Baron extends Card {
-
-
     public Baron(Sprite sprite) {
-        super(0, 0, 3, "Roi", "NEED TO DESCRIBE", sprite);
+        super(0, 0, 3, "Baron", "NEED TO DESCRIBE", sprite);
     }
 
     public void playEffect(ArrayList<Player> players , int ownerId) {
-
         System.out.println("Le joueur " + players.get(ownerId).toString() + " joue un Baron!");
 
         Scanner scanner = new Scanner(System.in);
@@ -24,13 +22,14 @@ public class Baron extends Card {
             name = scanner.nextLine();
             for (Player player : players) {
                 if (Objects.equals(name, players.get(ownerId).getName())) {
-                    if (player.isProtected) {
+                    if (player.isProtected()) {
                         name = players.get(ownerId).getName();
                         System.out.println("You can't choose them because they are protected by the Handmaid.");
                     }
                 }
             }
         }
+
         for (Player player : players) {
             if (Objects.equals(name, player.getName())) {
                 System.out.println("Your card is the " + players.get(ownerId).getHand().getFirst().getName() + " (" + players.get(ownerId).getHand().getFirst().getValue() + ")");

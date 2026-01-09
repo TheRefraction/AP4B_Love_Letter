@@ -20,7 +20,7 @@ public class Guard extends Card {
         Player owner  = players.get(ownerId);
         ArrayList<Player> canSeeHand = new ArrayList<>();
         for (Player p : players) {
-            if (p != owner && !p.getEliminated() && !p.getProtected()) {
+            if (p != owner && !p.isEliminated() && !p.isProtected()) {
                 canSeeHand.add(p);
             }
         }

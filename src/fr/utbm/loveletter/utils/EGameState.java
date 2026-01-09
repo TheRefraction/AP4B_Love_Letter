@@ -5,5 +5,6 @@ public enum EGameState {
     CHOOSE_CARD,
     END_TURN,
     ROUND_OVER,
-    GAME_OVER
+    GAME_OVER,
+    CHANCELLOR_TURN
 }

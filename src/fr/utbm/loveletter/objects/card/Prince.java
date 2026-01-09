@@ -1,43 +1,39 @@
-/*package fr.utbm.loveletter.objects.card;
-import fr.utbm.loveletter.gamemanager.GameManager;
-import fr.utbm.loveletter.objects.player.Player;
+package fr.utbm.loveletter.objects.card;
 
-import java.util.Objects;
-import java.util.Scanner;
+import fr.utbm.loveletter.objects.player.Player;
+import fr.utbm.loveletter.sprites.Sprite;
+
+import javax.swing.*;
+import java.util.ArrayList;
 
 public class Prince extends Card {
-    public void playEffect(GameManager game, Player owner) {
-        Scanner scanner = new Scanner(System.in);
-        String name;
-        outerloop :
-        while (true) {
-            System.out.println("Which player would you like to discard their hand ? : ");
-            name = scanner.nextLine();
-            for (Player player : game.getPlayers()) {
-                if (Objects.equals(name, player.name)) {
-                    if (player.handmaid) {
-                        System.out.println("You can't choose them because they are protected by the Handmaid.");
-                    } else {
-                        break outerloop;
-                    }
-                }
+    public Prince(Sprite sprite) {
+        super(0, 0, 5, "Prince", "NEED TO DESCRIBE", sprite);
+    }
+
+    @Override
+    public void playEffect(ArrayList<Player> players, int ownerId) {
+        System.out.println("Le joueur " + players.get(ownerId).toString() + " joue un prince !");
+        Player owner  = players.get(ownerId);
+
+        ArrayList<Player> canSeeHand = new ArrayList<>();
+        for (Player p : players) {
+            if (!p.isEliminated() && !p.isProtected()) {
+                canSeeHand.add(p);
             }
         }
-        for (Player player : game.getPlayers()) {
-            if (Objects.equals(name, player.name)) {
-                if (player.hand.isEmpty()) {
-                    player.drawCard(game.hiddenCard.getFirst());
-                } else if (player.discardHand()) {
-                    game.eleminate(player);
-                } else {
-                    player.drawCard(game.deck.getFirst());
-                }
-                return;
-            }
-        }
-        //the owner choose 1 player (even himself), the player must discard his hand and draw a new one
-        //CASE 0 CARD take one face hidden card from the beginning of the game
-        //DISCARD != PLAY  ------> WHEN DISCARDED THE CARD DON'T PLAY THE EFFECT,  !!! EXCEPT FOR THE PRINCESSE !!!
+
+        Player[] playersArray = canSeeHand.toArray(new Player[0]);
+        Player target = (Player) JOptionPane.showInputDialog(
+                null,
+                "Choisissez un joueur à cibler (vous-même inclus):",
+                "Effet du Prince",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                playersArray,
+                playersArray[0]
+        );
+
+        target.setPrinced(true);
     }
 }
-*/
